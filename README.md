@@ -4,9 +4,9 @@ StoPlay Chrome Extension
 Google Chrome extension to stop/play music playing in your web-browser via
 popular streaming services.
 
-** These are source files, for actual working extension please visit
-[link](link). To compile your dev version, see 
-[Chrome Dev Getting Started](http://developer.chrome.com/extensions/getstarted.html#unpacked) **
+**These are source files, for actual working extension please visit
+[#FIX](link).**
+
 
 At the moment we fully support (stop and play)
 * vkontakte
@@ -27,3 +27,7 @@ you to watch the video.
 ## Contributing
 We understand that there are tons of other streaming services, that's why we are
 eager to share the stuff with everybody to enable everybody with this feature.
+
+To compile your dev version, see 
+[Chrome Dev Getting Started](http://developer.chrome.com/extensions/getstarted.html#unpacked).
+There are also lots of useful info there.
