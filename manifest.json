@@ -1,6 +1,6 @@
  {
   "manifest_version": 2,
-  "name": "_StoPlay",
+  "name": "StoPlay",
   "version": "0.1",
 
   "icons": {
@@ -12,7 +12,7 @@
   "content_scripts": [
     {
       "matches": [ "*://*/*" ],
-      "js": [ "content.js", "vk.com.js" ]
+      "js": [ "content.js" ]
     }
   ],
   "background": {
@@ -23,14 +23,9 @@
     "notifications",
     "http://vk.com/*"
   ],
-  "web_accessible_resources": [
-    "vk.com.js"
-  ],
-
   "browser_action": {
     "default_title": "StoPlay",
     "default_icon": "img/icon48.png"
-    // "default_popup": "popup.html"
   }
     
 }
