@@ -2,6 +2,9 @@
   "manifest_version": 2,
   "name": "StoPlay",
   "version": "0.1",
+  
+  "default_locale": "en",
+  "description": "Google Chrome extension to stop/play music playing in your web-browser via popular streaming services.",
 
   "icons": {
     "16": "img/icon16.png",
