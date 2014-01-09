@@ -82,7 +82,8 @@ Provider.prototype.checkStatus = function() {
 			break;
 
 		case "youtube.com":
-			var status = document.title.indexOf('▶') >= 0 ? 'playing' : 'paused';
+			var p = document.getElementById("movie_player") || document.querySelector(".html5-video-player"),
+				status = p.getPlayerState() == 1 ? 'playing' : 'paused';
 			this.__changeState(status);
 			break;
 
@@ -103,6 +104,11 @@ Provider.prototype.pause = function() {
 
 			case "vimeo.com":
 				document.querySelector('.play.state-playing') && document.querySelector('.play.state-playing').click();
+				break;
+
+			case "youtube.com":
+				var p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
+				p.pauseVideo();
 				break;
 
 			case "grooveshark.com":
@@ -126,6 +132,11 @@ Provider.prototype.play = function() {
 				document.querySelector('.play.state-paused') && document.querySelector('.play.state-paused').click();
 				break;
 				
+			case "youtube.com":
+				var p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
+				p.playVideo();
+				break;
+
 			case "grooveshark.com":
 				document.querySelector('#play-pause.paused') && document.querySelector('#play-pause.paused').click();
 				break;

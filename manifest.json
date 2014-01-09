@@ -2,8 +2,8 @@
   "manifest_version": 2,
   "name": "StoPlay",
   "short_name": "StoPlay",
-  "homepage_url": "https://github.com/StoPlay/stoplay-ext",
-  "version": "0.1",
+  "homepage_url": "http://stoplay.github.io/",
+  "version": "0.11",
   "authors": [
     {
       "name": "Alex Karpov",
