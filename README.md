@@ -5,7 +5,7 @@ Google Chrome extension to stop/play music playing in your web-browser via
 popular streaming services.
 
 **These are source files, for actual working extension please visit
-[link](http://bit.ly/stoplay).**
+[Chrome webstore](http://bit.ly/stoplay).**
 
 
 At the moment we fully support (stop and play)
