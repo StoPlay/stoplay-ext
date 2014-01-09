@@ -12,9 +12,6 @@ At the moment we fully support (stop and play)
 * vkontakte
 * Grooveshark
 * vimeo
-
-We also can pause your music on the services mentioned above when you start
-playing video on
 * YouTube
 
 ## Purpose
