@@ -14,6 +14,15 @@ At the moment we fully support (stop and play)
 * vimeo
 * YouTube
 
+## How it works
+It just works!
+
+The extension automatically pauses your previous playing media when you open
+a new one (in case if supported, of course).
+
+Also you can click the pause bar button to stop it.
+![Click the pause bar button to stop it](http://monosnap.com/image/rv29Wlv8VZfVPlAldgHrhMr5J.png)
+
 ## Purpose
 We just needed this feature in the browser.
 When you listen to music online with different services, at times it can be
