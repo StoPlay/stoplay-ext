@@ -82,8 +82,12 @@ Provider.prototype.checkStatus = function() {
 			break;
 
 		case "youtube.com":
-			var p = document.getElementById("movie_player") || document.querySelector(".html5-video-player"),
-				status = p.getPlayerState() == 1 ? 'playing' : 'paused';
+			var p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
+			if(p.getPlayerState) {
+				var status = p.getPlayerState() == 1 ? 'playing' : 'paused';
+			} else {
+				var status = document.title.indexOf('▶') >= 0 ? 'playing' : 'paused';
+			}
 			this.__changeState(status);
 			break;
 
@@ -107,8 +111,12 @@ Provider.prototype.pause = function() {
 				break;
 
 			case "youtube.com":
-				var p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
-				p.pauseVideo();
+				if(!document.querySelector(".html5-video-player")) {
+					var p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
+					p.pauseVideo();					
+				} else {
+					document.querySelector(".ytp-button-pause") && document.querySelector(".ytp-button-pause").click();
+				}
 				break;
 
 			case "grooveshark.com":
@@ -133,8 +141,12 @@ Provider.prototype.play = function() {
 				break;
 				
 			case "youtube.com":
-				var p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
-				p.playVideo();
+				if(!document.querySelector(".html5-video-player")) {
+					var p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
+					p.playVideo();					
+				} else {
+					document.querySelector(".ytp-button-play") && document.querySelector(".ytp-button-play").click();
+				}
 				break;
 
 			case "grooveshark.com":
