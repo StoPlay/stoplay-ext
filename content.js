@@ -6,7 +6,7 @@ var Provider = function() {
 	this.allowed = [
 		'vk.com','grooveshark.com', 'youtube.com', 'vimeo.com',
 		'muzebra.com', 'pleer.com', 'last.fm', 'fs.to', 'brb.to',
-		'rutube.ru', 'ted.com', 'mixcloud.com', 'soundcloud.com'];
+		'rutube.ru', 'ted.com', 'mixcloud.com', 'x.mixcloud.com', 'soundcloud.com'];
 	this.status = 'paused';
 	this.interval = null;
 	this.events = {};
@@ -129,7 +129,14 @@ Provider.prototype.checkStatus = function() {
 			break;
 
 		case "mixcloud.com":
-			status = document.getElementById('player-play').classList.contains('playing') ? 'playing' : 'paused';
+			status = document.getElementById('player-play') &&
+				document.getElementById('player-play')
+				.classList.contains('playing') ? 'playing' : 'paused';
+		case "x.mixcloud.com":
+			// beta version, will soon be the main one
+			status = document.querySelector('.player-control') &&	
+				document.querySelector('.player-control')	
+				.classList.contains('pause-state') ? 'playing' : 'paused';	
 			break;
 		case "soundcloud.com":
 			status = document.querySelector('.playControl').classList.contains('playing') ? 'playing' : 'paused';
@@ -190,7 +197,11 @@ Provider.prototype.pause = function() {
 				document.querySelector('#play-pause.playing') && document.querySelector('#play-pause.playing').click();
 				break;
 			case "mixcloud.com":
-				document.querySelector('#player-play.playing') && document.querySelector('.cc-pause-button').click();
+				document.querySelector('.cc-pause-button').click();
+				break;
+			case "x.mixcloud.com":
+				// beta version, will soon be the main one
+				document.querySelector('.player-control').click();
 				break;
 			case "soundcloud.com":
 				document.querySelector('.playControl.playing') && document.querySelector('.playControl').click();
@@ -252,7 +263,11 @@ Provider.prototype.play = function() {
 				document.querySelector('#play-pause.paused') && document.querySelector('#play-pause.paused').click();
 				break;
 			case "mixcloud.com":
-				document.querySelector('#player-play') && document.querySelector('.cc-play-button').click();
+				document.querySelector('.cc-play-button').click();
+				break;
+			case "x.mixcloud.com":
+				// beta version, will soon be the main one
+				document.querySelector('.player-control').click();
 				break;
 			case "soundcloud.com":
 				document.querySelector('.playControl') && document.querySelector('.playControl').click();
