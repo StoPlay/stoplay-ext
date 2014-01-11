@@ -3,7 +3,7 @@
 var Provider = function() {
 	var _this = this;
 
-	this.allowed = ['vk.com', 'grooveshark.com', 'youtube.com', 'vimeo.com', 'muzebra.com', 'pleer.com', 'last.fm', 'fs.to', 'brb.to', 'rutube.ru'];
+	this.allowed = ['vk.com', 'grooveshark.com', 'youtube.com', 'vimeo.com', 'muzebra.com', 'pleer.com', 'last.fm', 'fs.to', 'brb.to', 'rutube.ru', 'ted.com'];
 	this.status = 'paused';
 	this.interval = null;
 	this.events = {};
@@ -85,6 +85,10 @@ Provider.prototype.checkStatus = function() {
 			status = document.getElementById('head_play_btn').classList.contains('playing') ? 'playing' : 'paused';
 			break;
 
+		case "ted.com":
+			status = document.getElementById('streamingPlayerSWF') && document.getElementById('streamingPlayerSWF').isVideoPlaying && document.getElementById('streamingPlayerSWF').isVideoPlaying() ? 'playing' : 'paused';
+			break;
+
 		case "last.fm":
 			status = document.getElementById('webRadio').classList.contains('playing') ? 'playing' : 'paused';
 			break;
@@ -137,6 +141,11 @@ Provider.prototype.pause = function() {
 				document.querySelector('#gp_play.playing') && document.querySelector('#gp_play.playing').click();
 				break;
 
+			case "ted.com":
+				var p = document.getElementById('streamingPlayerSWF');
+				p && p.pauseVideo && p.pauseVideo();
+				break;
+
 			case "last.fm":
 				document.querySelector('#radioControlPause a') && document.querySelector('#radioControlPause a').click()
 				break;
@@ -186,6 +195,11 @@ Provider.prototype.play = function() {
 
 			case "vk.com":
 				document.querySelector('#gp_play:not(.playing)') && document.querySelector('#gp_play:not(.playing)').click();
+				break;
+
+			case "ted.com":
+				var p = document.getElementById('streamingPlayerSWF');
+				p && p.playVideo && p.playVideo();
 				break;
 
 			case "last.fm":
