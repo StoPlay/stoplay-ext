@@ -13,6 +13,12 @@ At the moment we fully support (stop and play)
 * Grooveshark
 * vimeo
 * YouTube
+* Rutube
+* TED.com
+* FS.to (brb.to)
+* Muzebra
+* Pleer.com
+* Last.fm (web-version)
 
 ## How it works
 It just works!
