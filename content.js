@@ -3,7 +3,7 @@
 var Provider = function() {
 	var _this = this;
 
-	this.allowed = ['vk.com', 'grooveshark.com', 'youtube.com', 'vimeo.com', 'muzebra.com', 'pleer.com', 'last.fm'];
+	this.allowed = ['vk.com', 'grooveshark.com', 'youtube.com', 'vimeo.com', 'muzebra.com', 'pleer.com', 'last.fm', 'fs.to', 'brb.to'];
 	this.status = 'paused';
 	this.interval = null;
 	this.events = {};
@@ -71,6 +71,15 @@ Provider.prototype.__changeState = function(status) {
 
 Provider.prototype.checkStatus = function() {
 	switch(this.host) {
+		case "fs.to":
+		case "brb.to":
+			var p = document.getElementById('player_api');
+			if(p && p.fp_getState) {
+				var status = p.fp_getState() == 3 ? 'playing' : 'paused';
+				this.__changeState(status);
+			}
+			break;
+
 		case "vk.com":
 			var status = document.getElementById('head_play_btn').classList.contains('playing') ? 'playing' : 'paused';
 			this.__changeState(status);
@@ -116,6 +125,12 @@ Provider.prototype.checkStatus = function() {
 Provider.prototype.pause = function() {
 	if(this.status == 'playing') {
 		switch(this.host) {
+			case "fs.to":
+			case "brb.to":
+				var p = document.getElementById('player_api');
+				p && p.fp_isPlaying && p.fp_isPlaying() && p.fp_pause && p.fp_pause();
+				break;
+
 			case "vk.com":
 				document.querySelector('#gp_play.playing') && document.querySelector('#gp_play.playing').click();
 				break;
@@ -156,6 +171,12 @@ Provider.prototype.pause = function() {
 Provider.prototype.play = function() {
 	if(this.status != 'playing') {
 		switch(this.host) {
+			case "fs.to":
+			case "brb.to":
+				var p = document.getElementById('player_api');
+				p && p.fp_isPaused && p.fp_isPaused() && p.fp_play && p.fp_play();
+				break;
+
 			case "vk.com":
 				document.querySelector('#gp_play:not(.playing)') && document.querySelector('#gp_play:not(.playing)').click();
 				break;
