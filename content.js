@@ -3,7 +3,10 @@
 var Provider = function() {
 	var _this = this;
 
-	this.allowed = ['vk.com', 'grooveshark.com', 'youtube.com', 'vimeo.com', 'muzebra.com', 'pleer.com', 'last.fm', 'fs.to', 'brb.to', 'rutube.ru', 'ted.com'];
+	this.allowed = [
+		'vk.com','grooveshark.com', 'youtube.com', 'vimeo.com',
+		'muzebra.com', 'pleer.com', 'last.fm', 'fs.to', 'brb.to',
+		'rutube.ru', 'ted.com', 'mixcloud.com', 'soundcloud.com'];
 	this.status = 'paused';
 	this.interval = null;
 	this.events = {};
@@ -124,6 +127,13 @@ Provider.prototype.checkStatus = function() {
 		case "grooveshark.com":
 			status = document.getElementById('play-pause').classList.contains('playing') ? 'playing' : 'paused';
 			break;
+
+		case "mixcloud.com":
+			status = document.getElementById('player-play').classList.contains('playing') ? 'playing' : 'paused';
+			break;
+		case "soundcloud.com":
+			status = document.querySelector('.playControl').classList.contains('playing') ? 'playing' : 'paused';
+			break;
 	}
 	this.__changeState(status);
 };
@@ -178,6 +188,12 @@ Provider.prototype.pause = function() {
 
 			case "grooveshark.com":
 				document.querySelector('#play-pause.playing') && document.querySelector('#play-pause.playing').click();
+				break;
+			case "mixcloud.com":
+				document.querySelector('#player-play.playing') && document.querySelector('.cc-pause-button').click();
+				break;
+			case "soundcloud.com":
+				document.querySelector('.playControl.playing') && document.querySelector('.playControl').click();
 				break;
 		}
 		this.__changeState('paused');
@@ -234,6 +250,12 @@ Provider.prototype.play = function() {
 
 			case "grooveshark.com":
 				document.querySelector('#play-pause.paused') && document.querySelector('#play-pause.paused').click();
+				break;
+			case "mixcloud.com":
+				document.querySelector('#player-play') && document.querySelector('.cc-play-button').click();
+				break;
+			case "soundcloud.com":
+				document.querySelector('.playControl') && document.querySelector('.playControl').click();
 				break;
 
 		}
