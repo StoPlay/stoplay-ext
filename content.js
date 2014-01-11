@@ -3,7 +3,7 @@
 var Provider = function() {
 	var _this = this;
 
-	this.allowed = ['vk.com', 'grooveshark.com', 'youtube.com', 'vimeo.com', 'muzebra.com', 'pleer.com', 'last.fm', 'fs.to', 'brb.to'];
+	this.allowed = ['vk.com', 'grooveshark.com', 'youtube.com', 'vimeo.com', 'muzebra.com', 'pleer.com', 'last.fm', 'fs.to', 'brb.to', 'rutube.ru'];
 	this.status = 'paused';
 	this.interval = null;
 	this.events = {};
@@ -70,56 +70,58 @@ Provider.prototype.__changeState = function(status) {
 };
 
 Provider.prototype.checkStatus = function() {
+	var status;
+
 	switch(this.host) {
 		case "fs.to":
 		case "brb.to":
 			var p = document.getElementById('player_api');
 			if(p && p.fp_getState) {
-				var status = p.fp_getState() == 3 ? 'playing' : 'paused';
-				this.__changeState(status);
+				status = p.fp_getState() == 3 ? 'playing' : 'paused';
 			}
 			break;
 
 		case "vk.com":
-			var status = document.getElementById('head_play_btn').classList.contains('playing') ? 'playing' : 'paused';
-			this.__changeState(status);
+			status = document.getElementById('head_play_btn').classList.contains('playing') ? 'playing' : 'paused';
 			break;
 
 		case "last.fm":
-			var status = document.getElementById('webRadio').classList.contains('playing') ? 'playing' : 'paused';
-			this.__changeState(status);
+			status = document.getElementById('webRadio').classList.contains('playing') ? 'playing' : 'paused';
+			break;
+
+		case "rutube.ru":
+			var p = document.querySelector('#video-object-container iframe') && document.querySelector('#video-object-container iframe').contentDocument.getElementById('rutubePlayerHolder_flash_api');
+			if(p) {
+				status = p.getPlayerState && p.getPlayerState();
+			}
 			break;
 
 		case "pleer.com":
-			var status = document.querySelector('#player #play').classList.contains('pause') ? 'playing' : 'paused';
-			this.__changeState(status);
+			status = document.querySelector('#player #play').classList.contains('pause') ? 'playing' : 'paused';
 			break;
 
 		case "vimeo.com":
-			var status = document.querySelector('.play.state-playing') ? 'playing' : 'paused';
-			this.__changeState(status);
+			status = document.querySelector('.play.state-playing') ? 'playing' : 'paused';
 			break;
 
 		case "muzebra.com":
-			var status = document.querySelector('#player button.play').classList.contains('icon-pause') ? 'playing' : 'paused';
-			this.__changeState(status);
+			status = document.querySelector('#player button.play').classList.contains('icon-pause') ? 'playing' : 'paused';
 			break;
 
 		case "youtube.com":
 			var p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
 			if(p.getPlayerState) {
-				var status = p.getPlayerState() == 1 ? 'playing' : 'paused';
+				status = p.getPlayerState() == 1 ? 'playing' : 'paused';
 			} else {
-				var status = document.title.indexOf('▶') >= 0 ? 'playing' : 'paused';
+				status = document.title.indexOf('▶') >= 0 ? 'playing' : 'paused';
 			}
-			this.__changeState(status);
 			break;
 
 		case "grooveshark.com":
-			var status = document.getElementById('play-pause').classList.contains('playing') ? 'playing' : 'paused';
-			this.__changeState(status);
+			status = document.getElementById('play-pause').classList.contains('playing') ? 'playing' : 'paused';
 			break;
 	}
+	this.__changeState(status);
 };
 
 Provider.prototype.pause = function() {
@@ -137,6 +139,11 @@ Provider.prototype.pause = function() {
 
 			case "last.fm":
 				document.querySelector('#radioControlPause a') && document.querySelector('#radioControlPause a').click()
+				break;
+
+			case "rutube.ru":
+				var p = document.querySelector('#video-object-container iframe') && document.querySelector('#video-object-container iframe').contentDocument.getElementById('rutubePlayerHolder_flash_api');
+				p && p.pauseVideo && p.pauseVideo();
 				break;
 
 			case "pleer.com":
@@ -183,6 +190,11 @@ Provider.prototype.play = function() {
 
 			case "last.fm":
 				document.querySelector('#radioControlPlay a') && document.querySelector('#radioControlPlay a').click()
+				break;
+
+			case "rutube.ru":
+				var p = document.querySelector('#video-object-container iframe') && document.querySelector('#video-object-container iframe').contentDocument.getElementById('rutubePlayerHolder_flash_api');
+				p && p.playVideo && p.playVideo();
 				break;
 
 			case "pleer.com":
