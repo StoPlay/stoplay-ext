@@ -19,6 +19,8 @@ At the moment we fully support (stop and play)
 * Muzebra
 * Pleer.com
 * Last.fm (web-version)
+* Soundcloud
+* Mixcloud
 
 ## How it works
 It just works!

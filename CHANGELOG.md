@@ -1,6 +1,9 @@
 Backlog
 ===========
 
+- 0.121 - Added support for:
+    + Soundcloud
+    + Mixcloud
 - 0.12 - Added support for:
     + Rutube
     + TED.com
