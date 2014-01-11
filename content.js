@@ -3,7 +3,7 @@
 var Provider = function() {
 	var _this = this;
 
-	this.allowed = ['vk.com', 'grooveshark.com', 'youtube.com', 'vimeo.com', 'muzebra.com'];
+	this.allowed = ['vk.com', 'grooveshark.com', 'youtube.com', 'vimeo.com', 'muzebra.com', 'pleer.com'];
 	this.status = 'paused';
 	this.interval = null;
 	this.events = {};
@@ -76,6 +76,11 @@ Provider.prototype.checkStatus = function() {
 			this.__changeState(status);
 			break;
 
+		case "pleer.com":
+			var status = document.querySelector('#player #play').classList.contains('pause') ? 'playing' : 'paused';
+			this.__changeState(status);
+			break;
+
 		case "vimeo.com":
 			var status = document.querySelector('.play.state-playing') ? 'playing' : 'paused';
 			this.__changeState(status);
@@ -110,6 +115,10 @@ Provider.prototype.pause = function() {
 				document.querySelector('#gp_play.playing') && document.querySelector('#gp_play.playing').click();
 				break;
 
+			case "pleer.com":
+				document.querySelector('#player #play.pause') && document.querySelector('#player #play.pause').click();
+				break;
+
 			case "vimeo.com":
 				document.querySelector('.play.state-playing') && document.querySelector('.play.state-playing').click();
 				break;
@@ -142,6 +151,10 @@ Provider.prototype.play = function() {
 				document.querySelector('#gp_play:not(.playing)') && document.querySelector('#gp_play:not(.playing)').click();
 				break;
 				
+			case "pleer.com":
+				document.querySelector('#player #play.play') && document.querySelector('#player #play.play').click();
+				break;
+
 			case "vimeo.com":
 				document.querySelector('.play.state-paused') && document.querySelector('.play.state-paused').click();
 				break;
