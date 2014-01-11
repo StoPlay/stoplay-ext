@@ -82,7 +82,7 @@ Provider.prototype.checkStatus = function() {
 			break;
 
 		case "muzebra.com":
-			var status = document.querySelector('#player button.play').classList.contains('icon-play') ? 'playing' : 'paused';
+			var status = document.querySelector('#player button.play').classList.contains('icon-pause') ? 'playing' : 'paused';
 			this.__changeState(status);
 			break;
 
