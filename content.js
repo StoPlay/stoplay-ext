@@ -3,7 +3,7 @@
 var Provider = function() {
 	var _this = this;
 
-	this.allowed = ['vk.com', 'grooveshark.com', 'youtube.com', 'vimeo.com'];
+	this.allowed = ['vk.com', 'grooveshark.com', 'youtube.com', 'vimeo.com', 'muzebra.com'];
 	this.status = 'paused';
 	this.interval = null;
 	this.events = {};
@@ -81,6 +81,11 @@ Provider.prototype.checkStatus = function() {
 			this.__changeState(status);
 			break;
 
+		case "muzebra.com":
+			var status = document.querySelector('#player button.play').classList.contains('icon-play') ? 'playing' : 'paused';
+			this.__changeState(status);
+			break;
+
 		case "youtube.com":
 			var p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
 			if(p.getPlayerState) {
@@ -99,7 +104,6 @@ Provider.prototype.checkStatus = function() {
 };
 
 Provider.prototype.pause = function() {
-	console.log('Pause', this.host);
 	if(this.status == 'playing') {
 		switch(this.host) {
 			case "vk.com":
@@ -108,6 +112,10 @@ Provider.prototype.pause = function() {
 
 			case "vimeo.com":
 				document.querySelector('.play.state-playing') && document.querySelector('.play.state-playing').click();
+				break;
+
+			case "muzebra.com":
+				document.querySelector('#player button.play.icon-pause') && document.querySelector('#player button.play.icon-pause').click();
 				break;
 
 			case "youtube.com":
@@ -128,8 +136,6 @@ Provider.prototype.pause = function() {
 };
 
 Provider.prototype.play = function() {
-	console.log('Play', this.host);
-	
 	if(this.status != 'playing') {
 		switch(this.host) {
 			case "vk.com":
@@ -140,6 +146,10 @@ Provider.prototype.play = function() {
 				document.querySelector('.play.state-paused') && document.querySelector('.play.state-paused').click();
 				break;
 				
+			case "muzebra.com":
+				document.querySelector('#player button.play.icon-play') && document.querySelector('#player button.play.icon-play').click();
+				break;
+
 			case "youtube.com":
 				if(!document.querySelector(".html5-video-player")) {
 					var p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
