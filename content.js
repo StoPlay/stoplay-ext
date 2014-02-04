@@ -6,7 +6,9 @@ var Provider = function() {
 	this.allowed = [
 		'vk.com','grooveshark.com', 'youtube.com', 'vimeo.com',
 		'muzebra.com', 'pleer.com', 'last.fm', 'fs.to', 'brb.to',
-		'rutube.ru', 'ted.com', 'mixcloud.com', 'x.mixcloud.com', 'soundcloud.com'];
+		'rutube.ru', 'ted.com', 'mixcloud.com', 'x.mixcloud.com',
+		'soundcloud.com', 'seasonvar.ru'
+	];
 	this.status = 'paused';
 	this.interval = null;
 	this.events = {};
@@ -124,6 +126,11 @@ Provider.prototype.checkStatus = function() {
 			}
 			break;
 
+		case "seasonvar.ru":
+			status = document.querySelector('#vpcenter object').getUppod && document.querySelector('#vpcenter object').getUppod('getstatus');
+			status = status ? 'playing' : 'paused';
+			break;
+
 		case "grooveshark.com":
 			status = document.getElementById('play-pause').classList.contains('playing') ? 'playing' : 'paused';
 			break;
@@ -193,6 +200,10 @@ Provider.prototype.pause = function() {
 				}
 				break;
 
+			case "seasonvar.ru":
+				document.querySelector('#vpcenter object').sendToUppod && document.querySelector('#vpcenter object').sendToUppod('pause');
+				break;
+
 			case "grooveshark.com":
 				document.querySelector('#play-pause.playing') && document.querySelector('#play-pause.playing').click();
 				break;
@@ -257,6 +268,10 @@ Provider.prototype.play = function() {
 				} else {
 					document.querySelector(".ytp-button-play") && document.querySelector(".ytp-button-play").click();
 				}
+				break;
+
+			case "seasonvar.ru":
+				document.querySelector('#vpcenter object').sendToUppod && document.querySelector('#vpcenter object').sendToUppod('play');
 				break;
 
 			case "grooveshark.com":
