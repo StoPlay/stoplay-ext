@@ -128,7 +128,7 @@ Provider.prototype.checkStatus = function() {
 
 		case "seasonvar.ru":
 			status = document.querySelector('#vpcenter object').getUppod && document.querySelector('#vpcenter object').getUppod('getstatus');
-			status = status ? 'playing' : 'paused';
+			status = status == 1 ? 'playing' : 'paused';
 			break;
 
 		case "grooveshark.com":

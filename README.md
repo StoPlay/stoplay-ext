@@ -22,6 +22,7 @@ At the moment we fully support (stop and play)
 * Last.fm (web-version)
 * Soundcloud
 * Mixcloud
+* Seasonvar
 
 ## How it works
 It just works!

@@ -1,6 +1,9 @@
 Backlog
 ===========
 
+- 0.123 - fixed status check for seasonvar
+- 0.122 - Added support for:
+    + Seasonvar.ru
 - 0.121 - Added support for:
     + Soundcloud
     + Mixcloud
