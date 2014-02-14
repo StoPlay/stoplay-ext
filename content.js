@@ -134,12 +134,14 @@ Provider.prototype.checkStatus = function() {
 		case "grooveshark.com":
 			status = document.getElementById('play-pause').classList.contains('playing') ? 'playing' : 'paused';
 			break;
-
+		/*
+		// farewell old version
 		case "mixcloud.com":
 			status = document.getElementById('player-play') &&
 				document.getElementById('player-play')
 				.classList.contains('playing') ? 'playing' : 'paused';
-		case "x.mixcloud.com":
+		*/
+		case "mixcloud.com":
 			// beta version, will soon be the main one
 			status = document.querySelector('.player-control') &&	
 				document.querySelector('.player-control')	
@@ -207,11 +209,13 @@ Provider.prototype.pause = function() {
 			case "grooveshark.com":
 				document.querySelector('#play-pause.playing') && document.querySelector('#play-pause.playing').click();
 				break;
+			/*
+			// farewell old version
 			case "mixcloud.com":
 				document.querySelector('.cc-pause-button').click();
 				break;
-			case "x.mixcloud.com":
-				// beta version, will soon be the main one
+			*/
+			case "mixcloud.com":
 				document.querySelector('.player-control').click();
 				break;
 			case "soundcloud.com":
@@ -277,11 +281,13 @@ Provider.prototype.play = function() {
 			case "grooveshark.com":
 				document.querySelector('#play-pause.paused') && document.querySelector('#play-pause.paused').click();
 				break;
+			/*
+			// farewell old version
 			case "mixcloud.com":
 				document.querySelector('.cc-play-button').click();
 				break;
-			case "x.mixcloud.com":
-				// beta version, will soon be the main one
+			*/
+			case "mixcloud.com":
 				document.querySelector('.player-control').click();
 				break;
 			case "soundcloud.com":
