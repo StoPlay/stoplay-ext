@@ -8,6 +8,7 @@ var Provider = function() {
 		'muzebra.com', 'pleer.com', 'last.fm', 'fs.to', 'brb.to',
 		'rutube.ru', 'ted.com', 'mixcloud.com', 'x.mixcloud.com',
 		'soundcloud.com', 'seasonvar.ru'
+	    //, 'megogo.net'
 	];
 	this.status = 'paused';
 	this.interval = null;
@@ -187,17 +188,18 @@ Provider.prototype.pause = function() {
 				document.querySelector('.play.state-playing') && document.querySelector('.play.state-playing').click();
 				break;
 
+			case "megogo.net":
+				var p = document.getElementById("playerFrame");
+				p && p.contentDocument && p.contentDocument.getElementById('player_object') && p.contentDocument.getElementById('player_object').megogoPlayerPause && p.contentDocument.getElementById('player_object').megogoPlayerPause();
+				break;
+
 			case "muzebra.com":
 				document.querySelector('#player button.play.icon-pause') && document.querySelector('#player button.play.icon-pause').click();
 				break;
 
 			case "youtube.com":
-				if(!document.querySelector(".html5-video-player")) {
-					var p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
-					p.pauseVideo();					
-				} else {
-					document.querySelector(".ytp-button-pause") && document.querySelector(".ytp-button-pause").click();
-				}
+				var p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
+				p && p.pauseVideo && p.pauseVideo();					
 				break;
 
 			case "seasonvar.ru":
@@ -256,18 +258,19 @@ Provider.prototype.play = function() {
 			case "vimeo.com":
 				document.querySelector('.play.state-paused') && document.querySelector('.play.state-paused').click();
 				break;
-				
+
+			case "megogo.net":
+				var p = document.getElementById("playerFrame");
+				p && p.contentDocument && p.contentDocument.getElementById('player_object') && p.contentDocument.getElementById('player_object').megogoPlayerResume && p.contentDocument.getElementById('player_object').megogoPlayerResume();
+				break;
+
 			case "muzebra.com":
 				document.querySelector('#player button.play.icon-play') && document.querySelector('#player button.play.icon-play').click();
 				break;
 
 			case "youtube.com":
-				if(!document.querySelector(".html5-video-player")) {
-					var p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
-					p.playVideo();					
-				} else {
-					document.querySelector(".ytp-button-play") && document.querySelector(".ytp-button-play").click();
-				}
+				var p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
+				p && p.playVideo && p.playVideo();
 				break;
 
 			case "seasonvar.ru":
