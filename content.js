@@ -133,6 +133,10 @@ Provider.prototype.checkStatus = function() {
 			break;
 
 		case "grooveshark.com":
+			var p = document.querySelector('.lightbox-interactionTimeout .submit');
+			if (p) {
+				p.click();
+			}
 			status = document.getElementById('play-pause').classList.contains('playing') ? 'playing' : 'paused';
 			break;
 		/*
