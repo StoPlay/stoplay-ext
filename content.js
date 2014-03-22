@@ -14,6 +14,8 @@ var Provider = function() {
 	this.interval = null;
 	this.events = {};
 
+	this.isIntalled();
+
 	if(this.detectProvider()) {
 		this.attachEvents();
 		this.interval = setInterval(function(){
@@ -21,6 +23,13 @@ var Provider = function() {
 		}, 1500);
 	} else {
 		return false;
+	}
+};
+
+Provider.prototype.isIntalled = function() {
+	if (window.location.host.replace('www.', '') == 'stoplay_page.dev'
+		|| window.location.host.replace('www.', '') == 'stoplay.github.io') {
+		document.querySelector(".b_install").className = document.querySelector(".b_install").className + " m_installed";
 	}
 };
 
