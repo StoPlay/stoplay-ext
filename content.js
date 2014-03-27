@@ -29,7 +29,7 @@ var Provider = function() {
 Provider.prototype.isIntalled = function() {
 	if (window.location.host.replace('www.', '') == 'stoplay_page.dev'
 		|| window.location.host.replace('www.', '') == 'stoplay.github.io') {
-		document.querySelector(".b_install").className = document.querySelector(".b_install").className + " m_installed";
+		document.querySelector("body").className = document.querySelector("body").className + " m_installed";
 	}
 };
 
