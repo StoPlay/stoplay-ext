@@ -5,7 +5,7 @@ var STOP_ICON = '/img/stop128.png',
 
 localStorage.setItem('status', 'silent');
 
-chrome.browserAction.onClicked.addListener(function() {
+chrome.browserAction.onClicked.addListener(function(e) {
 	var lastPlayingTabId = parseInt(localStorage.getItem('lastPlayingTabId')),
 		lastPausedTabId = parseInt(localStorage.getItem('lastPausedTabId')),
 		status = localStorage.getItem('status');
@@ -29,7 +29,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	var lastPlayingTabId = parseInt(localStorage.getItem('lastPlayingTabId')),
 		lastPausedTabId = parseInt(localStorage.getItem('lastPausedTabId'));
 
-	if(request.action && sender.tab) {	
+	if(request.action && sender.tab) {
 		switch(request.action) {
 			case 'started':
 				if(lastPlayingTabId && sender.tab.id != lastPlayingTabId) {
@@ -38,12 +38,20 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 				localStorage.setItem('lastPlayingTabId', sender.tab.id);
 				localStorage.setItem('status', 'playing');
 				chrome.browserAction.setIcon({path: STOP_ICON});
+
+				if (request.meta) {
+					localStorage.setItem('lastMetaArtist', request.meta.artist);
+					localStorage.setItem('lastMetaTitle', request.meta.title);
+					var newTitle = "▶ " + request.meta.artist + " - " + request.meta.title + " (StoPlay)";
+					chrome.browserAction.setTitle({title: newTitle});
+				}
 				break;
 				
 			case 'paused':
 				localStorage.setItem('lastPausedTabId', sender.tab.id);
 				localStorage.setItem('status', 'paused');
 				chrome.browserAction.setIcon({path: PLAY_ICON});
+				chrome.browserAction.setTitle({title: "StoPlay" });
 				break;
 		}
 	}

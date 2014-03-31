@@ -11,6 +11,7 @@ var Provider = function() {
 	    //, 'megogo.net'
 	];
 	this.status = 'paused';
+	this.meta = {artist: '', title: ''};
 	this.interval = null;
 	this.events = {};
 
@@ -59,9 +60,9 @@ Provider.prototype.detectProvider = function() {
 Provider.prototype.attachEvents = function() {
 	var _this = this;
 
-	this.on('start', function(){
+	this.on('start', function(meta){
 		_this.status = 'playing';
-		chrome.runtime.sendMessage({action: 'started'});
+		chrome.runtime.sendMessage({action: 'started', meta: _this.meta});
 	});
 
 	this.on('pause', function(){
@@ -70,11 +71,12 @@ Provider.prototype.attachEvents = function() {
 	})
 };
 
-Provider.prototype.__changeState = function(status) {
-	if(status != this.status) {
+Provider.prototype.__changeState = function(status, meta) {
+	if(status != this.status || meta != this.meta ) {
 		switch(status) {
 			case "playing":
 				this.trigger( 'start' );
+				this.meta = meta;
 				break;
 				
 			case "paused":
@@ -86,6 +88,7 @@ Provider.prototype.__changeState = function(status) {
 
 Provider.prototype.checkStatus = function() {
 	var status;
+	var meta = {artist: '', title: ''};
 
 	switch(this.host) {
 		case "fs.to":
@@ -98,6 +101,12 @@ Provider.prototype.checkStatus = function() {
 
 		case "vk.com":
 			status = document.getElementById('head_play_btn').classList.contains('playing') ? 'playing' : 'paused';
+			if (status == 'playing') {
+				meta = {
+					artist: document.getElementById('gp_performer').textContent,
+					title: document.getElementById('gp_title').textContent
+				};
+			}
 			break;
 
 		case "ted.com":
@@ -165,7 +174,7 @@ Provider.prototype.checkStatus = function() {
 			status = document.querySelector('.playControl').classList.contains('playing') ? 'playing' : 'paused';
 			break;
 	}
-	this.__changeState(status);
+	this.__changeState(status, meta);
 };
 
 Provider.prototype.pause = function() {
@@ -252,6 +261,10 @@ Provider.prototype.play = function() {
 
 			case "vk.com":
 				document.querySelector('#gp_play:not(.playing)') && document.querySelector('#gp_play:not(.playing)').click();
+				meta = {
+					artist: document.getElementById('gp_performer').textContent,
+					title: document.getElementById('gp_title').textContent
+				};
 				break;
 
 			case "ted.com":
@@ -297,12 +310,7 @@ Provider.prototype.play = function() {
 			case "grooveshark.com":
 				document.querySelector('#play-pause.paused') && document.querySelector('#play-pause.paused').click();
 				break;
-			/*
-			// farewell old version
-			case "mixcloud.com":
-				document.querySelector('.cc-play-button').click();
-				break;
-			*/
+
 			case "mixcloud.com":
 				document.querySelector('.player-control').click();
 				break;
@@ -311,7 +319,7 @@ Provider.prototype.play = function() {
 				break;
 
 		}
-		this.__changeState('playing');
+		this.__changeState('playing', meta);
 	}
 };
 
