@@ -12,6 +12,7 @@ popular streaming services.
 At the moment we fully support (stop and play)
 * vkontakte
 * Grooveshark
+* Google Music
 * vimeo
 * YouTube
 * Rutube
