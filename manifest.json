@@ -3,7 +3,7 @@
   "name": "StoPlay",
   "short_name": "StoPlay",
   "homepage_url": "http://stoplay.github.io/",
-  "version": "0.1265",
+  "version": "0.1266",
   "author": [
     {
       "name": "Alex Karpov",
@@ -11,6 +11,9 @@
     }, {
       "name": "Alex Buznik",
       "email": "shu@buznik.net"
+    }, {
+      "name": "Sergey Lysenko",
+      "email": "soulwish.ls@gmail.com"
     }
   ],
   
