@@ -41,6 +41,11 @@ difficult to find the needed tab and then the **pause** button there.
 It also very cool when you open another video and music stops automatically for
 you to watch the video.
 
+## Contributors
+* Alex Karpov (@endway)
+* Alex Buznik (@beshur)
+* Sergey Lysenko (@soul-wish)
+
 ## Contributing
 We understand that there are tons of other streaming services, that's why we are
 eager to share the stuff with everybody to enable this feature for the
