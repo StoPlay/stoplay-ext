@@ -7,7 +7,7 @@ var Provider = function() {
 		'vk.com','grooveshark.com', 'youtube.com', 'vimeo.com',
 		'muzebra.com', 'pleer.com', 'last.fm', 'fs.to', 'brb.to',
 		'rutube.ru', 'ted.com', 'mixcloud.com', 'x.mixcloud.com',
-		'soundcloud.com', 'seasonvar.ru'
+		'soundcloud.com', 'seasonvar.ru', 'play.google.com'
 	    //, 'megogo.net'
 	];
 	this.status = 'paused';
@@ -157,6 +157,10 @@ Provider.prototype.checkStatus = function() {
 			}
 			status = document.getElementById('play-pause').classList.contains('playing') ? 'playing' : 'paused';
 			break;
+
+        case "play.google.com":
+            status = document.querySelector('[data-id="play-pause"]').classList.contains('playing') ? 'playing' : 'paused';
+            break;
 		/*
 		// farewell old version
 		case "mixcloud.com":
@@ -233,6 +237,10 @@ Provider.prototype.pause = function() {
 			case "grooveshark.com":
 				document.querySelector('#play-pause.playing') && document.querySelector('#play-pause.playing').click();
 				break;
+
+            case "play.google.com":
+                document.querySelector('[data-id="play-pause"]') && document.querySelector('[data-id="play-pause"]').click();
+                break;
 			/*
 			// farewell old version
 			case "mixcloud.com":
@@ -310,6 +318,10 @@ Provider.prototype.play = function() {
 			case "grooveshark.com":
 				document.querySelector('#play-pause.paused') && document.querySelector('#play-pause.paused').click();
 				break;
+
+            case "play.google.com":
+                document.querySelector('[data-id="play-pause"]') && document.querySelector('[data-id="play-pause"]').click();
+                break;
 
 			case "mixcloud.com":
 				document.querySelector('.player-control').click();
