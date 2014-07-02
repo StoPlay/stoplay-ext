@@ -39,12 +39,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 				localStorage.setItem('status', 'playing');
 				chrome.browserAction.setIcon({path: STOP_ICON});
 
-				if (request.meta) {
-					localStorage.setItem('lastMetaArtist', request.meta.artist);
-					localStorage.setItem('lastMetaTitle', request.meta.title);
-					var newTitle = "▶ " + request.meta.artist + " - " + request.meta.title + " (StoPlay)";
-					chrome.browserAction.setTitle({title: newTitle});
-				}
 				break;
 				
 			case 'paused':

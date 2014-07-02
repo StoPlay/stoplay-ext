@@ -72,7 +72,7 @@ Provider.prototype.attachEvents = function() {
 };
 
 Provider.prototype.__changeState = function(status, meta) {
-	if(status != this.status || meta != this.meta ) {
+	if(status != this.status/* || meta != this.meta */) {
 		switch(status) {
 			case "playing":
 				this.trigger( 'start' );
