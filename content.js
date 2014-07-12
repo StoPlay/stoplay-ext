@@ -11,11 +11,11 @@ var Provider = function() {
 	    //, 'megogo.net'
 	];
 	this.status = 'paused';
-	this.meta = {artist: '', title: ''};
 	this.interval = null;
 	this.events = {};
 
 	this.isIntalled();
+	this.attachGlobalHotkeys();
 
 	if(this.detectProvider()) {
 		this.attachEvents();
@@ -60,9 +60,9 @@ Provider.prototype.detectProvider = function() {
 Provider.prototype.attachEvents = function() {
 	var _this = this;
 
-	this.on('start', function(meta){
+	this.on('start', function(){
 		_this.status = 'playing';
-		chrome.runtime.sendMessage({action: 'started', meta: _this.meta});
+		chrome.runtime.sendMessage({action: 'started'});
 	});
 
 	this.on('pause', function(){
@@ -71,12 +71,24 @@ Provider.prototype.attachEvents = function() {
 	})
 };
 
-Provider.prototype.__changeState = function(status, meta) {
-	if(status != this.status/* || meta != this.meta */) {
+Provider.prototype.attachGlobalHotkeys = function() {
+	var _this = this;
+	window.onkeyup = function(e) {
+		/* #TODO get key combination from settings and check for it
+		console.log(e.which, e.ctrlKey);
+		if (e.ctrlKey && e.which == 220) {
+			chrome.runtime.sendMessage({action: 'toggle'});
+			console.log('toggle');
+		}
+		*/
+	}
+};
+
+Provider.prototype.__changeState = function(status) {
+	if(status != this.status) {
 		switch(status) {
 			case "playing":
 				this.trigger( 'start' );
-				this.meta = meta;
 				break;
 				
 			case "paused":
@@ -88,7 +100,6 @@ Provider.prototype.__changeState = function(status, meta) {
 
 Provider.prototype.checkStatus = function() {
 	var status;
-	var meta = {artist: '', title: ''};
 
 	switch(this.host) {
 		case "fs.to":
@@ -101,12 +112,6 @@ Provider.prototype.checkStatus = function() {
 
 		case "vk.com":
 			status = document.getElementById('head_play_btn').classList.contains('playing') ? 'playing' : 'paused';
-			if (status == 'playing') {
-				meta = {
-					artist: document.getElementById('gp_performer').textContent,
-					title: document.getElementById('gp_title').textContent
-				};
-			}
 			break;
 
 		case "ted.com":
@@ -178,7 +183,7 @@ Provider.prototype.checkStatus = function() {
 			status = document.querySelector('.playControl').classList.contains('playing') ? 'playing' : 'paused';
 			break;
 	}
-	this.__changeState(status, meta);
+	this.__changeState(status);
 };
 
 Provider.prototype.pause = function() {
@@ -269,10 +274,6 @@ Provider.prototype.play = function() {
 
 			case "vk.com":
 				document.querySelector('#gp_play:not(.playing)') && document.querySelector('#gp_play:not(.playing)').click();
-				meta = {
-					artist: document.getElementById('gp_performer').textContent,
-					title: document.getElementById('gp_title').textContent
-				};
 				break;
 
 			case "ted.com":
@@ -331,7 +332,7 @@ Provider.prototype.play = function() {
 				break;
 
 		}
-		this.__changeState('playing', meta);
+		this.__changeState('playing');
 	}
 };
 

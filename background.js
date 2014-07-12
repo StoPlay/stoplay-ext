@@ -27,7 +27,8 @@ chrome.browserAction.onClicked.addListener(function(e) {
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	var lastPlayingTabId = parseInt(localStorage.getItem('lastPlayingTabId')),
-		lastPausedTabId = parseInt(localStorage.getItem('lastPausedTabId'));
+		lastPausedTabId = parseInt(localStorage.getItem('lastPausedTabId')),
+		status = localStorage.getItem('status');
 
 	if(request.action && sender.tab) {
 		switch(request.action) {
@@ -46,6 +47,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 				localStorage.setItem('status', 'paused');
 				chrome.browserAction.setIcon({path: PLAY_ICON});
 				chrome.browserAction.setTitle({title: "StoPlay" });
+				break;
+
+			case 'toggle':
+				console.log(request.action, lastPlayingTabId);
+				if(lastPlayingTabId) {
+					var action = (status == 'playing') ? 'pause' : 'start';
+					console.log(action);
+					chrome.tabs.sendMessage(lastPlayingTabId, {action: action});
+				}
 				break;
 		}
 	}
