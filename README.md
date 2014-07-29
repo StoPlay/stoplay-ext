@@ -3,8 +3,7 @@ StoPlay Chrome Extension
 
 Google Chrome extension to stop/play music playing in your web-browser via
 popular streaming services.
-[![Flattr Button](http://api.flattr.com/button/button-compact-static-100x17.png "Flattr This!")](https://flattr.com/submit/auto?user_id=alexbuznik&url=https%3A%2F%2Fgithub.com%2FStoPlay%2Fstoplay-ext "StoPlay")
-
+[![Pledgie Button](https://pledgie.com/campaigns/26208.png?skin_name=chrome)](https://pledgie.com/campaigns/26208)
 **These are source files, for actual working extension please visit
 [Chrome webstore](http://bit.ly/stoplay).**
 
