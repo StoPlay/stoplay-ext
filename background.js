@@ -52,8 +52,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 			case 'toggle':
 				console.log(request.action, lastPlayingTabId);
 				if(lastPlayingTabId) {
-					var action = (status == 'playing') ? 'pause' : 'start';
-					console.log(action);
+					var action = (status == 'playing') ? 'pause' : 'play';
 					chrome.tabs.sendMessage(lastPlayingTabId, {action: action});
 				}
 				break;
@@ -61,6 +60,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	}
 });
 
+chrome.commands.onCommand.addListener(function(command) {
+    var lastPlayingTabId = parseInt(localStorage.getItem('lastPlayingTabId')),
+        lastPausedTabId = parseInt(localStorage.getItem('lastPausedTabId')),
+        status = localStorage.getItem('status');
+    if(lastPlayingTabId) {
+        var action = (status == 'playing') ? 'pause' : 'play';
+        chrome.tabs.sendMessage(lastPlayingTabId, {action: action});
+    }
+});
 chrome.tabs.onRemoved.addListener(function(tabId){
 	var lastPlayingTabId = parseInt(localStorage.getItem('lastPlayingTabId')),
 		lastPausedTabId = parseInt(localStorage.getItem('lastPausedTabId'));

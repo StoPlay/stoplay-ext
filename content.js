@@ -15,7 +15,7 @@ var Provider = function() {
 	this.events = {};
 
 	this.isIntalled();
-	this.attachGlobalHotkeys();
+//	this.attachGlobalHotkeys();
 
 	if(this.detectProvider()) {
 		this.attachEvents();
@@ -71,18 +71,16 @@ Provider.prototype.attachEvents = function() {
 	})
 };
 
-Provider.prototype.attachGlobalHotkeys = function() {
-	var _this = this;
-	window.onkeyup = function(e) {
-		/* #TODO get key combination from settings and check for it
-		console.log(e.which, e.ctrlKey);
-		if (e.ctrlKey && e.which == 220) {
-			chrome.runtime.sendMessage({action: 'toggle'});
-			console.log('toggle');
-		}
-		*/
-	}
-};
+//Provider.prototype.attachGlobalHotkeys = function() {
+//	var _this = this;
+//	window.onkeyup = function(e) {
+////		 #TODO get key combination from settings and check for it
+//		if (e.ctrlKey && e.which == 220) {
+//			chrome.runtime.sendMessage({action: 'toggle'});
+//			console.log('toggle');
+//		}
+//	}
+//};
 
 Provider.prototype.__changeState = function(status) {
 	if(status != this.status) {
