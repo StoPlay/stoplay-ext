@@ -4,7 +4,7 @@ var Provider = function() {
 	var _this = this;
 
 	this.allowed = [
-		'vk.com','grooveshark.com', 'youtube.com', 'vimeo.com',
+		'vk.com','grooveshark.com', 'html5.grooveshark.com', 'youtube.com', 'vimeo.com',
 		'muzebra.com', 'pleer.com', 'last.fm', 'fs.to', 'brb.to',
 		'rutube.ru', 'ted.com', 'mixcloud.com', 'x.mixcloud.com',
 		'soundcloud.com', 'seasonvar.ru', 'play.google.com'
@@ -161,6 +161,10 @@ Provider.prototype.checkStatus = function() {
 			status = document.getElementById('play-pause').classList.contains('playing') ? 'playing' : 'paused';
 			break;
 
+		case "html5.grooveshark.com":
+			status = document.querySelector('.little-queue-state') && document.querySelector('.little-queue-state').classList.contains('playing') ? 'playing' : 'paused';
+			break;
+
         case "play.google.com":
             status = document.querySelector('[data-id="play-pause"]').classList.contains('playing') ? 'playing' : 'paused';
             break;
@@ -241,6 +245,10 @@ Provider.prototype.pause = function() {
 				document.querySelector('#play-pause.playing') && document.querySelector('#play-pause.playing').click();
 				break;
 
+			case "html5.grooveshark.com":
+				document.querySelector('.little-queue-state.playing') && document.querySelector('.little-queue-state.playing').click();
+				break;
+
             case "play.google.com":
                 document.querySelector('[data-id="play-pause"]') && document.querySelector('[data-id="play-pause"]').click();
                 break;
@@ -316,6 +324,10 @@ Provider.prototype.play = function() {
 
 			case "grooveshark.com":
 				document.querySelector('#play-pause.paused') && document.querySelector('#play-pause.paused').click();
+				break;
+
+			case "html5.grooveshark.com":
+				document.querySelector('.little-queue-state.paused') && document.querySelector('.little-queue-state.paused').click();
 				break;
 
             case "play.google.com":
