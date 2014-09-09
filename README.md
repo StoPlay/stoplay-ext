@@ -24,6 +24,7 @@ At the moment we fully support (stop and play)
 * Soundcloud
 * Mixcloud
 * Seasonvar
+* Yandex.Music
 
 ## How it works
 It just works!

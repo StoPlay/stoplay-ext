@@ -7,7 +7,7 @@ var Provider = function() {
 		'vk.com','grooveshark.com', 'html5.grooveshark.com', 'youtube.com', 'vimeo.com',
 		'muzebra.com', 'pleer.com', 'last.fm', 'fs.to', 'brb.to',
 		'rutube.ru', 'ted.com', 'mixcloud.com', 'x.mixcloud.com',
-		'soundcloud.com', 'seasonvar.ru', 'play.google.com'
+		'soundcloud.com', 'seasonvar.ru', 'play.google.com', 'music.yandex.ru'
 	    //, 'megogo.net'
 	];
 	this.status = 'paused';
@@ -168,6 +168,10 @@ Provider.prototype.checkStatus = function() {
         case "play.google.com":
             status = document.querySelector('[data-id="play-pause"]').classList.contains('playing') ? 'playing' : 'paused';
             break;
+
+        case "music.yandex.ru":
+            status = document.querySelector('.b-jambox__play').classList.contains('b-jambox__playing') ? 'playing' : 'paused';
+            break;
 		/*
 		// farewell old version
 		case "mixcloud.com":
@@ -252,6 +256,10 @@ Provider.prototype.pause = function() {
             case "play.google.com":
                 document.querySelector('[data-id="play-pause"]') && document.querySelector('[data-id="play-pause"]').click();
                 break;
+
+            case "music.yandex.ru":
+                document.querySelector('.b-jambox__play') && document.querySelector('.b-jambox__play').click();
+                break;
 			/*
 			// farewell old version
 			case "mixcloud.com":
@@ -332,6 +340,10 @@ Provider.prototype.play = function() {
 
             case "play.google.com":
                 document.querySelector('[data-id="play-pause"]') && document.querySelector('[data-id="play-pause"]').click();
+                break;
+
+            case "music.yandex.ru":
+                document.querySelector('.b-jambox__play') && document.querySelector('.b-jambox__play').click();
                 break;
 
 			case "mixcloud.com":
