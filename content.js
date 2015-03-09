@@ -98,14 +98,21 @@ Provider.prototype.__changeState = function (status) {
 };
 
 Provider.prototype.checkStatus = function () {
-    var status;
+    var status, p;
 
     switch(this.host) {
         case "fs.to":
         case "brb.to":
-            var p = document.getElementById('player_api');
-            if (p && p.fp_getState) {
-                status = p.fp_getState() == 3 ? 'playing' : 'paused';
+            if (document.getElementById('player_api')) {
+                p = document.getElementById('player_api');
+                if (p && p.fp_getState) {
+                    status = p.fp_getState() == 3 ? 'playing' : 'paused';
+                }
+            } else if (document.querySelector('.b-aplayer__html5-desktop')) {
+                p = document.querySelector('.b-aplayer__html5-desktop');
+                if (p.play) {
+                    status = p.paused ? 'paused' : 'playing';
+                }
             }
             break;
 
@@ -122,7 +129,7 @@ Provider.prototype.checkStatus = function () {
             break;
 
         case "rutube.ru":
-            var p = document.querySelector('#video-object-container iframe') && document.querySelector('#video-object-container iframe').contentDocument.getElementById('rutubePlayerHolder_flash_api');
+            p = document.querySelector('#video-object-container iframe') && document.querySelector('#video-object-container iframe').contentDocument.getElementById('rutubePlayerHolder_flash_api');
             if (p) {
                 status = p.getPlayerState && p.getPlayerState();
             }
@@ -141,7 +148,7 @@ Provider.prototype.checkStatus = function () {
             break;
 
         case "youtube.com":
-            var p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
+            p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
             if (p.getPlayerState) {
                 status = p.getPlayerState() == 1 ? 'playing' : 'paused';
             } else {
@@ -156,7 +163,7 @@ Provider.prototype.checkStatus = function () {
 
         case "grooveshark.com":
         case "preview.grooveshark.com":
-            var p = document.querySelector('.lightbox-interactionTimeout .submit');
+            p = document.querySelector('.lightbox-interactionTimeout .submit');
             if (p) {
                 p.click();
             }
@@ -200,12 +207,18 @@ Provider.prototype.checkStatus = function () {
 };
 
 Provider.prototype.pause = function () {
+    var p;
     if (this.status == 'playing') {
         switch(this.host) {
             case "fs.to":
             case "brb.to":
-                var p = document.getElementById('player_api');
-                p && p.fp_isPlaying && p.fp_isPlaying() && p.fp_pause && p.fp_pause();
+                if (document.getElementById('player_api')) {
+                    p = document.getElementById('player_api');
+                    p.fp_isPlaying && p.fp_isPlaying() && p.fp_pause && p.fp_pause();
+                } else if (document.querySelector('.b-aplayer__html5-desktop')) {
+                    p = document.querySelector('.b-aplayer__html5-desktop');
+                    p.paused ? null : p.pause();
+                }
                 break;
 
             case "vk.com":
@@ -213,7 +226,7 @@ Provider.prototype.pause = function () {
                 break;
 
             case "ted.com":
-                var p = document.getElementById('streamingPlayerSWF');
+                p = document.getElementById('streamingPlayerSWF');
                 p && p.pauseVideo && p.pauseVideo();
                 break;
 
@@ -222,7 +235,7 @@ Provider.prototype.pause = function () {
                 break;
 
             case "rutube.ru":
-                var p = document.querySelector('#video-object-container iframe') && document.querySelector('#video-object-container iframe').contentDocument.getElementById('rutubePlayerHolder_flash_api');
+                p = document.querySelector('#video-object-container iframe') && document.querySelector('#video-object-container iframe').contentDocument.getElementById('rutubePlayerHolder_flash_api');
                 p && p.pauseVideo && p.pauseVideo();
                 break;
 
@@ -235,7 +248,7 @@ Provider.prototype.pause = function () {
                 break;
 
             case "megogo.net":
-                var p = document.getElementById("playerFrame");
+                p = document.getElementById("playerFrame");
                 p && p.contentDocument && p.contentDocument.getElementById('player_object') && p.contentDocument.getElementById('player_object').megogoPlayerPause && p.contentDocument.getElementById('player_object').megogoPlayerPause();
                 break;
 
@@ -244,7 +257,7 @@ Provider.prototype.pause = function () {
                 break;
 
             case "youtube.com":
-                var p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
+                p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
                 p && p.pauseVideo && p.pauseVideo();                    
                 break;
 
@@ -289,12 +302,18 @@ Provider.prototype.pause = function () {
 };
 
 Provider.prototype.play = function () {
+    var p;
     if (this.status != 'playing') {
         switch(this.host) {
             case "fs.to":
             case "brb.to":
-                var p = document.getElementById('player_api');
-                p && p.fp_isPaused && p.fp_isPaused() && p.fp_play && p.fp_play();
+                if (document.getElementById('player_api')) {
+                    p = document.getElementById('player_api');
+                    p && p.fp_isPaused && p.fp_isPaused() && p.fp_play && p.fp_play();
+                } else if (document.querySelector('.b-aplayer__html5-desktop')) {
+                    p = document.querySelector('.b-aplayer__html5-desktop');
+                    p.paused ? p.play() : null;
+                }
                 break;
 
             case "vk.com":
@@ -302,7 +321,7 @@ Provider.prototype.play = function () {
                 break;
 
             case "ted.com":
-                var p = document.getElementById('streamingPlayerSWF');
+                p = document.getElementById('streamingPlayerSWF');
                 p && p.playVideo && p.playVideo();
                 break;
 
@@ -311,7 +330,7 @@ Provider.prototype.play = function () {
                 break;
 
             case "rutube.ru":
-                var p = document.querySelector('#video-object-container iframe') && document.querySelector('#video-object-container iframe').contentDocument.getElementById('rutubePlayerHolder_flash_api');
+                p = document.querySelector('#video-object-container iframe') && document.querySelector('#video-object-container iframe').contentDocument.getElementById('rutubePlayerHolder_flash_api');
                 p && p.playVideo && p.playVideo();
                 break;
 
@@ -324,7 +343,7 @@ Provider.prototype.play = function () {
                 break;
 
             case "megogo.net":
-                var p = document.getElementById("playerFrame");
+                p = document.getElementById("playerFrame");
                 p && p.contentDocument && p.contentDocument.getElementById('player_object') && p.contentDocument.getElementById('player_object').megogoPlayerResume && p.contentDocument.getElementById('player_object').megogoPlayerResume();
                 break;
 
@@ -333,7 +352,7 @@ Provider.prototype.play = function () {
                 break;
 
             case "youtube.com":
-                var p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
+                p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
                 p && p.playVideo && p.playVideo();
                 break;
 
