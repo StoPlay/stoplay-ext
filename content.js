@@ -148,11 +148,11 @@ Provider.prototype.checkStatus = function () {
             break;
 
         case "youtube.com":
-            p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
+            p = document.getElementById("movie_player");
             if (p.getPlayerState) {
                 status = p.getPlayerState() == 1 ? 'playing' : 'paused';
             } else {
-                status = document.title.indexOf('▶') >= 0 ? 'playing' : 'paused';
+                status = document.getElementById("movie_player") && document.getElementById("movie_player").classList.contains('paused-mode') ? 'paused' : 'playing';
             }
             break;
 
@@ -257,8 +257,12 @@ Provider.prototype.pause = function () {
                 break;
 
             case "youtube.com":
-                p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
-                p && p.pauseVideo && p.pauseVideo();                    
+                p = document.getElementById("movie_player");
+                if (p && p.pauseVideo) {
+                    p.pauseVideo();
+                } else {
+                    document.querySelector('.ytp-button-pause') && document.querySelector('.ytp-button-pause').click();
+                }
                 break;
 
             case "seasonvar.ru":
@@ -353,7 +357,11 @@ Provider.prototype.play = function () {
 
             case "youtube.com":
                 p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
-                p && p.playVideo && p.playVideo();
+                if (p && p.playVideo) {
+                    p.playVideo();
+                } else {
+                    document.querySelector('.ytp-button-play') && document.querySelector('.ytp-button-play').click();
+                }
                 break;
 
             case "seasonvar.ru":
