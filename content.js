@@ -152,7 +152,7 @@ Provider.prototype.checkStatus = function () {
             if (p.getPlayerState) {
                 status = p.getPlayerState() == 1 ? 'playing' : 'paused';
             } else {
-                status = document.getElementById("movie_player") && document.getElementById("movie_player").classList.contains('paused-mode') ? 'paused' : 'playing';
+                status = document.getElementById("movie_player") && document.getElementById("movie_player").classList.contains('playing-mode') ? 'playing' : 'paused';
             }
             break;
 
