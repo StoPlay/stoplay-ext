@@ -3,7 +3,7 @@
   "name": "StoPlay",
   "short_name": "StoPlay",
   "homepage_url": "http://stoplay.github.io/",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": [
     {
       "name": "Alex Karpov",
@@ -19,7 +19,7 @@
       "email": "nffs92@gmail.com"
     }
   ],
-  
+
   "description": "A free Google Chrome extension to stop/play music playing in your web-browser via popular streaming services.",
 
   "icons": {
@@ -51,5 +51,5 @@
          "global": true
      }
   }
-    
+
 }

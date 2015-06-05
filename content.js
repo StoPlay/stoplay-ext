@@ -54,7 +54,7 @@ Provider.prototype.trigger = function (name) {
 
 Provider.prototype.detectProvider = function () {
     this.host = window.location.host.replace('www.', '');
-    
+
     return (this.allowed.indexOf(this.host) >= 0);
 };
 
@@ -89,10 +89,10 @@ Provider.prototype.__changeState = function (status) {
             case "playing":
                 this.trigger( 'start' );
                 break;
-                
+
             case "paused":
                 this.trigger( 'pause' );
-                break;                      
+                break;
         }
     }
 };
@@ -179,7 +179,7 @@ Provider.prototype.checkStatus = function () {
             break;
 
         case "music.yandex.ru":
-            status = document.querySelector('.b-jambox__play').classList.contains('b-jambox__playing') ? 'playing' : 'paused';
+            status = document.querySelector('.player-controls__btn_play').classList.contains('player-controls__btn_pause') ? 'playing' : 'paused';
             break;
         /*
         // farewell old version
@@ -190,9 +190,9 @@ Provider.prototype.checkStatus = function () {
         */
         case "mixcloud.com":
             // beta version, will soon be the main one
-            status = document.querySelector('.player-control') &&   
-                document.querySelector('.player-control')   
-                .classList.contains('pause-state') ? 'playing' : 'paused';  
+            status = document.querySelector('.player-control') &&
+                document.querySelector('.player-control')
+                .classList.contains('pause-state') ? 'playing' : 'paused';
             break;
         case "soundcloud.com":
             status = document.querySelector('.playControl').classList.contains('playing') ? 'playing' : 'paused';
@@ -283,7 +283,7 @@ Provider.prototype.pause = function () {
                 break;
 
             case "music.yandex.ru":
-                document.querySelector('.b-jambox__play') && document.querySelector('.b-jambox__play').click();
+                document.querySelector('.player-controls__btn_pause') && document.querySelector('.player-controls__btn_pause').click();
                 break;
             /*
             // farewell old version
@@ -382,7 +382,7 @@ Provider.prototype.play = function () {
                 break;
 
             case "music.yandex.ru":
-                document.querySelector('.b-jambox__play') && document.querySelector('.b-jambox__play').click();
+                document.querySelector('.player-controls__btn_play') && document.querySelector('.player-controls__btn_play').click();
                 break;
 
             case "mixcloud.com":
