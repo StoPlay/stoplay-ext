@@ -7,7 +7,7 @@ var Provider = function () {
         'vk.com', 'grooveshark.com', 'html5.grooveshark.com', 'youtube.com', 'vimeo.com',
         'muzebra.com', 'pleer.com', 'last.fm', 'fs.to', 'brb.to',
         'rutube.ru', 'ted.com', 'mixcloud.com', 'x.mixcloud.com',
-        'soundcloud.com', 'seasonvar.ru', 'play.google.com', 'music.yandex.ru',
+        'soundcloud.com', 'seasonvar.ru', 'play.google.com', 'music.yandex.ua', 'music.yandex.ru',
         'preview.grooveshark.com', 'v5player.slipstreamradio.com'
         //, 'megogo.net'
     ];
@@ -179,6 +179,7 @@ Provider.prototype.checkStatus = function () {
             break;
 
         case "music.yandex.ru":
+        case "music.yandex.ua":
             status = document.querySelector('.player-controls__btn_play').classList.contains('player-controls__btn_pause') ? 'playing' : 'paused';
             break;
         /*
@@ -283,6 +284,7 @@ Provider.prototype.pause = function () {
                 break;
 
             case "music.yandex.ru":
+            case "music.yandex.ua":
                 document.querySelector('.player-controls__btn_pause') && document.querySelector('.player-controls__btn_pause').click();
                 break;
             /*
@@ -382,6 +384,7 @@ Provider.prototype.play = function () {
                 break;
 
             case "music.yandex.ru":
+            case "music.yandex.ua":
                 document.querySelector('.player-controls__btn_play') && document.querySelector('.player-controls__btn_play').click();
                 break;
 
