@@ -4,11 +4,11 @@ var Provider = function () {
     var _this = this;
 
     this.allowed = [
-        'vk.com', 'grooveshark.com', 'html5.grooveshark.com', 'youtube.com', 'vimeo.com',
+        'vk.com', 'youtube.com', 'vimeo.com',
         'muzebra.com', 'pleer.com', 'last.fm', 'fs.to', 'brb.to',
         'rutube.ru', 'ted.com', 'mixcloud.com', 'x.mixcloud.com',
         'soundcloud.com', 'seasonvar.ru', 'play.google.com', 'music.yandex.ua', 'music.yandex.ru',
-        'preview.grooveshark.com', 'v5player.slipstreamradio.com', 'jazzradio.com'
+        'v5player.slipstreamradio.com', 'jazzradio.com'
         //, 'megogo.net'
     ];
     this.status = 'paused';
@@ -162,15 +162,6 @@ Provider.prototype.checkStatus = function () {
             status = status == 1 ? 'playing' : 'paused';
             break;
 
-        case "grooveshark.com":
-        case "preview.grooveshark.com":
-            status = document.getElementById('play-pause').classList.contains('playing') ? 'playing' : 'paused';
-            break;
-
-        case "html5.grooveshark.com":
-            status = document.querySelector('.little-queue-state') && document.querySelector('.little-queue-state').classList.contains('playing') ? 'playing' : 'paused';
-            break;
-
         case "play.google.com":
             status = document.querySelector('[data-id="play-pause"]').classList.contains('playing') ? 'playing' : 'paused';
             break;
@@ -213,14 +204,6 @@ Provider.prototype.checkAnnoyingLightboxes = function () {
     var modal;
 
     switch (this.host) {
-        case "grooveshark.com":
-        case "preview.grooveshark.com":
-            modal = document.querySelector('.lightbox-interactionTimeout .submit');
-            if (modal) {
-                modal.click();
-            }
-            break;
-
         case "jazzradio.com":
             modal = document.getElementById('modal-region');
 
@@ -292,15 +275,6 @@ Provider.prototype.pause = function () {
 
             case "seasonvar.ru":
                 document.querySelector('#vpcenter object').sendToUppod && document.querySelector('#vpcenter object').sendToUppod('pause');
-                break;
-
-            case "grooveshark.com":
-            case "preview.grooveshark.com":
-                document.querySelector('#play-pause.playing') && document.querySelector('#play-pause.playing').click();
-                break;
-
-            case "html5.grooveshark.com":
-                document.querySelector('.little-queue-state.playing') && document.querySelector('.little-queue-state.playing').click();
                 break;
 
             case "play.google.com":
@@ -395,15 +369,6 @@ Provider.prototype.play = function () {
 
             case "seasonvar.ru":
                 document.querySelector('#vpcenter object').sendToUppod && document.querySelector('#vpcenter object').sendToUppod('play');
-                break;
-
-            case "grooveshark.com":
-            case "preview.grooveshark.com":
-                document.querySelector('#play-pause.paused') && document.querySelector('#play-pause.paused').click();
-                break;
-
-            case "html5.grooveshark.com":
-                document.querySelector('.little-queue-state.paused') && document.querySelector('.little-queue-state.paused').click();
                 break;
 
             case "play.google.com":
