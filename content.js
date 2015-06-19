@@ -8,7 +8,7 @@ var Provider = function () {
         'muzebra.com', 'pleer.com', 'last.fm', 'fs.to', 'brb.to',
         'rutube.ru', 'ted.com', 'mixcloud.com', 'x.mixcloud.com',
         'soundcloud.com', 'seasonvar.ru', 'play.google.com', 'music.yandex.ua', 'music.yandex.ru',
-        'preview.grooveshark.com', 'v5player.slipstreamradio.com'
+        'preview.grooveshark.com', 'v5player.slipstreamradio.com', 'jazzradio.com'
         //, 'megogo.net'
     ];
     this.status = 'paused';
@@ -198,6 +198,11 @@ Provider.prototype.checkStatus = function () {
         case "soundcloud.com":
             status = document.querySelector('.playControl').classList.contains('playing') ? 'playing' : 'paused';
             break;
+        case "jazzradio.com":
+            status = document.querySelector('#now-playing .status') &&
+                document.querySelector('#now-playing .status')
+                .textContent.toLocaleLowerCase() == 'now playing' ? 'playing' : 'paused';
+            break;
         case "v5player.slipstreamradio.com":
             status = document.getElementById('statusLabel') &&
                 document.getElementById('statusLabel')
@@ -299,6 +304,9 @@ Provider.prototype.pause = function () {
             case "soundcloud.com":
                 document.querySelector('.playControl.playing') && document.querySelector('.playControl').click();
                 break;
+            case "jazzradio.com":
+                document.querySelector('#ctl-play > .icon-stop') && document.getElementById('ctl-play').click();
+                break;
             case "v5player.slipstreamradio.com":
                 document.getElementById('pause_button') && document.getElementById('pause_button').click();
                 break;
@@ -393,6 +401,9 @@ Provider.prototype.play = function () {
                 break;
             case "soundcloud.com":
                 document.querySelector('.playControl') && document.querySelector('.playControl').click();
+                break;
+            case "jazzradio.com":
+                document.querySelector('#ctl-play > .icon-play') && document.getElementById('ctl-play').click();
                 break;
             case "v5player.slipstreamradio.com":
                 document.getElementById('play_button') && document.getElementById('play_button').click();
