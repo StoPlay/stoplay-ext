@@ -22,6 +22,7 @@ var Provider = function () {
         this.attachEvents();
         this.interval = setInterval(function () {
             _this.checkStatus();
+            _this.checkAnnoyingLightboxes();
         }, 1500);
     } else {
         return false;
@@ -163,10 +164,6 @@ Provider.prototype.checkStatus = function () {
 
         case "grooveshark.com":
         case "preview.grooveshark.com":
-            p = document.querySelector('.lightbox-interactionTimeout .submit');
-            if (p) {
-                p.click();
-            }
             status = document.getElementById('play-pause').classList.contains('playing') ? 'playing' : 'paused';
             break;
 
@@ -210,6 +207,28 @@ Provider.prototype.checkStatus = function () {
             break;
     }
     this.__changeState(status);
+};
+
+Provider.prototype.checkAnnoyingLightboxes = function () {
+    var modal;
+
+    switch (this.host) {
+        case "grooveshark.com":
+        case "preview.grooveshark.com":
+            modal = document.querySelector('.lightbox-interactionTimeout .submit');
+            if (modal) {
+                modal.click();
+            }
+            break;
+
+        case "jazzradio.com":
+            modal = document.getElementById('modal-region');
+
+            if (modal && modal.style.display == 'block') {
+                modal.querySelector('.close') && modal.querySelector('.close').click();
+            }
+            break;
+    }
 };
 
 Provider.prototype.pause = function () {
