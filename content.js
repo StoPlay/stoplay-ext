@@ -8,7 +8,7 @@ var Provider = function () {
         'muzebra.com', 'pleer.com', 'last.fm', 'fs.to', 'brb.to',
         'rutube.ru', 'ted.com', 'mixcloud.com', 'x.mixcloud.com',
         'soundcloud.com', 'seasonvar.ru', 'play.google.com', 'music.yandex.ua', 'music.yandex.ru',
-        'v5player.slipstreamradio.com', 'jazzradio.com'
+        'v5player.slipstreamradio.com', 'jazzradio.com', 'tunein.com'
         //, 'megogo.net'
     ];
     this.status = 'paused';
@@ -144,6 +144,10 @@ Provider.prototype.checkStatus = function () {
             status = document.querySelector('.play.state-playing') ? 'playing' : 'paused';
             break;
 
+        case "tunein.com":
+            status = document.getElementById('nowPlayingInfo').classList.contains('playing') ? 'playing' : 'paused';
+            break;
+
         case "muzebra.com":
             status = document.querySelector('#player button.play').classList.contains('icon-pause') ? 'playing' : 'paused';
             break;
@@ -255,6 +259,10 @@ Provider.prototype.pause = function () {
                 document.querySelector('.play.state-playing') && document.querySelector('.play.state-playing').click();
                 break;
 
+            case "tunein.com":
+                document.querySelector('#nowPlayingInfo.playing .play-button') && document.querySelector('#nowPlayingInfo.playing .play-button').click();
+                break;
+
             case "megogo.net":
                 p = document.getElementById("playerFrame");
                 p && p.contentDocument && p.contentDocument.getElementById('player_object') && p.contentDocument.getElementById('player_object').megogoPlayerPause && p.contentDocument.getElementById('player_object').megogoPlayerPause();
@@ -347,6 +355,10 @@ Provider.prototype.play = function () {
 
             case "vimeo.com":
                 document.querySelector('.play.state-paused') && document.querySelector('.play.state-paused').click();
+                break;
+
+            case "tunein.com":
+                document.querySelector('#nowPlayingInfo.stopped .play-button') && document.querySelector('#nowPlayingInfo.stopped .play-button').click();
                 break;
 
             case "megogo.net":
