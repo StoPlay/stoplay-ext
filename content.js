@@ -277,7 +277,7 @@ Provider.prototype.pause = function () {
                 if (p && p.pauseVideo) {
                     p.pauseVideo();
                 } else {
-                    document.querySelector('.ytp-button-pause') && document.querySelector('.ytp-button-pause').click();
+                    document.querySelector('.ytp-play-button') && document.querySelector('.ytp-play-button').click();
                 }
                 break;
 
@@ -375,7 +375,7 @@ Provider.prototype.play = function () {
                 if (p && p.playVideo) {
                     p.playVideo();
                 } else {
-                    document.querySelector('.ytp-button-play') && document.querySelector('.ytp-button-play').click();
+                    document.querySelector('.ytp-play-button') && document.querySelector('.ytp-play-button').click();
                 }
                 break;
 
