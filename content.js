@@ -19,7 +19,6 @@ var Provider = function () {
     this.events = {};
 
     this.isIntalled();
-//  this.attachGlobalHotkeys();
 
     if (this.detectProvider()) {
         this.attachEvents();
@@ -83,17 +82,6 @@ Provider.prototype.attachEvents = function () {
         chrome.runtime.sendMessage({action: 'paused'});
     })
 };
-
-//Provider.prototype.attachGlobalHotkeys = function () {
-//  var _this = this;
-//  window.onkeyup = function (e) {
-////         #TODO get key combination from settings and check for it
-//      if (e.ctrlKey && e.which == 220) {
-//          chrome.runtime.sendMessage({action: 'toggle'});
-//          console.log('toggle');
-//      }
-//  }
-//};
 
 Provider.prototype.__changeState = function (status) {
     if (status != this.status) {
@@ -185,15 +173,7 @@ Provider.prototype.checkStatus = function () {
         case "music.yandex.ua":
             status = document.querySelector('.player-controls__btn_play').classList.contains('player-controls__btn_pause') ? 'playing' : 'paused';
             break;
-        /*
-        // farewell old version
         case "mixcloud.com":
-            status = document.getElementById('player-play') &&
-                document.getElementById('player-play')
-                .classList.contains('playing') ? 'playing' : 'paused';
-        */
-        case "mixcloud.com":
-            // beta version, will soon be the main one
             status = document.querySelector('.player-control') &&
                 document.querySelector('.player-control')
                 .classList.contains('pause-state') ? 'playing' : 'paused';
@@ -315,12 +295,6 @@ Provider.prototype.pause = function () {
             case "music.yandex.ua":
                 document.querySelector('.player-controls__btn_pause') && document.querySelector('.player-controls__btn_pause').click();
                 break;
-            /*
-            // farewell old version
-            case "mixcloud.com":
-                document.querySelector('.cc-pause-button').click();
-                break;
-            */
             case "mixcloud.com":
                 document.querySelector('.player-control').click();
                 break;
