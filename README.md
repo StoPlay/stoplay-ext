@@ -10,6 +10,9 @@ popular streaming services.
 
 
 At the moment we fully support (stop and play)
+* Spotify
+* PromoDJ
+* Bandcamp
 * vkontakte
 * Google Music
 * vimeo
