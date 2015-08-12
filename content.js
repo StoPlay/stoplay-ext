@@ -9,7 +9,8 @@ var Provider = function () {
         'rutube.ru', 'ted.com', 'mixcloud.com', 'x.mixcloud.com',
         'soundcloud.com', 'seasonvar.ru', 'play.google.com', 'music.yandex.ua', 'music.yandex.ru',
         'v5player.slipstreamradio.com', 'jazzradio.com', 'tunein.com',
-        'spotify.com', 'play.spotify.com'
+        'spotify.com', 'play.spotify.com',
+        'bandcamp.com'
         //, 'megogo.net'
     ];
     this.status = 'paused';
@@ -56,6 +57,14 @@ Provider.prototype.trigger = function (name) {
 
 Provider.prototype.detectProvider = function () {
     this.host = window.location.host.replace('www.', '');
+
+
+    var clearSubDomains = "";
+    if (this.host.split("bandcamp.com").length > 1) {
+        clearSubDomains = "bandcamp.com";
+    }
+
+    if (clearSubDomains) this.host = clearSubDomains;
 
     return (this.allowed.indexOf(this.host) >= 0);
 };
@@ -205,6 +214,10 @@ Provider.prototype.checkStatus = function () {
             status = document.getElementById('play-pause') &&
                 document.getElementById('play-pause').classList.contains('playing') ? 'playing' : 'paused';
             break;
+        case "bandcamp.com":
+            status = document.querySelector('.inline_player .playbutton') &&
+                document.querySelector('.inline_player .playbutton').classList.contains('playing') ? 'playing' : 'paused';
+            break;
     }
     this.__changeState(status);
 };
@@ -317,7 +330,11 @@ Provider.prototype.pause = function () {
                 document.getElementById('pause_button') && document.getElementById('pause_button').click();
                 break;
             case "play.spotify.com":
-                status = document.getElementById('play-pause') && document.getElementById('play-pause').click();
+                document.getElementById('play-pause') && document.getElementById('play-pause').click();
+                break;
+            case "bandcamp.com":
+                status = document.querySelector('.inline_player .playbutton') &&
+                    document.querySelector('.inline_player .playbutton').click();
                 break;
 
         }
@@ -415,6 +432,10 @@ Provider.prototype.play = function () {
                 break;
             case "play.spotify.com":
                 status = document.getElementById('play-pause') && document.getElementById('play-pause').click();
+                break;
+            case "bandcamp.com":
+                status = document.querySelector('.inline_player .playbutton') &&
+                    document.querySelector('.inline_player .playbutton').click();
                 break;
 
 
