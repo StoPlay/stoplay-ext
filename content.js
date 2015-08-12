@@ -8,7 +8,8 @@ var Provider = function () {
         'muzebra.com', 'pleer.com', 'last.fm', 'fs.to', 'brb.to',
         'rutube.ru', 'ted.com', 'mixcloud.com', 'x.mixcloud.com',
         'soundcloud.com', 'seasonvar.ru', 'play.google.com', 'music.yandex.ua', 'music.yandex.ru',
-        'v5player.slipstreamradio.com', 'jazzradio.com', 'tunein.com'
+        'v5player.slipstreamradio.com', 'jazzradio.com', 'tunein.com',
+        'spotify.com', 'play.spotify.com'
         //, 'megogo.net'
     ];
     this.status = 'paused';
@@ -200,6 +201,10 @@ Provider.prototype.checkStatus = function () {
                 document.getElementById('statusLabel')
                 .textContent.toLocaleLowerCase() == 'playing' ? 'playing' : 'paused';
             break;
+        case "play.spotify.com":
+            status = document.getElementById('play-pause') &&
+                document.getElementById('play-pause').classList.contains('playing') ? 'playing' : 'paused';
+            break;
     }
     this.__changeState(status);
 };
@@ -311,6 +316,10 @@ Provider.prototype.pause = function () {
             case "v5player.slipstreamradio.com":
                 document.getElementById('pause_button') && document.getElementById('pause_button').click();
                 break;
+            case "play.spotify.com":
+                status = document.getElementById('play-pause') && document.getElementById('play-pause').click();
+                break;
+
         }
         this.__changeState('paused');
     }
@@ -404,6 +413,10 @@ Provider.prototype.play = function () {
             case "v5player.slipstreamradio.com":
                 document.getElementById('play_button') && document.getElementById('play_button').click();
                 break;
+            case "play.spotify.com":
+                status = document.getElementById('play-pause') && document.getElementById('play-pause').click();
+                break;
+
 
         }
         this.__changeState('playing');
