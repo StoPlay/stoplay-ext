@@ -333,7 +333,7 @@ Provider.prototype.pause = function () {
                 document.getElementById('play-pause') && document.getElementById('play-pause').click();
                 break;
             case "bandcamp.com":
-                status = document.querySelector('.inline_player .playbutton') &&
+                document.querySelector('.inline_player .playbutton') &&
                     document.querySelector('.inline_player .playbutton').click();
                 break;
 
@@ -431,10 +431,10 @@ Provider.prototype.play = function () {
                 document.getElementById('play_button') && document.getElementById('play_button').click();
                 break;
             case "play.spotify.com":
-                status = document.getElementById('play-pause') && document.getElementById('play-pause').click();
+                document.getElementById('play-pause') && document.getElementById('play-pause').click();
                 break;
             case "bandcamp.com":
-                status = document.querySelector('.inline_player .playbutton') &&
+                document.querySelector('.inline_player .playbutton') &&
                     document.querySelector('.inline_player .playbutton').click();
                 break;
 
