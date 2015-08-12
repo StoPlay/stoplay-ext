@@ -10,7 +10,8 @@ var Provider = function () {
         'soundcloud.com', 'seasonvar.ru', 'play.google.com', 'music.yandex.ua', 'music.yandex.ru',
         'v5player.slipstreamradio.com', 'jazzradio.com', 'tunein.com',
         'spotify.com', 'play.spotify.com',
-        'bandcamp.com'
+        'bandcamp.com',
+        'promodj.com'
         //, 'megogo.net'
     ];
     this.status = 'paused';
@@ -218,6 +219,9 @@ Provider.prototype.checkStatus = function () {
             status = document.querySelector('.inline_player .playbutton') &&
                 document.querySelector('.inline_player .playbutton').classList.contains('playing') ? 'playing' : 'paused';
             break;
+        case "promodj.com":
+            status = document.querySelector('.playerr_bigplaybutton .playerr_bigpausebutton') ? 'playing' : 'paused';
+            break;
     }
     this.__changeState(status);
 };
@@ -336,6 +340,9 @@ Provider.prototype.pause = function () {
                 document.querySelector('.inline_player .playbutton') &&
                     document.querySelector('.inline_player .playbutton').click();
                 break;
+            case "promodj.com":
+                document.querySelector('.playerr_bigplaybutton .playerr_bigpausebutton').click();
+                break;
 
         }
         this.__changeState('paused');
@@ -436,6 +443,9 @@ Provider.prototype.play = function () {
             case "bandcamp.com":
                 document.querySelector('.inline_player .playbutton') &&
                     document.querySelector('.inline_player .playbutton').click();
+                break;
+            case "promodj.com":
+                document.querySelector('.playerr_bigplaybutton .playerr_bigplaybutton').click();
                 break;
 
 
