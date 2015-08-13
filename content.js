@@ -3,32 +3,50 @@
 var Provider = function () {
     var _this = this;
 
-    this.allowed = [
-        'vk.com', 'youtube.com', 'vimeo.com',
-        'muzebra.com', 'pleer.com', 'last.fm', 'fs.to', 'brb.to',
-        'rutube.ru', 'ted.com', 'mixcloud.com', 'x.mixcloud.com',
-        'soundcloud.com', 'seasonvar.ru', 'play.google.com', 'music.yandex.ua', 'music.yandex.ru',
-        'v5player.slipstreamradio.com', 'jazzradio.com', 'tunein.com',
-        'spotify.com', 'play.spotify.com',
-        'bandcamp.com',
-        'promodj.com'
-        //, 'megogo.net'
-    ];
+    this.allowed = [];
+
     this.status = 'paused';
     this.interval = null;
     this.events = {};
 
     this.isIntalled();
 
-    if (this.detectProvider()) {
-        this.attachEvents();
-        this.interval = setInterval(function () {
-            _this.checkStatus();
-            _this.checkAnnoyingLightboxes();
-        }, 1500);
-    } else {
-        return false;
-    }
+    // check if not disabled globally or this very service
+    chrome.storage.sync.get({
+        enabled: true,
+        providers: []
+    }, function(items) {
+        var host = _this.host;
+        var allowed = [];
+        if (items.enabled !== true) {
+            _this.allowed = [];
+            // #TODO change icon to a grey one
+            chrome.browserAction.setIcon({path: '/img/icon128_disabled.png'});
+        }
+
+        // check if any of the providers is disabled
+        items.providers.find(function(el, i) {
+            if (el.enabled === true ) {
+                allowed.push(el.uri);
+            }
+
+            if (i == items.providers.length - 1) {
+                _this.allowed = allowed;
+
+                if (_this.detectProvider()) {
+                    _this.attachEvents();
+                    _this.interval = setInterval(function () {
+                        _this.checkStatus();
+                        _this.checkAnnoyingLightboxes();
+                    }, 1500);
+                } else {
+                    return false;
+                }
+
+            }
+        });
+    });
+
 };
 
 Provider.prototype.isIntalled = function () {
@@ -58,12 +76,10 @@ Provider.prototype.trigger = function (name) {
 Provider.prototype.detectProvider = function () {
     this.host = window.location.host.replace('www.', '');
 
-
     var clearSubDomains = "";
     if (this.host.split("bandcamp.com").length > 1) {
         clearSubDomains = "bandcamp.com";
     }
-
     if (clearSubDomains) this.host = clearSubDomains;
 
     return (this.allowed.indexOf(this.host) >= 0);
@@ -99,7 +115,7 @@ Provider.prototype.__changeState = function (status) {
 
 Provider.prototype.checkStatus = function () {
     var status, p;
-
+    console.log('STOPLAY check status', this.host);
     switch(this.host) {
         case "fs.to":
         case "brb.to":

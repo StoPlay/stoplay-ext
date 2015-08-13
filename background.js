@@ -1,15 +1,30 @@
 /* StoPlay Background JS */
 
 var STOP_ICON = '/img/stop128.png',
-	PLAY_ICON = '/img/icon128.png';
+	PLAY_ICON = '/img/icon128.png',
+	DISABLED_ICON = '/img/icon128_disabled.png';
 
 localStorage.setItem('status', 'silent');
+
+chrome.storage.onChanged.addListener(function(changes, namespace) {
+    for (key in changes) {
+		var storageChange = changes[key];
+
+		if (namespace === "sync" && key === "enabled") {
+			var icon = PLAY_ICON;
+			if (storageChange.newValue !== true) {
+				icon = DISABLED_ICON;
+			}
+			chrome.browserAction.setIcon({path: icon});
+		}
+	}
+});
 
 chrome.browserAction.onClicked.addListener(function(e) {
 	var lastPlayingTabId = parseInt(localStorage.getItem('lastPlayingTabId')),
 		lastPausedTabId = parseInt(localStorage.getItem('lastPausedTabId')),
 		status = localStorage.getItem('status');
-	
+
 	switch(status) {
 		case "playing":
 			if(lastPlayingTabId) {
@@ -41,7 +56,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 				chrome.browserAction.setIcon({path: STOP_ICON});
 
 				break;
-				
+
 			case 'paused':
 				localStorage.setItem('lastPausedTabId', sender.tab.id);
 				localStorage.setItem('status', 'paused');

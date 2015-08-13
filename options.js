@@ -113,21 +113,18 @@ function showStatus(text) {
 
 // Saves options to chrome.storage.sync.
 function save_options() {
-	var enabled = document.querySelector('.is_on input').value;
+	var enabled = document.querySelector('.is_on input').checked;
 
 	chrome.storage.sync.set({
 		enabled: enabled,
 		providers: providersCurrent
 	}, function() {
-		// Update status to let user know options were saved.
 		showStatus("Settings saved.")
 	});
 }
 
-// Restores select box and checkbox state using the preferences
-// stored in chrome.storage.
+// Get options from chrome.storage.sync.
 function restore_options() {
-	// Use default value color = 'red' and likesColor = true.
 	chrome.storage.sync.get({
 		enabled: true,
 		providers: providersDefault
