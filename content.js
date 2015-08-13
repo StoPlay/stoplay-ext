@@ -20,12 +20,14 @@ var Provider = function () {
         var allowed = [];
         if (items.enabled !== true) {
             _this.allowed = [];
-        }
+        }  
+
+        if (!items.providers.length) return;
 
         // check if any of the providers is disabled
-        items.providers.find(function(el, i) {
-            if (el.enabled === true ) {
-                allowed.push(el.uri);
+        for (var i = 0; i < items.providers.length; i++) {
+            if (items.providers[i]['enabled'] === true ) {
+                allowed.push(items.providers[i]['uri']);
             }
 
             if (i == items.providers.length - 1) {
@@ -42,7 +44,8 @@ var Provider = function () {
                 }
 
             }
-        });
+            
+        }
     });
 
 };
