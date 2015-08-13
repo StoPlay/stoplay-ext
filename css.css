@@ -5,7 +5,7 @@
 .logo .help {
 	float: right;
 	padding: 4px;
-	
+
 	background: #18D0EF;
 
 	-webkit-box-sizing: border-box;
@@ -17,16 +17,80 @@
 }
 
 
-.controls {}
+
+.controls {
+	margin: 20px 0;
+}
 .controls .form-group {
 	margin-bottom: 15px;
 }
 .controls .e_select {
+}
+.controls .e_select_toggle_all {
+	float: right;
+	font-size: 12px;
+
+	color: #31708F;
+	border-bottom: 1px dotted currentColor;
+
 }
 .controls .e_select .btn {
 
 }
 .controls .e_select input {
 	position: absolute;
-	visibility: hidden;		
+	visibility: hidden;
 }
+
+#status {
+	display: none;
+	padding: 10px 20px;
+
+	float: right;
+	background: #D9EDF7;
+	color: #31708F;
+	-webkit-border-radius: 10px;
+	        border-radius: 10px;
+}
+
+.list-group {
+	border: 1px solid #ccc;
+	border-top-width: 0;
+	border-radius: 10px;
+}
+.list-group-item {
+	position: relative;
+	border-top: 1px solid #ccc;
+
+	padding: 10px 32px;
+}
+.list-group-item .check {
+	position: absolute;
+    left: 14px;
+}
+.list-group-item .check span {
+	display: none;
+}
+
+.list-group-item:first-child {
+	border-radius: 10px 10px 0 0;
+}
+.list-group-item:last-child {
+	border-radius: 0 0 10px 10px;
+}
+
+
+.list-group-item.active {
+	color: #FFF;
+	background-color: #3E9BCA;
+
+}
+
+.list-group-item.active:before {
+	content: "+";
+	position: absolute;
+	left: 10px;
+
+	display: block;
+}
+

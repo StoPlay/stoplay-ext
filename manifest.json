@@ -39,6 +39,7 @@
 
   "permissions": [
     "tabs",
+    "storage",
     "notifications",
     "http://vk.com/*"
   ],
@@ -51,6 +52,10 @@
          "description": "Stop/Play shortcut",
          "global": true
      }
+  },
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": true
   }
 
 }
