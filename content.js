@@ -20,8 +20,6 @@ var Provider = function () {
         var allowed = [];
         if (items.enabled !== true) {
             _this.allowed = [];
-            // #TODO change icon to a grey one
-            chrome.browserAction.setIcon({path: '/img/icon128_disabled.png'});
         }
 
         // check if any of the providers is disabled
