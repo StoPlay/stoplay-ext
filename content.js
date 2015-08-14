@@ -20,7 +20,7 @@ var Provider = function () {
         var allowed = [];
         if (items.enabled !== true) {
             _this.allowed = [];
-        }  
+        }
 
         if (!items.providers.length) return;
 
@@ -44,7 +44,7 @@ var Provider = function () {
                 }
 
             }
-            
+
         }
     });
 
@@ -116,7 +116,6 @@ Provider.prototype.__changeState = function (status) {
 
 Provider.prototype.checkStatus = function () {
     var status, p;
-    console.log('STOPLAY check status', this.host);
     switch(this.host) {
         case "fs.to":
         case "brb.to":
