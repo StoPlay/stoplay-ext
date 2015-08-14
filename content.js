@@ -161,7 +161,7 @@ Provider.prototype.checkStatus = function () {
             break;
 
         case "tunein.com":
-            status = document.getElementById('nowPlayingInfo').classList.contains('playing') ? 'playing' : 'paused';
+            status = document.getElementById('tuner') && document.getElementById('tuner').classList.contains('playing') ? 'playing' : 'paused';
             break;
 
         case "muzebra.com":
@@ -279,7 +279,7 @@ Provider.prototype.pause = function () {
                 break;
 
             case "tunein.com":
-                document.querySelector('#nowPlayingInfo.playing .play-button') && document.querySelector('#nowPlayingInfo.playing .play-button').click();
+                document.querySelector('#tuner.playing .playbutton-cont') && document.querySelector('#tuner.playing .playbutton-cont').click();
                 break;
 
             case "megogo.net":
@@ -382,7 +382,7 @@ Provider.prototype.play = function () {
                 break;
 
             case "tunein.com":
-                document.querySelector('#nowPlayingInfo.stopped .play-button') && document.querySelector('#nowPlayingInfo.stopped .play-button').click();
+                document.querySelector('#tuner.stopped .playbutton-cont') && document.querySelector('#tuner.stopped .playbutton-cont').click();
                 break;
 
             case "megogo.net":
