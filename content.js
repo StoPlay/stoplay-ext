@@ -133,7 +133,8 @@ Provider.prototype.checkStatus = function () {
             break;
 
         case "vk.com":
-            status = document.getElementById('head_play_btn').classList.contains('playing') ? 'playing' : 'paused';
+            status = document.getElementById('head_play_btn')
+                && document.getElementById('head_play_btn').classList.contains('playing') ? 'playing' : 'paused';
             break;
 
         case "ted.com":
