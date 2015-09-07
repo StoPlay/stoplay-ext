@@ -116,6 +116,7 @@ Provider.prototype.__changeState = function (status) {
 
 Provider.prototype.checkStatus = function () {
     var status, p;
+
     switch(this.host) {
         case "fs.to":
         case "brb.to":
@@ -169,10 +170,13 @@ Provider.prototype.checkStatus = function () {
             break;
 
         case "youtube.com":
-            p = document.getElementById("movie_player");
-            if (p.getPlayerState) {
+            p = document.getElementById("movie_player") || document.querySelector('.html5-video-player');
+
+            if (p && p.getPlayerState) {
                 status = p.getPlayerState() == 1 ? 'playing' : 'paused';
-            } else {
+            } else if (document.querySelector('.html5-main-video')) {
+                status = document.querySelector('.html5-main-video').paused ? 'paused' : 'playing';
+            } else if (document.getElementById("movie_player")) {
                 status = document.getElementById("movie_player") && document.getElementById("movie_player").classList.contains('playing-mode') ? 'playing' : 'paused';
             }
             break;
@@ -292,7 +296,7 @@ Provider.prototype.pause = function () {
                 break;
 
             case "youtube.com":
-                p = document.getElementById("movie_player");
+                p = document.getElementById("movie_player") || document.querySelector('.html5-video-player');
                 if (p && p.pauseVideo) {
                     p.pauseVideo();
                 } else {
