@@ -25,7 +25,8 @@ var providersDefault = [
 	{uri: 'play.spotify.com', enabled: true},
 	{uri: 'bandcamp.com', enabled: true},
 	{uri: 'promodj.com', enabled: true},
-	{uri: 'facebook.com', enabled: true}
+	{uri: 'facebook.com', enabled: true},
+	{uri: 'kickstarter.com', enabled: true}
 ];
 
 var providersCurrent = [];

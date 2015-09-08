@@ -170,6 +170,7 @@ Provider.prototype.checkStatus = function () {
             break;
 
         case "facebook.com":
+        case "kickstarter.com":
             var videos = document.getElementsByTagName('video');
 
             if (videos.length > 0) {
@@ -310,6 +311,7 @@ Provider.prototype.pause = function () {
                 break;
 
             case 'facebook.com':
+            case "kickstarter.com":
                 var videos = document.getElementsByTagName('video');
 
                 for (var i = 0; i < videos.length; i++) {
@@ -423,6 +425,7 @@ Provider.prototype.play = function () {
                 break;
 
             case 'facebook.com':
+            case "kickstarter.com":
                 var videos = document.getElementsByTagName('video');
 
                 for (var i = 0; i < videos.length; i++) {
