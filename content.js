@@ -169,6 +169,20 @@ Provider.prototype.checkStatus = function () {
             status = document.querySelector('#player button.play').classList.contains('icon-pause') ? 'playing' : 'paused';
             break;
 
+        case "facebook.com":
+            var videos = document.getElementsByTagName('video');
+
+            if (videos.length > 0) {
+                status = 'paused';
+
+                for (var i = 0; i < videos.length; i++) {
+                    if (videos[i] && !videos[i].paused) {
+                        status = 'playing';
+                    }
+                }
+            }
+            break;
+
         case "youtube.com":
             p = document.getElementById("movie_player") || document.querySelector('.html5-video-player');
 
@@ -224,7 +238,7 @@ Provider.prototype.checkStatus = function () {
             status = document.querySelector('.playerr_bigplaybutton .playerr_bigpausebutton') ? 'playing' : 'paused';
             break;
     }
-    this.__changeState(status);
+    status && this.__changeState(status);
 };
 
 Provider.prototype.checkAnnoyingLightboxes = function () {
@@ -293,6 +307,16 @@ Provider.prototype.pause = function () {
 
             case "muzebra.com":
                 document.querySelector('#player button.play.icon-pause') && document.querySelector('#player button.play.icon-pause').click();
+                break;
+
+            case 'facebook.com':
+                var videos = document.getElementsByTagName('video');
+
+                for (var i = 0; i < videos.length; i++) {
+                    if (videos[i] && !videos[i].paused) {
+                        videos[i].pause();
+                    }
+                }
                 break;
 
             case "youtube.com":
@@ -396,6 +420,16 @@ Provider.prototype.play = function () {
 
             case "muzebra.com":
                 document.querySelector('#player button.play.icon-play') && document.querySelector('#player button.play.icon-play').click();
+                break;
+
+            case 'facebook.com':
+                var videos = document.getElementsByTagName('video');
+
+                for (var i = 0; i < videos.length; i++) {
+                    if (videos[i] && videos[i].paused && videos[i].played.length > 0) {
+                        videos[i].play();
+                    }
+                }
                 break;
 
             case "youtube.com":
