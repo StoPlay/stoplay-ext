@@ -26,7 +26,8 @@ var providersDefault = [
 	{uri: 'bandcamp.com', enabled: true},
 	{uri: 'promodj.com', enabled: true},
 	{uri: 'facebook.com', enabled: true},
-	{uri: 'kickstarter.com', enabled: true}
+	{uri: 'kickstarter.com', enabled: true},
+	{uri: 'hearthis.at', enabled: true}
 ];
 
 var providersCurrent = [];

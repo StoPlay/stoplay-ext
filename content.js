@@ -238,6 +238,9 @@ Provider.prototype.checkStatus = function () {
         case "promodj.com":
             status = document.querySelector('.playerr_bigplaybutton .playerr_bigpausebutton') ? 'playing' : 'paused';
             break;
+        case "hearthis.at":
+            status = document.body.classList && document.body.classList.contains('play') ? 'playing' : 'paused';
+            break;
     }
     status && this.__changeState(status);
 };
@@ -364,7 +367,14 @@ Provider.prototype.pause = function () {
             case "promodj.com":
                 document.querySelector('.playerr_bigplaybutton .playerr_bigpausebutton').click();
                 break;
+            case "hearthis.at":
+                var script   = document.createElement('script');
+                script.type  = "text/javascript";
+                script.text  = "soundManager.pauseAll();";
 
+                var target = document.getElementsByTagName('script')[0];
+                target.parentNode.insertBefore(script, target);
+                break;
         }
         this.__changeState('paused');
     }
@@ -479,8 +489,14 @@ Provider.prototype.play = function () {
             case "promodj.com":
                 document.querySelector('.playerr_bigplaybutton .playerr_bigplaybutton').click();
                 break;
+            case "hearthis.at":
+                var script   = document.createElement('script');
+                script.type  = "text/javascript";
+                script.text  = "soundManager.resumeAll();";
 
-
+                var target = document.getElementsByTagName('script')[0];
+                target.parentNode.insertBefore(script, target);
+                break;
         }
         this.__changeState('playing');
     }
