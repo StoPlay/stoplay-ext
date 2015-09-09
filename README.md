@@ -60,7 +60,7 @@ To prepare your dev version, see
 [Chrome Dev Getting Started](http://developer.chrome.com/extensions/getstarted.html#unpacked).
 There are also lots of useful info there.
 
-To compile production version run `npm install` and `grunt` and look into the __builds__ folder.
+To compile production version run `npm install` and `grunt` and look into the __builds__ folder. Only run `grunt` on the `master` branch!
 
 # Contributors
 * Alex Karpov ([@endway](https://github.com/endway))
