@@ -56,9 +56,11 @@ service of your choice.
 So fork it right over, add your service support, make pull request and we will
 try to include it in the extension as soon as possible. Check the [existing issues](https://github.com/StoPlay/stoplay-ext/issues).
 
-To compile your dev version, see 
+To prepare your dev version, see 
 [Chrome Dev Getting Started](http://developer.chrome.com/extensions/getstarted.html#unpacked).
 There are also lots of useful info there.
+
+To compile production version run `npm install` and `grunt` and look into the __builds__ folder.
 
 # Contributors
 * Alex Karpov ([@endway](https://github.com/endway))
