@@ -17,6 +17,9 @@ At the moment we fully support (stop and play)
 * Google Music
 * vimeo
 * YouTube
+* Facebook
+* Kickstarter
+* hearthis.at
 * Rutube
 * TED.com
 * FS.to (brb.to)
