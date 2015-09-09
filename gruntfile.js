@@ -13,7 +13,7 @@ module.exports = function(grunt) {
 		tagrelease: '<%= pkg.version %>',
 		zip: {
 			'long-format': {
-				src: ['css/**', 'img/**', '*.js*', '*.css', '*.md', 'LICENSE'],
+				src: ['css/**', 'img/**', '*.js*', '*.css', '*.md', '*.html', 'LICENSE'],
 				dest: 'builds/<%= pkg.name + "-" + pkg.version %>.zip'
 			}
 		}
