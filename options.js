@@ -28,7 +28,8 @@ var providersDefault = [
 	{uri: 'facebook.com', enabled: true},
 	{uri: 'kickstarter.com', enabled: true},
 	{uri: 'hearthis.at', enabled: true},
-	{uri: 'ex.ua', enabled: true}
+	{uri: 'ex.ua', enabled: true},
+	{uri: 'baboom.com', enabled: true}
 ];
 
 var providersCurrent = [];

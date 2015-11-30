@@ -133,6 +133,11 @@ Provider.prototype.checkStatus = function () {
             }
             break;
 
+        case "baboom.com":
+            status = document.querySelector('#player .main-player-view')
+                && document.querySelector('#player .main-player-view').classList.contains('state-playing') ? 'playing' : 'paused';
+            break;
+
         case "ex.ua":
             status = document.querySelector('.vjs-play-control')
                 && document.querySelector('.vjs-play-control').classList.contains('vjs-playing') ? 'playing' : 'paused';
@@ -279,6 +284,11 @@ Provider.prototype.pause = function () {
                 }
                 break;
 
+            case "baboom.com":
+                document.querySelector('#player .main-player-view')
+                    && document.querySelector('#player .main-player-view .btn-ctrl-pause').click();
+                break;
+
             case "ex.ua":
                 document.querySelector('.vjs-play-control')
                     && document.querySelector('.vjs-play-control.vjs-playing').click();
@@ -403,6 +413,11 @@ Provider.prototype.play = function () {
                     p = document.querySelector('.b-aplayer__html5-desktop');
                     p.paused ? p.play() : null;
                 }
+                break;
+
+            case "baboom.com":
+                document.querySelector('#player .main-player-view')
+                    && document.querySelector('#player .main-player-view .btn-ctrl-play').click();
                 break;
 
             case "ex.ua":
