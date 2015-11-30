@@ -41,6 +41,11 @@ a new one (in case if supported, of course).
 Also you can click the pause bar button to stop it.
 ![Click the pause bar button to stop it](http://monosnap.com/image/rv29Wlv8VZfVPlAldgHrhMr5J.png)
 
+## Debugging
+Q: New version seems to have the player support I need, but can't see it in the options. What can I do?
+
+A: Try hitting 'Enable StoPlay' checkbox to turn it off an on. If this doesn't help try resetting settings (button at the bottom).
+
 ## Purpose
 We just needed this feature in the browser.
 When you listen to music online with different services, at times it can be
