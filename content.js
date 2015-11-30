@@ -133,6 +133,11 @@ Provider.prototype.checkStatus = function () {
             }
             break;
 
+        case "ex.ua":
+            status = document.querySelector('.vjs-play-control')
+                && document.querySelector('.vjs-play-control').classList.contains('vjs-playing') ? 'playing' : 'paused';
+            break;
+
         case "vk.com":
             status = document.getElementById('head_play_btn')
                 && document.getElementById('head_play_btn').classList.contains('playing') ? 'playing' : 'paused';
@@ -274,6 +279,11 @@ Provider.prototype.pause = function () {
                 }
                 break;
 
+            case "ex.ua":
+                document.querySelector('.vjs-play-control')
+                    && document.querySelector('.vjs-play-control.vjs-playing').click();
+                break;
+
             case "vk.com":
                 document.querySelector('#gp_play.playing') && document.querySelector('#gp_play.playing').click();
                 break;
@@ -393,6 +403,11 @@ Provider.prototype.play = function () {
                     p = document.querySelector('.b-aplayer__html5-desktop');
                     p.paused ? p.play() : null;
                 }
+                break;
+
+            case "ex.ua":
+                document.querySelector('.vjs-play-control')
+                    && document.querySelector('.vjs-play-control.vjs-paused').click();
                 break;
 
             case "vk.com":

@@ -27,7 +27,8 @@ var providersDefault = [
 	{uri: 'promodj.com', enabled: true},
 	{uri: 'facebook.com', enabled: true},
 	{uri: 'kickstarter.com', enabled: true},
-	{uri: 'hearthis.at', enabled: true}
+	{uri: 'hearthis.at', enabled: true},
+	{uri: 'ex.ua', enabled: true}
 ];
 
 var providersCurrent = [];
@@ -53,6 +54,10 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 		}
 
+	});
+
+	document.querySelector('.e_clear .btn').addEventListener('click', function(e) {
+		chrome.storage.sync.clear();
 	});
 
 });
