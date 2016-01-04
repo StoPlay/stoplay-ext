@@ -31,6 +31,8 @@ At the moment we fully support (stop and play)
 * Seasonvar
 * Yandex.Music
 * TuneIn.com
+* EX.ua
+* Baboom.com
 
 ## How it works
 It just works!
