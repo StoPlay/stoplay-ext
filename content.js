@@ -168,6 +168,7 @@ Provider.prototype.checkStatus = function () {
             break;
 
         case "vimeo.com":
+        case "player.vimeo.com":
             status = document.querySelector('.play.state-playing') ? 'playing' : 'paused';
             break;
 
