@@ -127,6 +127,11 @@ Provider.prototype.checkStatus = function () {
                 }
             } else if (document.querySelector('.b-aplayer__html5-desktop')) {
                 p = document.querySelector('.b-aplayer__html5-desktop');
+                if (p.length > 1) {
+                    p = Array.prototype.filter.call(p, function(el) {
+                        return getComputedStyle(el)['display'] !== 'none';
+                    })[0];
+                }
                 if (p.play) {
                     status = p.paused ? 'paused' : 'playing';
                 }
@@ -281,6 +286,11 @@ Provider.prototype.pause = function () {
                     p.fp_isPlaying && p.fp_isPlaying() && p.fp_pause && p.fp_pause();
                 } else if (document.querySelector('.b-aplayer__html5-desktop')) {
                     p = document.querySelector('.b-aplayer__html5-desktop');
+                    if (p.length > 1) {
+                        p = Array.prototype.filter.call(p, function(el) {
+                            return getComputedStyle(el)['display'] !== 'none';
+                        })[0];
+                    }
                     p.paused ? null : p.pause();
                 }
                 break;
@@ -412,6 +422,11 @@ Provider.prototype.play = function () {
                     p && p.fp_isPaused && p.fp_isPaused() && p.fp_play && p.fp_play();
                 } else if (document.querySelector('.b-aplayer__html5-desktop')) {
                     p = document.querySelector('.b-aplayer__html5-desktop');
+                    if (p.length > 1) {
+                        p = Array.prototype.filter.call(p, function(el) {
+                            return getComputedStyle(el)['display'] !== 'none';
+                        })[0];
+                    }
                     p.paused ? p.play() : null;
                 }
                 break;
