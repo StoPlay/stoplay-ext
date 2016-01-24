@@ -126,7 +126,12 @@ Provider.prototype.checkStatus = function () {
                     status = p.fp_getState() == 3 ? 'playing' : 'paused';
                 }
             } else if (document.querySelector('.b-aplayer__html5-desktop')) {
-                p = document.querySelector('.b-aplayer__html5-desktop');
+                p = document.querySelectorAll('.b-aplayer__html5-desktop');
+                if (p.length > 0) {
+                    p = Array.prototype.filter.call(p, function(el) {
+                        return getComputedStyle(el)['display'] !== 'none';
+                    })[0];
+                }
                 if (p.play) {
                     status = p.paused ? 'paused' : 'playing';
                 }
@@ -280,7 +285,12 @@ Provider.prototype.pause = function () {
                     p = document.getElementById('player_api');
                     p.fp_isPlaying && p.fp_isPlaying() && p.fp_pause && p.fp_pause();
                 } else if (document.querySelector('.b-aplayer__html5-desktop')) {
-                    p = document.querySelector('.b-aplayer__html5-desktop');
+                    p = document.querySelectorAll('.b-aplayer__html5-desktop');
+                    if (p.length > 0) {
+                        p = Array.prototype.filter.call(p, function(el) {
+                            return getComputedStyle(el)['display'] !== 'none';
+                        })[0];
+                    }
                     p.paused ? null : p.pause();
                 }
                 break;
@@ -411,7 +421,12 @@ Provider.prototype.play = function () {
                     p = document.getElementById('player_api');
                     p && p.fp_isPaused && p.fp_isPaused() && p.fp_play && p.fp_play();
                 } else if (document.querySelector('.b-aplayer__html5-desktop')) {
-                    p = document.querySelector('.b-aplayer__html5-desktop');
+                    p = document.querySelectorAll('.b-aplayer__html5-desktop');
+                    if (p.length > 0) {
+                        p = Array.prototype.filter.call(p, function(el) {
+                            return getComputedStyle(el)['display'] !== 'none';
+                        })[0];
+                    }
                     p.paused ? p.play() : null;
                 }
                 break;
