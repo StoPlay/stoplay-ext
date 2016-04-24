@@ -3,6 +3,7 @@
 
 var providersDefault = [
 	{uri: 'vk.com', enabled: true},
+	{uri: 'new.vk.com', enabled: true},
 	{uri: 'youtube.com', enabled: true},
 	{uri: 'vimeo.com', enabled: true},
 	{uri: 'muzebra.com', enabled: true},
