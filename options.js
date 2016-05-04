@@ -131,13 +131,10 @@ function mergeProviders(newItems) {
 		found = false;
 
 	providersDefault.forEach(function(item) {
-		found = false;
-		providersFull.forEach(function(itemNew) {
-			if (itemNew.uri === item.uri) {
-				found = true;
-			}
+		found = providersFull.some(function(itemNew) {
+			return itemNew.uri === item.uri;
 		});
-		if (found === false) {
+		if (!found) {
 			providersFull.push(item);
 		}
 	});
