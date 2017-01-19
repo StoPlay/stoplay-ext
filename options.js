@@ -124,6 +124,25 @@ function showStatus(text) {
 	}, 2000);
 }
 
+// find missing providers and add from defaults
+function mergeProviders(newItems) {
+	if (!newItems) {
+		return;
+	}
+	var providersFull = newItems,
+		found = false;
+
+	providersDefault.forEach(function(item) {
+		found = providersFull.some(function(itemNew) {
+			return itemNew.uri === item.uri;
+		});
+		if (!found) {
+			providersFull.push(item);
+		}
+	});
+	return providersFull;
+}
+
 // Saves options to chrome.storage.sync.
 function save_options() {
 	var enabled = document.querySelector('.is_on input').checked;
@@ -143,8 +162,10 @@ function restore_options() {
 		providers: providersDefault
 	}, function(items) {
 		document.querySelector('.is_on input').checked = items.enabled;
-		console.log('restore options ', providersDefault, items.providers, providersCurrent);
 		providersCurrent = items.providers;
+		if (providersCurrent.length < providersDefault.length) {
+			providersCurrent = mergeProviders(providersCurrent);
+		}
 
 		generateProvidersList();
 	});

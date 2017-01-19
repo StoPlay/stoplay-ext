@@ -22,7 +22,7 @@ var Provider = function () {
     this.interval = null;
     this.events = {};
 
-    this.isIntalled();
+    this.isInstalled();
 
     // check if not disabled globally or this very service
     chrome.storage.sync.get({
@@ -66,7 +66,7 @@ var Provider = function () {
 
 };
 
-Provider.prototype.isIntalled = function () {
+Provider.prototype.isInstalled = function () {
     if (window.location.host.replace('www.', '') == 'stoplay_page.dev'
         || window.location.host.replace('www.', '') == 'stoplay.github.io') {
         document.querySelector("body").className = document.querySelector("body").className + " m_installed";
