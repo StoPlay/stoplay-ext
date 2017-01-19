@@ -6,6 +6,7 @@ var Provider = function () {
     this.allowed = [];
 
     this.status = 'paused';
+    this.playingTitle = '';
     this.interval = null;
     this.events = {};
 
@@ -38,7 +39,10 @@ var Provider = function () {
                     _this.interval = setInterval(function () {
                         _this.checkStatus();
                         _this.checkAnnoyingLightboxes();
-                    }, 1500);
+                    }, 1000);
+                    setInterval(function () {
+                        _this.checkTitle();
+                    }, 10000);
                 } else {
                     return false;
                 }
@@ -89,15 +93,18 @@ Provider.prototype.detectProvider = function () {
 Provider.prototype.attachEvents = function () {
     var _this = this;
 
-    this.on('start', function () {
-        _this.status = 'playing';
-        chrome.runtime.sendMessage({action: 'started'});
-    });
-
-    this.on('pause', function () {
-        _this.status = 'paused';
-        chrome.runtime.sendMessage({action: 'paused'});
-    })
+    this
+        .on('start', function () {
+            _this.status = 'playing';
+            chrome.runtime.sendMessage({action: 'started', title: _this.getTitle()});
+        })
+        .on('pause', function () {
+            _this.status = 'paused';
+            chrome.runtime.sendMessage({action: 'paused'});
+        })
+        .on('updateTitle', function () {
+            chrome.runtime.sendMessage({action: 'updateTitle', title: _this.playingTitle});
+        });
 };
 
 Provider.prototype.__changeState = function (status) {
@@ -111,6 +118,30 @@ Provider.prototype.__changeState = function (status) {
                 this.trigger( 'pause' );
                 break;
         }
+    }
+};
+
+Provider.prototype.getTitle = function () {
+    var title = '';
+
+    switch(this.host) {
+        case "play.google.com":
+            var songName = document.getElementById('currently-playing-title').textContent;
+            var songArtist = document.getElementById('player-artist').textContent;
+
+            title = songArtist + ' - ' + songName;
+            break;
+    }
+
+    return title;
+};
+
+Provider.prototype.checkTitle = function () {
+    var currentTitle = this.getTitle();
+
+    if (currentTitle !== this.playingTitle) {
+        this.playingTitle = currentTitle;
+        this.trigger('updateTitle');
     }
 };
 

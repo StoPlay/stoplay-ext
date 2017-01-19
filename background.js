@@ -47,6 +47,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 	if(request.action && sender.tab) {
 		switch(request.action) {
+			case 'updateTitle':
+				if (request.title) {
+					chrome.browserAction.setTitle({title: "Playing: " + request.title});
+				}
+
+				break;
+
 			case 'started':
 				if(lastPlayingTabId && sender.tab.id != lastPlayingTabId) {
 					chrome.tabs.sendMessage(lastPlayingTabId, {action: 'pause'});
@@ -54,6 +61,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 				localStorage.setItem('lastPlayingTabId', sender.tab.id);
 				localStorage.setItem('status', 'playing');
 				chrome.browserAction.setIcon({path: STOP_ICON});
+
+				if (request.title) {
+					chrome.browserAction.setTitle({title: "Playing: " + request.title});
+				} else {
+					chrome.browserAction.setTitle({title: "Playing: " + sender.tab.title});
+				}
 
 				break;
 
