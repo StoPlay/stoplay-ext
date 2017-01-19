@@ -33,6 +33,7 @@ At the moment we fully support (stop and play)
 * TuneIn.com
 * EX.ua
 * Baboom.com
+* Prometheus.com.ua
 * DailyMotion.com
 
 ## How it works

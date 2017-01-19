@@ -31,6 +31,7 @@ var providersDefault = [
 	{uri: 'ex.ua', enabled: true},
 	{uri: 'baboom.com', enabled: true},
 	{uri: 'player.vimeo.com', enabled: true},
+	{uri: 'courses.prometheus.org.ua', enabled: true},
 	{uri: 'dailymotion.com', enabled: true}
 ];
 

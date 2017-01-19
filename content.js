@@ -322,6 +322,9 @@ Provider.prototype.checkStatus = function () {
         case "hearthis.at":
             status = document.body.classList && document.body.classList.contains('play') ? 'playing' : 'paused';
             break;
+        case "courses.prometheus.org.ua":
+            status = document.querySelector('.video-controls .video_control').classList.contains('pause') ? 'playing' : 'paused';
+            break;
         case "dailymotion.com":
             localStorageState = window.localStorage.getItem('stoplaystate');
             status = localStorageState ? localStorageState : null;
@@ -476,6 +479,13 @@ Provider.prototype.pause = function () {
                 var target = document.getElementsByTagName('script')[0];
                 target.parentNode.insertBefore(script, target);
                 break;
+            case "courses.prometheus.org.ua":
+                var button   = document.querySelector('.video-controls .video_control.pause');
+                
+                if (button) {
+                    button.click();
+                }
+                break;
             case "dailymotion.com":
                 StoPlay.injectScript("window.playerV5.paused ? null : window.playerV5.pause();");
                 break;
@@ -616,9 +626,17 @@ Provider.prototype.play = function () {
                 var target = document.getElementsByTagName('script')[0];
                 target.parentNode.insertBefore(script, target);
                 break;
+            case "courses.prometheus.org.ua":
+                var button   = document.querySelector('.video-controls .video_control.play');
+                
+                if (button) {
+                    button.click();
+                }
+                break;
             case "dailymotion.com":
                 StoPlay.injectScript("window.playerV5.paused ? window.playerV5.play() : null;");
                 break;
+
         }
         this.__changeState('playing');
     }
