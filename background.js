@@ -18,8 +18,14 @@ DataStorage.set = function (name, value) {
 };
 
 var Queue = {};
+Queue.STORAGE_KEY = 'queue';
+
+Queue.get = function () {
+    return DataStorage.get(this.STORAGE_KEY) || [];
+};
+
 Queue.last = function () {
-    return DataStorage.get('queue').slice(-1).pop();
+    return this.get().slice(-1).pop();
 };
 
 Queue.push = function (tabId) {
@@ -27,14 +33,20 @@ Queue.push = function (tabId) {
 
     this.remove(tabId);
     
-    queue = DataStorage.get('queue') || [];
+    queue = this.get();
     queue.push(tabId);
 
-    DataStorage.set('queue', queue);
+    this.save(queue);
 };
 
 Queue.remove = function (tabId) {
-    DataStorage.set('queue', DataStorage.get('queue').filter(function (item) { return item !== tabId; }));
+    var queue = this.get().filter(function (item) { return item !== tabId; })
+
+    this.save(queue);
+};
+
+Queue.save = function (queue) {
+    DataStorage.set(this.STORAGE_KEY, queue);
 };
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
@@ -59,13 +71,13 @@ chrome.browserAction.onClicked.addListener(function(e) {
 
     switch(status) {
         case "playing":
-            if(lastPlayingTabId) {
+            if (lastPlayingTabId) {
                 chrome.tabs.sendMessage(lastPlayingTabId, {action: 'pause'});
             }
             break;
 
         case "paused":
-            if(lastPlayingTabId) {
+            if (lastPlayingTabId) {
                 chrome.tabs.sendMessage(lastPlayingTabId, {action: 'play'});
             }
             break;
