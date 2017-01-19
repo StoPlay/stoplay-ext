@@ -22,7 +22,7 @@ var Provider = function () {
     this.interval = null;
     this.events = {};
 
-    this.isIntalled();
+    this.isInstalled();
 
     // check if not disabled globally or this very service
     chrome.storage.sync.get({
@@ -66,7 +66,7 @@ var Provider = function () {
 
 };
 
-Provider.prototype.isIntalled = function () {
+Provider.prototype.isInstalled = function () {
     if (window.location.host.replace('www.', '') == 'stoplay_page.dev'
         || window.location.host.replace('www.', '') == 'stoplay.github.io') {
         document.querySelector("body").className = document.querySelector("body").className + " m_installed";
@@ -216,6 +216,11 @@ Provider.prototype.checkStatus = function () {
         case "vk.com":
             status = document.getElementById('head_play_btn')
                 && document.getElementById('head_play_btn').classList.contains('playing') ? 'playing' : 'paused';
+            break;
+
+        case "new.vk.com":
+            status = document.querySelector('.top_audio_player')
+                && document.querySelector('.top_audio_player').classList.contains('top_audio_player_playing') ? 'playing' : 'paused';
             break;
 
         case "ted.com":
@@ -382,6 +387,10 @@ Provider.prototype.pause = function () {
                 document.querySelector('#gp_play.playing') && document.querySelector('#gp_play.playing').click();
                 break;
 
+            case "new.vk.com":
+                document.querySelector('.top_audio_player.top_audio_player_playing .top_audio_player_play').click();
+                break;
+
             case "ted.com":
                 p = document.getElementById('streamingPlayerSWF');
                 p && p.pauseVideo && p.pauseVideo();
@@ -526,6 +535,10 @@ Provider.prototype.play = function () {
 
             case "vk.com":
                 document.querySelector('#gp_play:not(.playing)') && document.querySelector('#gp_play:not(.playing)').click();
+                break;
+
+            case "new.vk.com":
+                document.querySelector('.top_audio_player .top_audio_player_play').click();
                 break;
 
             case "ted.com":
