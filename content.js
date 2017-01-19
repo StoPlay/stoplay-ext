@@ -1,5 +1,17 @@
 /* StoPlay Content JS */
 
+var StoPlay = {
+    injectScript: function (scriptText) {
+        var script   = document.createElement('script');
+        script.type  = "text/javascript";
+        script.text  = scriptText;
+
+        var target = document.getElementsByTagName('script')[0];
+        target.parentNode.insertBefore(script, target);
+        return script;
+    }
+}
+
 var Provider = function () {
     var _this = this;
 
@@ -35,7 +47,7 @@ var Provider = function () {
                 _this.allowed = allowed;
 
                 if (_this.detectProvider()) {
-                    _this.attachEvents();
+                    _this.init();
                     _this.interval = setInterval(function () {
                         _this.checkStatus();
                         _this.checkAnnoyingLightboxes();
@@ -65,6 +77,8 @@ Provider.prototype.on = function (name, callback) {
     if (typeof this.events[name] === 'undefined') this.events[name] = [];
 
     this.events[name].push(callback);
+
+    return this;
 };
 
 Provider.prototype.trigger = function (name) {
@@ -142,6 +156,26 @@ Provider.prototype.checkTitle = function () {
     if (currentTitle !== this.playingTitle) {
         this.playingTitle = currentTitle;
         this.trigger('updateTitle');
+    }
+};
+
+Provider.prototype.init = function () {
+    this.attachEvents();
+
+    switch(this.host) {
+        case "dailymotion.com":
+            StoPlay.injectScript(`setInterval(function () {
+                window.playerV5.addEventListener("play", function () {
+                    window.localStorage.setItem('stoplaystate', 'playing');
+                });
+                window.playerV5.addEventListener("pause", function () {
+                    window.localStorage.setItem('stoplaystate', 'paused');
+                });
+                window.playerV5.addEventListener("ended", function () {
+                    window.localStorage.setItem('stoplaystate', 'paused');
+                });
+            }, 200);`);
+            break;
     }
 };
 
@@ -288,7 +322,12 @@ Provider.prototype.checkStatus = function () {
         case "hearthis.at":
             status = document.body.classList && document.body.classList.contains('play') ? 'playing' : 'paused';
             break;
+        case "dailymotion.com":
+            localStorageState = window.localStorage.getItem('stoplaystate');
+            status = localStorageState ? localStorageState : null;
+            break;
     }
+
     status && this.__changeState(status);
 };
 
@@ -437,6 +476,9 @@ Provider.prototype.pause = function () {
                 var target = document.getElementsByTagName('script')[0];
                 target.parentNode.insertBefore(script, target);
                 break;
+            case "dailymotion.com":
+                StoPlay.injectScript("window.playerV5.paused ? null : window.playerV5.pause();");
+                break;
         }
         this.__changeState('paused');
     }
@@ -573,6 +615,9 @@ Provider.prototype.play = function () {
 
                 var target = document.getElementsByTagName('script')[0];
                 target.parentNode.insertBefore(script, target);
+                break;
+            case "dailymotion.com":
+                StoPlay.injectScript("window.playerV5.paused ? window.playerV5.play() : null;");
                 break;
         }
         this.__changeState('playing');

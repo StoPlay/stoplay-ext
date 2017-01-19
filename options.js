@@ -30,7 +30,8 @@ var providersDefault = [
 	{uri: 'hearthis.at', enabled: true},
 	{uri: 'ex.ua', enabled: true},
 	{uri: 'baboom.com', enabled: true},
-	{uri: 'player.vimeo.com', enabled: true}
+	{uri: 'player.vimeo.com', enabled: true},
+	{uri: 'dailymotion.com', enabled: true}
 ];
 
 var providersCurrent = [];
