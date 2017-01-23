@@ -6,8 +6,52 @@ var STOP_ICON = '/img/stop128.png',
 
 localStorage.setItem('status', 'silent');
 
+var DataStorage = {};
+DataStorage.storage = localStorage;
+DataStorage.get = function (name) {
+	var value = this.storage.getItem(name);
+
+	return value ? JSON.parse(value) : false;
+};
+DataStorage.set = function (name, value) {
+	this.storage.setItem(name, JSON.stringify(value));
+};
+
+var Queue = {};
+Queue.STORAGE_KEY = 'queue';
+
+Queue.get = function () {
+	return DataStorage.get(this.STORAGE_KEY) || [];
+};
+
+Queue.last = function () {
+	return this.get().slice(-1).pop();
+};
+
+Queue.push = function (tabId) {
+	var queue;
+
+	this.remove(tabId);
+	
+	queue = this.get();
+	queue.push(tabId);
+
+	this.save(queue);
+};
+
+Queue.remove = function (tabId) {
+	var queue = this.get().filter(function (item) { return item !== tabId; })
+
+	this.save(queue);
+};
+
+Queue.save = function (queue) {
+	DataStorage.set(this.STORAGE_KEY, queue);
+};
+
 chrome.storage.onChanged.addListener(function(changes, namespace) {
-    for (key in changes) {
+	var key;
+	for (key in changes) {
 		var storageChange = changes[key];
 
 		if (namespace === "sync" && key === "enabled") {
@@ -27,13 +71,13 @@ chrome.browserAction.onClicked.addListener(function(e) {
 
 	switch(status) {
 		case "playing":
-			if(lastPlayingTabId) {
+			if (lastPlayingTabId) {
 				chrome.tabs.sendMessage(lastPlayingTabId, {action: 'pause'});
 			}
 			break;
 
 		case "paused":
-			if(lastPlayingTabId) {
+			if (lastPlayingTabId) {
 				chrome.tabs.sendMessage(lastPlayingTabId, {action: 'play'});
 			}
 			break;
@@ -60,6 +104,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 				}
 				localStorage.setItem('lastPlayingTabId', sender.tab.id);
 				localStorage.setItem('status', 'playing');
+				Queue.push(sender.tab.id);
 				chrome.browserAction.setIcon({path: STOP_ICON});
 
 				if (request.title) {
@@ -89,22 +134,24 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 chrome.commands.onCommand.addListener(function(command) {
-    var lastPlayingTabId = parseInt(localStorage.getItem('lastPlayingTabId')),
-        lastPausedTabId = parseInt(localStorage.getItem('lastPausedTabId')),
-        status = localStorage.getItem('status');
-    if(lastPlayingTabId) {
-        var action = (status == 'playing') ? 'pause' : 'play';
-        chrome.tabs.sendMessage(lastPlayingTabId, {action: action});
-    }
+	var lastPlayingTabId = parseInt(localStorage.getItem('lastPlayingTabId')),
+		lastPausedTabId = parseInt(localStorage.getItem('lastPausedTabId')),
+		status = localStorage.getItem('status');
+	if(lastPlayingTabId) {
+		var action = (status == 'playing') ? 'pause' : 'play';
+		chrome.tabs.sendMessage(lastPlayingTabId, {action: action});
+	}
 });
 chrome.tabs.onRemoved.addListener(function(tabId){
 	var lastPlayingTabId = parseInt(localStorage.getItem('lastPlayingTabId')),
 		lastPausedTabId = parseInt(localStorage.getItem('lastPausedTabId'));
 
+	Queue.remove(tabId);
 	if(tabId == lastPlayingTabId) {
 		localStorage.setItem('lastPlayingTabId', null);
-		if(lastPausedTabId != tabId) {
-			chrome.tabs.sendMessage(lastPausedTabId, {action: 'play'});
+		resumeTabId = Queue.last();
+		if (resumeTabId) {
+			chrome.tabs.sendMessage(resumeTabId, {action: 'play'});
 		}
 	}
 });
