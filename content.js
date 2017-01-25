@@ -29,42 +29,42 @@ var Provider = function () {
         enabled: true,
         providers: []
     }, function(items) {
-        var host = _this.host;
-        var allowed = [];
-        if (items.enabled !== true) {
-            _this.allowed = [];
-        }
-
-        if (!items.providers.length) return;
-
-        // check if any of the providers is disabled
-        for (var i = 0; i < items.providers.length; i++) {
-            if (items.providers[i]['enabled'] === true ) {
-                allowed.push(items.providers[i]['uri']);
-            }
-
-            if (i == items.providers.length - 1) {
-                _this.allowed = allowed;
-
-                if (_this.detectProvider()) {
-                    _this.init();
-                    _this.interval = setInterval(function () {
-                        _this.checkStatus();
-                        _this.checkAnnoyingLightboxes();
-                    }, 1000);
-                    setInterval(function () {
-                        _this.checkTitle();
-                    }, 10000);
-                } else {
-                    return false;
-                }
-
-            }
-
+        console.log("STOPLAY", items);
+        if (items.enabled === true) {
+            _this._parseAllowedProviders.call(_this, items.providers);
         }
     });
 
 };
+
+Provider.prototype._parseAllowedProviders = function(providers) {
+    console.log("STOPLAY providers", providers);
+    if (!providers.length) return;
+    var allowed = [];
+    // check if any of the providers is disabled
+    for (var i = 0; i < providers.length; i++) {
+        if (providers[i]['enabled'] === true ) {
+            allowed.push(providers[i]['uri']);
+        }
+
+        if (i == providers.length - 1) {
+            this.allowed = allowed;
+
+            if (this.detectProvider()) {
+                this.init();
+                this.interval = setInterval(function () {
+                    this.checkStatus();
+                    this.checkAnnoyingLightboxes();
+                }.bind(this), 1000);
+                setInterval(this.checkTitle, 10000);
+            } else {
+                return false;
+            }
+
+        }
+
+    }
+}
 
 Provider.prototype.isInstalled = function () {
     if (window.location.host.replace('www.', '') == 'stoplay_page.dev'
