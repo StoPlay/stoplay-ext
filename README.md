@@ -70,7 +70,13 @@ There are also lots of useful info there.
 
 To compile production version run `npm install` and `grunt build` and look into the __builds__ folder. Only run `grunt build` on the `master` branch!
 
-Git flow is simple - all features/bugfixes in separate branches, merge to master. Remote branches after merge to master should be killed.
+Git flow is simple:
+* all features/bugfixes in separate branches
+* then push the branch and create a pull-request
+* assign someone from the team to the pull-request
+* after reviewing, it will be merged to master and eventually released
+
+Remote branches after merge to master should be killed.
 
 # Contributors
 * Alex Karpov ([@endway](https://github.com/endway))
