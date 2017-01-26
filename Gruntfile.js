@@ -34,6 +34,7 @@ module.exports = function(grunt) {
         grunt.task.run('zip');     // Compress an archive
     });
 
-    grunt.registerTask('default', ['makeRelease']);
+    grunt.registerTask('default', []);
+    grunt.registerTask('build', ['makeRelease']);
     grunt.registerTask('pack', ['zip']);
 }

@@ -3,7 +3,6 @@ StoPlay Chrome Extension
 
 Google Chrome extension to stop/play music playing in your web-browser via
 popular streaming services.
-[![Pledgie Button](https://pledgie.com/campaigns/26208.png?skin_name=chrome)](https://pledgie.com/campaigns/26208 )
 
 **These are source files, for actual working extension please visit
 [Chrome webstore](http://bit.ly/stoplay).**
@@ -69,7 +68,7 @@ To prepare your dev version, see
 [Chrome Dev Getting Started](http://developer.chrome.com/extensions/getstarted.html#unpacked).
 There are also lots of useful info there.
 
-To compile production version run `npm install` and `grunt` and look into the __builds__ folder. Only run `grunt` on the `master` branch!
+To compile production version run `npm install` and `grunt build` and look into the __builds__ folder. Only run `grunt build` on the `master` branch!
 
 Git flow is simple - all features/bugfixes in separate branches, merge to master. Remote branches after merge to master should be killed.
 
