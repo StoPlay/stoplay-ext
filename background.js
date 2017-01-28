@@ -8,7 +8,6 @@ var STOP_ICON = '/img/stop128.png',
 var version = chrome.app.getDetails().version;
 
 var providersDefault = [
-	{uri: 'thevk2.com', enabled: true},
 	{uri: 'vk.com', enabled: true},
 	{uri: 'new.vk.com', enabled: true},
 	{uri: 'youtube.com', enabled: true},
