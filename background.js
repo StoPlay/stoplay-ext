@@ -1,10 +1,14 @@
 /* StoPlay Background JS */
+"use strict";
 
 var STOP_ICON = '/img/stop128.png',
 	PLAY_ICON = '/img/icon128.png',
 	DISABLED_ICON = '/img/icon128_disabled.png';
 
+var version = chrome.app.getDetails().version;
+
 var providersDefault = [
+	{uri: 'thevk2.com', enabled: true},
 	{uri: 'vk.com', enabled: true},
 	{uri: 'new.vk.com', enabled: true},
 	{uri: 'youtube.com', enabled: true},
@@ -39,23 +43,74 @@ var providersDefault = [
 	{uri: 'dailymotion.com', enabled: true}
 ];
 
-localStorage.setItem('status', 'silent');
+var DataStorage = {};
+DataStorage.storage = localStorage;
+DataStorage.get = function (name) {
+    var value = this.storage.getItem(name);
 
-// first run
-if (!localStorage.getItem('providersDefault')) {
-	localStorage.setItem('providersDefault', JSON.stringify(providersDefault));
-	console.log('STOPLAY first_run');
+    return value ? JSON.parse(value) : false;
+};
+DataStorage.set = function (name, value) {
+    this.storage.setItem(name, JSON.stringify(value));
+};
 
-	chrome.storage.sync.set({
-		providers: providersDefault
-	}, function() {
+
+function saveVersionAndProviders(providers) {
+	if (!providers) {
+		providers = providersDefault;
+	}
+	DataStorage.set('version', version);
+	DataStorage.set('providersDefault', providers);	
+}
+function saveToOptions(dataObject) {
+	chrome.storage.sync.set(dataObject, function() {
 		console.log('STOPLAY providersDefault saved');
 	});
+}
 
+function onFirstRun() {
+	console.log('STOPLAY first_run');
+	saveVersionAndProviders();
+	saveToOptions({providers: providersDefault});
+}
+
+// find missing providers and add from defaults
+function mergeProviders(oldItems) {
+	if (!oldItems) {
+		return;
+	}
+	var providersFull = oldItems,
+		found = false;
+
+	providersDefault.forEach(function(itemDefault) {
+		// looking if any of the new items have appeared
+		// in older version of settings
+		found = oldItems.some(function(itemOld) {
+			return itemOld.uri === itemDefault.uri;
+		});
+		// if not found, add it
+		if (!found) {
+			providersFull.push(itemDefault);
+		}
+	});
+	return providersFull;
+}
+
+DataStorage.set('status', 'silent');
+
+if (!DataStorage.get('providersDefault')) {
+	onFirstRun();
+} else {
+	if (DataStorage.get('version') != version) {
+		var oldProviders = DataStorage.get('providersDefault');
+		var fullProviders = mergeProviders(oldProviders);
+		saveVersionAndProviders(fullProviders);
+		saveToOptions({providers: fullProviders});
+	}
 }
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
-    for (key in changes) {
+    for (var key in changes) {
 		var storageChange = changes[key];
 
 		if (namespace === "sync" && key === "enabled") {
@@ -69,9 +124,9 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 });
 
 chrome.browserAction.onClicked.addListener(function(e) {
-	var lastPlayingTabId = parseInt(localStorage.getItem('lastPlayingTabId')),
-		lastPausedTabId = parseInt(localStorage.getItem('lastPausedTabId')),
-		status = localStorage.getItem('status');
+	var lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId')),
+		lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId')),
+		status = DataStorage.get('status');
 
 	switch(status) {
 		case "playing":
@@ -89,9 +144,9 @@ chrome.browserAction.onClicked.addListener(function(e) {
 })
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-	var lastPlayingTabId = parseInt(localStorage.getItem('lastPlayingTabId')),
-		lastPausedTabId = parseInt(localStorage.getItem('lastPausedTabId')),
-		status = localStorage.getItem('status');
+	var lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId')),
+		lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId')),
+		status = DataStorage.get('status');
 
 	if(request.action && sender.tab) {
 		switch(request.action) {
@@ -106,8 +161,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 				if(lastPlayingTabId && sender.tab.id != lastPlayingTabId) {
 					chrome.tabs.sendMessage(lastPlayingTabId, {action: 'pause'});
 				}
-				localStorage.setItem('lastPlayingTabId', sender.tab.id);
-				localStorage.setItem('status', 'playing');
+				DataStorage.set('lastPlayingTabId', sender.tab.id);
+				DataStorage.set('status', 'playing');
 				chrome.browserAction.setIcon({path: STOP_ICON});
 
 				if (request.title) {
@@ -119,8 +174,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 				break;
 
 			case 'paused':
-				localStorage.setItem('lastPausedTabId', sender.tab.id);
-				localStorage.setItem('status', 'paused');
+				DataStorage.set('lastPausedTabId', sender.tab.id);
+				DataStorage.set('status', 'paused');
 				chrome.browserAction.setIcon({path: PLAY_ICON});
 				chrome.browserAction.setTitle({title: "StoPlay" });
 				break;
@@ -137,20 +192,20 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 chrome.commands.onCommand.addListener(function(command) {
-    var lastPlayingTabId = parseInt(localStorage.getItem('lastPlayingTabId')),
-        lastPausedTabId = parseInt(localStorage.getItem('lastPausedTabId')),
-        status = localStorage.getItem('status');
+    var lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId')),
+        lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId')),
+        status = DataStorage.get('status');
     if(lastPlayingTabId) {
         var action = (status == 'playing') ? 'pause' : 'play';
         chrome.tabs.sendMessage(lastPlayingTabId, {action: action});
     }
 });
 chrome.tabs.onRemoved.addListener(function(tabId){
-	var lastPlayingTabId = parseInt(localStorage.getItem('lastPlayingTabId')),
-		lastPausedTabId = parseInt(localStorage.getItem('lastPausedTabId'));
+	var lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId')),
+		lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId'));
 
 	if(tabId == lastPlayingTabId) {
-		localStorage.setItem('lastPlayingTabId', null);
+		DataStorage.set('lastPlayingTabId', null);
 		if(lastPausedTabId != tabId) {
 			chrome.tabs.sendMessage(lastPausedTabId, {action: 'play'});
 		}

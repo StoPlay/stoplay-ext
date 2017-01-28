@@ -1,8 +1,6 @@
 // options
 "use strict";
 
-var providersDefaultRaw = localStorage.getItem('providersDefault');
-var providersDefault = JSON.parse(providersDefaultRaw);
 var providersCurrent = [];
 var toggler = true;
 
@@ -91,25 +89,6 @@ function showStatus(text) {
 	}, 2000);
 }
 
-// find missing providers and add from defaults
-function mergeProviders(newItems) {
-	if (!newItems) {
-		return;
-	}
-	var providersFull = newItems,
-		found = false;
-
-	providersDefault.forEach(function(item) {
-		found = providersFull.some(function(itemNew) {
-			return itemNew.uri === item.uri;
-		});
-		if (!found) {
-			providersFull.push(item);
-		}
-	});
-	return providersFull;
-}
-
 // Saves options to chrome.storage.sync.
 function save_options() {
 	var enabled = document.querySelector('.is_on input').checked;
@@ -126,13 +105,10 @@ function save_options() {
 function restore_options() {
 	chrome.storage.sync.get({
 		enabled: true,
-		providers: providersDefault
+		providers: providersCurrent
 	}, function(items) {
 		document.querySelector('.is_on input').checked = items.enabled;
 		providersCurrent = items.providers;
-		if (providersCurrent.length < providersDefault.length) {
-			providersCurrent = mergeProviders(providersCurrent);
-		}
 
 		generateProvidersList();
 	});
