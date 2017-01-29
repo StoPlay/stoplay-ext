@@ -1,41 +1,6 @@
 // options
 "use strict";
 
-var providersDefault = [
-	{uri: 'vk.com', enabled: true},
-	{uri: 'new.vk.com', enabled: true},
-	{uri: 'youtube.com', enabled: true},
-	{uri: 'vimeo.com', enabled: true},
-	{uri: 'muzebra.com', enabled: true},
-	{uri: 'pleer.com', enabled: true},
-	{uri: 'last.fm', enabled: true},
-	{uri: 'fs.to', enabled: true},
-	{uri: 'brb.to', enabled: true},
-	{uri: 'rutube.ru', enabled: true},
-	{uri: 'ted.com', enabled: true},
-	{uri: 'mixcloud.com', enabled: true},
-	{uri: 'soundcloud.com', enabled: true},
-	{uri: 'seasonvar.ru', enabled: true},
-	{uri: 'play.google.com', enabled: true},
-	{uri: 'music.yandex.ua', enabled: true},
-	{uri: 'music.yandex.ru', enabled: true},
-	{uri: 'v5player.slipstreamradio.com', enabled: true},
-	{uri: 'jazzradio.com', enabled: true},
-	{uri: 'tunein.com', enabled: true},
-	{uri: 'spotify.com', enabled: true},
-	{uri: 'play.spotify.com', enabled: true},
-	{uri: 'bandcamp.com', enabled: true},
-	{uri: 'promodj.com', enabled: true},
-	{uri: 'facebook.com', enabled: true},
-	{uri: 'kickstarter.com', enabled: true},
-	{uri: 'hearthis.at', enabled: true},
-	{uri: 'ex.ua', enabled: true},
-	{uri: 'baboom.com', enabled: true},
-	{uri: 'player.vimeo.com', enabled: true},
-	{uri: 'courses.prometheus.org.ua', enabled: true},
-	{uri: 'dailymotion.com', enabled: true}
-];
-
 var providersCurrent = [];
 var toggler = true;
 
@@ -124,25 +89,6 @@ function showStatus(text) {
 	}, 2000);
 }
 
-// find missing providers and add from defaults
-function mergeProviders(newItems) {
-	if (!newItems) {
-		return;
-	}
-	var providersFull = newItems,
-		found = false;
-
-	providersDefault.forEach(function(item) {
-		found = providersFull.some(function(itemNew) {
-			return itemNew.uri === item.uri;
-		});
-		if (!found) {
-			providersFull.push(item);
-		}
-	});
-	return providersFull;
-}
-
 // Saves options to chrome.storage.sync.
 function save_options() {
 	var enabled = document.querySelector('.is_on input').checked;
@@ -159,13 +105,10 @@ function save_options() {
 function restore_options() {
 	chrome.storage.sync.get({
 		enabled: true,
-		providers: providersDefault
+		providers: providersCurrent
 	}, function(items) {
 		document.querySelector('.is_on input').checked = items.enabled;
 		providersCurrent = items.providers;
-		if (providersCurrent.length < providersDefault.length) {
-			providersCurrent = mergeProviders(providersCurrent);
-		}
 
 		generateProvidersList();
 	});
