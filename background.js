@@ -39,7 +39,8 @@ var providersDefault = [
 	{uri: 'baboom.com', enabled: true},
 	{uri: 'player.vimeo.com', enabled: true},
 	{uri: 'courses.prometheus.org.ua', enabled: true},
-	{uri: 'dailymotion.com', enabled: true}
+	{uri: 'dailymotion.com', enabled: true},
+	{uri: 'coursera.org', enabled: true}
 ];
 
 var DataStorage = {};

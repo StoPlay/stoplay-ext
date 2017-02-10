@@ -20,6 +20,7 @@ var Provider = function () {
     this.status = 'paused';
     this.playingTitle = '';
     this.interval = null;
+    this.checkTitleInterval = null;
     this.events = {};
 
     this.isInstalled();
@@ -29,7 +30,6 @@ var Provider = function () {
         enabled: true,
         providers: []
     }, function(items) {
-        console.log("STOPLAY", items);
         if (items.enabled === true) {
             _this._parseAllowedProviders.call(_this, items.providers);
         }
@@ -38,7 +38,6 @@ var Provider = function () {
 };
 
 Provider.prototype._parseAllowedProviders = function(providers) {
-    console.log("STOPLAY providers", providers);
     if (!providers.length) return;
     var allowed = [];
     // check if any of the providers is disabled
@@ -56,7 +55,7 @@ Provider.prototype._parseAllowedProviders = function(providers) {
                     this.checkStatus();
                     this.checkAnnoyingLightboxes();
                 }.bind(this), 1000);
-                setInterval(this.checkTitle, 10000);
+                this.checkTitleInterval = setInterval(this.checkTitle.bind(this), 10000);
             } else {
                 return false;
             }
@@ -334,7 +333,11 @@ Provider.prototype.checkStatus = function () {
             localStorageState = window.localStorage.getItem('stoplaystate');
             status = localStorageState ? localStorageState : null;
             break;
-    }
+         case "coursera.org":
+            var selector = document.querySelector('.c-video-control.vjs-control');
+            status = selector && selector.classList.contains('vjs-playing') ? 'playing' : 'paused';
+            break;
+   }
 
     status && this.__changeState(status);
 };
@@ -498,7 +501,13 @@ Provider.prototype.pause = function () {
             case "dailymotion.com":
                 StoPlay.injectScript("window.playerV5.paused ? null : window.playerV5.pause();");
                 break;
-        }
+            case "coursera.org":
+                var button = document.querySelector('.c-video-control.vjs-control.vjs-playing');
+                if (button) {
+                    button.click();
+                }
+                break;
+       }
         this.__changeState('paused');
     }
 };
@@ -648,6 +657,12 @@ Provider.prototype.play = function () {
                 break;
             case "dailymotion.com":
                 StoPlay.injectScript("window.playerV5.paused ? window.playerV5.play() : null;");
+                break;
+            case "coursera.org":
+                var button = document.querySelector('.c-video-control.vjs-control.vjs-paused');
+                if (button) {
+                    button.click();
+                }
                 break;
 
         }
