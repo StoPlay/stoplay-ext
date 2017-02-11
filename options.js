@@ -62,6 +62,7 @@ function generateProvidersList() {
 	providersCurrent.forEach(function(item) {
 		html += providerTpl(item);
 	});
+	console.log('STOPLAY generateProvidersList', providersCurrent.length);
 	document.querySelector('#e_select .list-group').innerHTML = html;
 	attachProviderHandlers();
 }
@@ -70,18 +71,19 @@ function attachProviderHandlers() {
 	var providersList = document.querySelectorAll('.e_select .list-group-item');
 	providersList.forEach(function(item) {
 		item.addEventListener('click', function(e) {
+			console.log('STOPLAY click provider')
 			var obj = e.target;
 
 			toggleClass(obj, 'active');
 
 			providersCurrent = providersCurrent.map(function(el, index) {
-				if (el.uri == obj.dataset.provider) {
+				if (el.uri === obj.dataset.provider) {
 					el.enabled = !el.enabled;
+					console.log('STOPLAY click provider enabled', el.enabled);
 				}
 				return el;
 			});
-
-			save_options();
+			setTimeout(save_options, 0);
 		});
 	});
 }
@@ -124,6 +126,7 @@ function save_options() {
 		enabled: enabled,
 		providers: providersCurrent
 	}, function() {
+		console.log('STOPLAY saved', providersCurrent);
 		showStatus("Settings saved.")
 	});
 }
@@ -134,8 +137,13 @@ function restore_options() {
 		enabled: true,
 		providers: providersCurrent
 	}, function(items) {
+		console.log('STOPLAY options get', items);
 		document.querySelector('.is_on input').checked = items.enabled;
-		providersCurrent = items.providers;
+		if (items.providers.length) {
+			providersCurrent = items.providers;
+		} else {
+			console.log('STOPLAY we have no idea of the options, something is wrong');
+		}
 
 		generateProvidersList();
 	});

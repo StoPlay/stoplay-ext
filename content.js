@@ -31,9 +31,9 @@ var Provider = function () {
         providers: []
     }, function(items) {
         if (items.enabled === true) {
-            _this._parseAllowedProviders.call(_this, items.providers);
+            this._parseAllowedProviders.call(this, items.providers);
         }
-    });
+    }.bind(this));
 
 };
 
@@ -41,27 +41,20 @@ Provider.prototype._parseAllowedProviders = function(providers) {
     if (!providers.length) return;
     var allowed = [];
     // check if any of the providers is disabled
-    for (var i = 0; i < providers.length; i++) {
-        if (providers[i]['enabled'] === true ) {
-            allowed.push(providers[i]['uri']);
+    providers.forEach(function(provider) {
+        if (provider.enabled === true) {
+            allowed.push(provider.uri);
         }
+    });
+    this.allowed = allowed;
 
-        if (i == providers.length - 1) {
-            this.allowed = allowed;
-
-            if (this.detectProvider()) {
-                this.init();
-                this.interval = setInterval(function () {
-                    this.checkStatus();
-                    this.checkAnnoyingLightboxes();
-                }.bind(this), 1000);
-                this.checkTitleInterval = setInterval(this.checkTitle.bind(this), 10000);
-            } else {
-                return false;
-            }
-
-        }
-
+    if (this.detectProvider()) {
+        this.init();
+        this.interval = setInterval(function() {
+            this.checkStatus();
+            this.checkAnnoyingLightboxes();
+        }.bind(this), 1000);
+        this.checkTitleInterval = setInterval(this.checkTitle.bind(this), 10000);
     }
 }
 
@@ -160,7 +153,6 @@ Provider.prototype.checkTitle = function () {
 
 Provider.prototype.init = function () {
     this.attachEvents();
-
     switch(this.host) {
         case "dailymotion.com":
             StoPlay.injectScript(`setInterval(function () {
