@@ -40,12 +40,10 @@ document.addEventListener('DOMContentLoaded', function() {
 			parent.classList.remove('filter_active');
 		}
 
-		console.log('STOPLAY obj_val', obj_val, obj)
 		providersCurrent = providersCurrent.map(function(item, index) {
 			var found = item.uri.indexOf(obj_val) !== -1;
 			delete item.hidden;
 			if (!found) {
-				console.log('STOPLAY filter not found', item.uri);
 				item.hidden = true;
 			}
 			return item;

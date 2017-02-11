@@ -82,10 +82,15 @@ function mergeProviders(oldItems) {
 	var providersFull = oldItems,
 		found = false;
 
+	// remove old providers if they are not supported already
+	var oldItemsClean = oldItems.filter(function(itemOld) {
+		return providersDefault.some(function(item) {return item.uri === itemOld.uri});
+	});
+
 	providersDefault.forEach(function(itemDefault) {
 		// looking if any of the new items have appeared
 		// in older version of settings
-		found = oldItems.some(function(itemOld) {
+		found = oldItemsClean.some(function(itemOld) {
 			return itemOld.uri === itemDefault.uri;
 		});
 		// if not found, add it
@@ -181,7 +186,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 				break;
 
 			case 'toggle':
-				console.log(request.action, lastPlayingTabId);
 				if(lastPlayingTabId) {
 					var action = (status == 'playing') ? 'pause' : 'play';
 					chrome.tabs.sendMessage(lastPlayingTabId, {action: action});
