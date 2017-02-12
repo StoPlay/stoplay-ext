@@ -213,8 +213,11 @@ Provider.prototype.checkStatus = function () {
             break;
 
         case "vk.com":
-            status = document.getElementById('head_play_btn')
-                && document.getElementById('head_play_btn').classList.contains('playing') ? 'playing' : 'paused';
+            var player_obj = document.querySelector('.top_audio_player');
+            if (player_obj) {
+                status = player_obj && player_obj.classList.contains('top_audio_player_playing') ? 'playing' : 'paused';
+            }
+            console.log('StoPlay vk.com status', status);
             break;
 
         case "new.vk.com":
@@ -387,7 +390,7 @@ Provider.prototype.pause = function () {
                 break;
 
             case "vk.com":
-                document.querySelector('#gp_play.playing') && document.querySelector('#gp_play.playing').click();
+                document.querySelector('.top_audio_player_play').click();
                 break;
 
             case "new.vk.com":
@@ -507,7 +510,7 @@ Provider.prototype.pause = function () {
                     button.click();
                 }
                 break;
-       }
+        }
         this.__changeState('paused');
     }
 };
@@ -543,7 +546,7 @@ Provider.prototype.play = function () {
                 break;
 
             case "vk.com":
-                document.querySelector('#gp_play:not(.playing)') && document.querySelector('#gp_play:not(.playing)').click();
+                document.querySelector('.top_audio_player_play').click();
                 break;
 
             case "new.vk.com":
