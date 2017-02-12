@@ -174,34 +174,9 @@ Provider.prototype.checkStatus = function () {
     var status, p;
 
     switch(this.host) {
-        case "fs.to":
-        case "brb.to":
-            if (document.getElementById('player_api')) {
-                p = document.getElementById('player_api');
-                if (p && p.fp_getState) {
-                    status = p.fp_getState() == 3 ? 'playing' : 'paused';
-                }
-            } else if (document.querySelector('.b-aplayer__html5-desktop')) {
-                p = document.querySelectorAll('.b-aplayer__html5-desktop');
-                if (p.length > 0) {
-                    p = Array.prototype.filter.call(p, function(el) {
-                        return getComputedStyle(el)['display'] !== 'none';
-                    })[0];
-                }
-                if (p.play) {
-                    status = p.paused ? 'paused' : 'playing';
-                }
-            }
-            break;
-
         case "baboom.com":
             status = document.querySelector('#player .main-player-view')
                 && document.querySelector('#player .main-player-view').classList.contains('state-playing') ? 'playing' : 'paused';
-            break;
-
-        case "ex.ua":
-            status = document.querySelector('.vjs-play-control')
-                && document.querySelector('.vjs-play-control').classList.contains('vjs-playing') ? 'playing' : 'paused';
             break;
 
         case "vk.com":
@@ -229,7 +204,7 @@ Provider.prototype.checkStatus = function () {
             }
             break;
 
-        case "pleer.com":
+        case "pleer.net":
             status = document.querySelector('#player #play').classList.contains('pause') ? 'playing' : 'paused';
             break;
 
@@ -352,30 +327,9 @@ Provider.prototype.pause = function () {
     var p;
     if (this.status == 'playing') {
         switch(this.host) {
-            case "fs.to":
-            case "brb.to":
-                if (document.getElementById('player_api')) {
-                    p = document.getElementById('player_api');
-                    p.fp_isPlaying && p.fp_isPlaying() && p.fp_pause && p.fp_pause();
-                } else if (document.querySelector('.b-aplayer__html5-desktop')) {
-                    p = document.querySelectorAll('.b-aplayer__html5-desktop');
-                    if (p.length > 0) {
-                        p = Array.prototype.filter.call(p, function(el) {
-                            return getComputedStyle(el)['display'] !== 'none';
-                        })[0];
-                    }
-                    p.paused ? null : p.pause();
-                }
-                break;
-
             case "baboom.com":
                 document.querySelector('#player .main-player-view')
                     && document.querySelector('#player .main-player-view .btn-ctrl-pause').click();
-                break;
-
-            case "ex.ua":
-                document.querySelector('.vjs-play-control')
-                    && document.querySelector('.vjs-play-control.vjs-playing').click();
                 break;
 
             case "vk.com":
@@ -400,7 +354,7 @@ Provider.prototype.pause = function () {
                 p && p.pauseVideo && p.pauseVideo();
                 break;
 
-            case "pleer.com":
+            case "pleer.net":
                 document.querySelector('#player #play.pause') && document.querySelector('#player #play.pause').click();
                 break;
 
@@ -508,30 +462,9 @@ Provider.prototype.play = function () {
     var p;
     if (this.status != 'playing') {
         switch(this.host) {
-            case "fs.to":
-            case "brb.to":
-                if (document.getElementById('player_api')) {
-                    p = document.getElementById('player_api');
-                    p && p.fp_isPaused && p.fp_isPaused() && p.fp_play && p.fp_play();
-                } else if (document.querySelector('.b-aplayer__html5-desktop')) {
-                    p = document.querySelectorAll('.b-aplayer__html5-desktop');
-                    if (p.length > 0) {
-                        p = Array.prototype.filter.call(p, function(el) {
-                            return getComputedStyle(el)['display'] !== 'none';
-                        })[0];
-                    }
-                    p.paused ? p.play() : null;
-                }
-                break;
-
             case "baboom.com":
                 document.querySelector('#player .main-player-view')
                     && document.querySelector('#player .main-player-view .btn-ctrl-play').click();
-                break;
-
-            case "ex.ua":
-                document.querySelector('.vjs-play-control')
-                    && document.querySelector('.vjs-play-control.vjs-paused').click();
                 break;
 
             case "vk.com":
@@ -556,7 +489,7 @@ Provider.prototype.play = function () {
                 p && p.playVideo && p.playVideo();
                 break;
 
-            case "pleer.com":
+            case "pleer.net":
                 document.querySelector('#player #play.play') && document.querySelector('#player #play.play').click();
                 break;
 
