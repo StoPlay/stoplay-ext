@@ -76,7 +76,7 @@ function saveToOptions(dataObject) {
 }
 
 // Get options from chrome.storage.sync.
-function restore_options(callback) {
+function restoreOptions(callback) {
 	chrome.storage.sync.get({
 		enabled: true,
 		providers: providersDefault
@@ -137,7 +137,7 @@ if (!DataStorage.get('version')) {
 } else if (DataStorage.get('version') != version) {
 	// extension updated
 	saveVersion();
-	restore_options(function(providersMerged) {
+	restoreOptions(function(providersMerged) {
 		saveToOptions({providers: providersMerged});
 	});
 }

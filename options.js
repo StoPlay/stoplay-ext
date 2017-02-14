@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	// toggle all
 	document.querySelector('.e_select_toggle_all').addEventListener('click', function(e) {
 		providersCurrent = providersCurrent.map(function(item) {
-			return item.enabled = toggler;
+			item.enabled = toggler;
+			return item;
 		});
 		save_options();
 		generateProvidersList();

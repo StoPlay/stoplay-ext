@@ -40,11 +40,11 @@ var Provider = function () {
 Provider.prototype._parseAllowedProviders = function(providers) {
     if (!providers.length) return;
     var allowed = [];
-    // check if any of the providers is disabled
-    providers.forEach(function(provider) {
-        if (provider.enabled === true) {
-            allowed.push(provider.uri);
-        }
+    allowed = providers.filter(function(provider) {
+        // check if any of the providers is disabled
+        return provider.enabled === true;
+    }).map(function(provider) {
+        return provider.uri;
     });
     this.allowed = allowed;
 
