@@ -6,42 +6,42 @@ var STOP_ICON = '/img/stop128.png',
 	DISABLED_ICON = '/img/icon128_disabled.png';
 
 var version = chrome.app.getDetails().version;
+var debug = false;
 
-var providersDefault = [
-	{uri: 'vk.com', enabled: true},
-	{uri: 'new.vk.com', enabled: true},
-	{uri: 'youtube.com', enabled: true},
-	{uri: 'vimeo.com', enabled: true},
-	{uri: 'muzebra.com', enabled: true},
-	{uri: 'pleer.com', enabled: true},
-	{uri: 'last.fm', enabled: true},
-	{uri: 'fs.to', enabled: true},
-	{uri: 'brb.to', enabled: true},
-	{uri: 'rutube.ru', enabled: true},
-	{uri: 'ted.com', enabled: true},
-	{uri: 'mixcloud.com', enabled: true},
-	{uri: 'soundcloud.com', enabled: true},
-	{uri: 'seasonvar.ru', enabled: true},
-	{uri: 'play.google.com', enabled: true},
-	{uri: 'music.yandex.ua', enabled: true},
-	{uri: 'music.yandex.ru', enabled: true},
-	{uri: 'v5player.slipstreamradio.com', enabled: true},
-	{uri: 'jazzradio.com', enabled: true},
-	{uri: 'tunein.com', enabled: true},
-	{uri: 'spotify.com', enabled: true},
-	{uri: 'play.spotify.com', enabled: true},
-	{uri: 'bandcamp.com', enabled: true},
-	{uri: 'promodj.com', enabled: true},
-	{uri: 'facebook.com', enabled: true},
-	{uri: 'kickstarter.com', enabled: true},
-	{uri: 'hearthis.at', enabled: true},
-	{uri: 'ex.ua', enabled: true},
-	{uri: 'baboom.com', enabled: true},
-	{uri: 'player.vimeo.com', enabled: true},
-	{uri: 'courses.prometheus.org.ua', enabled: true},
-	{uri: 'dailymotion.com', enabled: true},
-	{uri: 'coursera.org', enabled: true}
-];
+var providersList =
+	["vk.com",
+	"new.vk.com",
+	"youtube.com",
+	"vimeo.com",
+	"muzebra.com",
+	"pleer.net",
+	"last.fm",
+	"rutube.ru",
+	"ted.com",
+	"mixcloud.com",
+	"soundcloud.com",
+	"seasonvar.ru",
+	"play.google.com",
+	"music.yandex.ua",
+	"music.yandex.ru",
+	"v5player.slipstreamradio.com",
+	"jazzradio.com",
+	"tunein.com",
+	"spotify.com",
+	"play.spotify.com",
+	"bandcamp.com",
+	"promodj.com",
+	"facebook.com",
+	"kickstarter.com",
+	"hearthis.at",
+	"baboom.com",
+	"player.vimeo.com",
+	"courses.prometheus.org.ua",
+	"dailymotion.com",
+	"coursera.org"];
+var providersDefault = providersList.map(function(item) {
+	return {uri: item, enabled: true};
+});
 
 var DataStorage = {};
 DataStorage.storage = localStorage;
@@ -54,43 +54,76 @@ DataStorage.set = function (name, value) {
     this.storage.setItem(name, JSON.stringify(value));
 };
 
+if (DataStorage.get('debug_mode')) {
+	debug = true;
+}
 
-function saveVersionAndProviders(providers) {
-	if (!providers) {
-		providers = providersDefault;
+function logging() {
+	if (!debug) {
+		return;
 	}
+	console.log.apply(null, arguments);
+}
+
+
+function saveVersion() {
 	DataStorage.set('version', version);
-	DataStorage.set('providersDefault', providers);	
 }
 function saveToOptions(dataObject) {
 	chrome.storage.sync.set(dataObject, function() {
-		console.log('STOPLAY providersDefault saved');
+		logging('STOPLAY saveToOptions saved');
+	});
+}
+
+// Get options from chrome.storage.sync.
+function restoreOptions(callback) {
+	chrome.storage.sync.get({
+		enabled: true,
+		providers: providersDefault
+	}, function(items) {
+		var providersCurrent = mergeProviders(items.providers);
+		if (callback) {
+			callback.call(null, providersCurrent);
+		}
 	});
 }
 
 function onFirstRun() {
-	console.log('STOPLAY first_run');
-	saveVersionAndProviders();
+	logging('STOPLAY first_run');
+	saveVersion();
 	saveToOptions({providers: providersDefault});
 }
 
 // find missing providers and add from defaults
 function mergeProviders(oldItems) {
-	if (!oldItems) {
-		return;
+	if (!Array.isArray(oldItems)) {
+		logging('STOPLAY mergeProviders returning default values');
+		return providersDefault;
 	}
-	var providersFull = oldItems,
-		found = false;
+	logging('STOPLAY mergeProviders', oldItems);
+	var providersFull = [],
+		found = {};
 
-	providersDefault.forEach(function(itemDefault) {
+	// remove old providers if they are not supported already
+	var oldItemsClean = oldItems.filter(function(itemOld) {
+		// if item is not found in providersDefault, then it is obsolete
+		var itemsInBothLists = providersDefault.some(function(item) {
+			return item.uri === itemOld.uri
+		});
+		return itemsInBothLists;
+	});
+
+	providersFull = providersDefault.map(function(itemDefault) {
 		// looking if any of the new items have appeared
 		// in older version of settings
-		found = oldItems.some(function(itemOld) {
+		var found = oldItemsClean.find(function(itemOld) {
 			return itemOld.uri === itemDefault.uri;
 		});
 		// if not found, add it
 		if (!found) {
-			providersFull.push(itemDefault);
+			return itemDefault;
+		} else {
+			return found;
 		}
 	});
 	return providersFull;
@@ -98,15 +131,15 @@ function mergeProviders(oldItems) {
 
 DataStorage.set('status', 'silent');
 
-if (!DataStorage.get('providersDefault')) {
+if (!DataStorage.get('version')) {
+	// first run
 	onFirstRun();
-} else {
-	if (DataStorage.get('version') != version) {
-		var oldProviders = DataStorage.get('providersDefault');
-		var fullProviders = mergeProviders(oldProviders);
-		saveVersionAndProviders(fullProviders);
-		saveToOptions({providers: fullProviders});
-	}
+} else if (DataStorage.get('version') != version) {
+	// extension updated
+	saveVersion();
+	restoreOptions(function(providersMerged) {
+		saveToOptions({providers: providersMerged});
+	});
 }
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
@@ -181,7 +214,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 				break;
 
 			case 'toggle':
-				console.log(request.action, lastPlayingTabId);
 				if(lastPlayingTabId) {
 					var action = (status == 'playing') ? 'pause' : 'play';
 					chrome.tabs.sendMessage(lastPlayingTabId, {action: action});
