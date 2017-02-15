@@ -21,19 +21,18 @@ At the moment we fully support (stop and play)
 * hearthis.at
 * Rutube
 * TED.com
-* FS.to (brb.to)
 * Muzebra
-* Pleer.com
+* Pleer.net (pleer.com)
 * Last.fm (web-version)
 * Soundcloud
 * Mixcloud
 * Seasonvar
 * Yandex.Music
 * TuneIn.com
-* EX.ua
 * Baboom.com
 * Prometheus.com.ua
 * DailyMotion.com
+* coursera.org
 
 ## How it works
 It just works!
