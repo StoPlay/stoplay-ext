@@ -16,14 +16,26 @@ module.exports = function(grunt) {
                 src: ['css/**', 'img/**', '*.js*', '*.css', '*.md', '*.html', 'LICENSE'],
                 dest: 'builds/<%= pkg.name + "-" + pkg.version %>.zip'
             }
+        },
+        ts: {
+            default : {
+                files: [{
+                    src: ["src/content/*.ts", "src/content/**/*.ts", "!node_modules/**"],
+                    dest: "dest/content.js"
+                }],
+                options: {
+                    module: "system",
+                    fast: "never"
+                }
+            }
         }
-
     });
 
     // Loading the plugins
     grunt.loadNpmTasks('grunt-bumpup');
     grunt.loadNpmTasks('grunt-tagrelease');
     grunt.loadNpmTasks('grunt-zip');
+    grunt.loadNpmTasks("grunt-ts");
 
 
     // Alias task for release
@@ -37,4 +49,5 @@ module.exports = function(grunt) {
     grunt.registerTask('default', []);
     grunt.registerTask('build', ['makeRelease']);
     grunt.registerTask('pack', ['zip']);
+    grunt.registerTask('dev', ['ts']);
 }
