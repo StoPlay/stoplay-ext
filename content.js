@@ -192,20 +192,6 @@ Provider.prototype.checkStatus = function () {
                 && document.querySelector('.top_audio_player').classList.contains('top_audio_player_playing') ? 'playing' : 'paused';
             break;
 
-        case "ted.com":
-            var videos = document.getElementsByTagName('video');
-
-            if (videos.length > 0) {
-                status = 'paused';
-
-                for (var i = 0; i < videos.length; i++) {
-                    if (videos[i] && !videos[i].paused) {
-                        status = 'playing';
-                    }
-                }
-            }
-            break;
-
         case "last.fm":
             status = document.getElementById('webRadio').classList.contains('playing') ? 'playing' : 'paused';
             break;
@@ -234,6 +220,7 @@ Provider.prototype.checkStatus = function () {
             status = document.querySelector('#player button.play').classList.contains('icon-pause') ? 'playing' : 'paused';
             break;
 
+        case "ted.com":
         case "facebook.com":
         case "kickstarter.com":
             var videos = document.getElementsByTagName('video');
@@ -353,17 +340,7 @@ Provider.prototype.pause = function () {
                 document.querySelector('.top_audio_player.top_audio_player_playing .top_audio_player_play').click();
                 break;
 
-            case "ted.com":
-                var videos = document.getElementsByTagName('video');
-
-                for (var i = 0; i < videos.length; i++) {
-                    if (videos[i] && !videos[i].paused) {
-                        videos[i].pause();
-                    }
-                }
-                break;
-
-            case "last.fm":
+          case "last.fm":
                 document.querySelector('#radioControlPause a') && document.querySelector('#radioControlPause a').click()
                 break;
 
@@ -393,6 +370,7 @@ Provider.prototype.pause = function () {
                 document.querySelector('#player button.play.icon-pause') && document.querySelector('#player button.play.icon-pause').click();
                 break;
 
+            case "ted.com":
             case 'facebook.com':
             case "kickstarter.com":
                 var videos = document.getElementsByTagName('video');
@@ -493,15 +471,6 @@ Provider.prototype.play = function () {
                 document.querySelector('.top_audio_player .top_audio_player_play').click();
                 break;
 
-            case "ted.com":
-                var videos = document.getElementsByTagName('video');
-                for (var i = 0; i < videos.length; i++) {
-                    if (videos[i] && videos[i].paused && videos[i].played.length > 0) {
-                        videos[i].play();
-                    }
-                }
-                break;
-
             case "last.fm":
                 document.querySelector('#radioControlPlay a') && document.querySelector('#radioControlPlay a').click()
                 break;
@@ -532,6 +501,7 @@ Provider.prototype.play = function () {
                 document.querySelector('#player button.play.icon-play') && document.querySelector('#player button.play.icon-play').click();
                 break;
 
+            case "ted.com":
             case 'facebook.com':
             case "kickstarter.com":
                 var videos = document.getElementsByTagName('video');
