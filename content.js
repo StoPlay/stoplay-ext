@@ -193,7 +193,17 @@ Provider.prototype.checkStatus = function () {
             break;
 
         case "ted.com":
-            status = document.getElementById('streamingPlayerSWF') && document.getElementById('streamingPlayerSWF').isVideoPlaying && document.getElementById('streamingPlayerSWF').isVideoPlaying() ? 'playing' : 'paused';
+            var videos = document.getElementsByTagName('video');
+
+            if (videos.length > 0) {
+                status = 'paused';
+
+                for (var i = 0; i < videos.length; i++) {
+                    if (videos[i] && !videos[i].paused) {
+                        status = 'playing';
+                    }
+                }
+            }
             break;
 
         case "last.fm":
@@ -344,8 +354,13 @@ Provider.prototype.pause = function () {
                 break;
 
             case "ted.com":
-                p = document.getElementById('streamingPlayerSWF');
-                p && p.pauseVideo && p.pauseVideo();
+                var videos = document.getElementsByTagName('video');
+
+                for (var i = 0; i < videos.length; i++) {
+                    if (videos[i] && !videos[i].paused) {
+                        videos[i].pause();
+                    }
+                }
                 break;
 
             case "last.fm":
@@ -479,8 +494,12 @@ Provider.prototype.play = function () {
                 break;
 
             case "ted.com":
-                p = document.getElementById('streamingPlayerSWF');
-                p && p.playVideo && p.playVideo();
+                var videos = document.getElementsByTagName('video');
+                for (var i = 0; i < videos.length; i++) {
+                    if (videos[i] && videos[i].paused && videos[i].played.length > 0) {
+                        videos[i].play();
+                    }
+                }
                 break;
 
             case "last.fm":
