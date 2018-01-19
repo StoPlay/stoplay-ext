@@ -32,7 +32,7 @@
     "*://*/*"
    ],
    "js": [
-    "content.js"
+    "dist/content.js"
    ],
    "all_frames": true
   }
@@ -46,7 +46,9 @@
   "tabs",
   "storage",
   "notifications",
-  "http://vk.com/*"
+  "http://vk.com/*",
+  "https://play.google.com/music/*",
+  "https://www.youtube.com/*"
  ],
  "browser_action": {
   "default_title": "StoPlay",
@@ -54,6 +56,9 @@
  },
  "commands": {
   "toggle-feature": {
+   "suggest_key": {
+    "default": "Command+Shift+P"
+   },
    "description": "Stop/Play shortcut",
    "global": true
   }
