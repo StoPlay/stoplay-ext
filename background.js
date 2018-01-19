@@ -178,6 +178,7 @@ chrome.browserAction.onClicked.addListener(function(e) {
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	var lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId')),
+		lastPlayingFrameId = parseInt(DataStorage.get('lastPlayingFrameId')),
 		lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId')),
 		status = DataStorage.get('status');
 
@@ -191,19 +192,19 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 				break;
 
 			case 'started':
-				if(lastPlayingTabId && sender.tab.id != lastPlayingTabId) {
-					chrome.tabs.sendMessage(lastPlayingTabId, {action: 'pause'});
+				var isFrameIdChanged = (lastPlayingFrameId && sender.frameId != lastPlayingFrameId);
+				if(lastPlayingTabId && sender.tab.id != lastPlayingTabId || isFrameIdChanged) {
+					chrome.tabs.sendMessage(lastPlayingTabId, {action: 'pause'}, {frameId: lastPlayingFrameId});
 				}
 				DataStorage.set('lastPlayingTabId', sender.tab.id);
+				DataStorage.set('lastPlayingFrameId', sender.frameId);
 				DataStorage.set('status', 'playing');
 				chrome.browserAction.setIcon({path: STOP_ICON});
-
 				if (request.title) {
 					chrome.browserAction.setTitle({title: "Playing: " + request.title});
 				} else {
 					chrome.browserAction.setTitle({title: "Playing: " + sender.tab.title});
 				}
-
 				break;
 
 			case 'paused':
