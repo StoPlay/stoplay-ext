@@ -241,11 +241,11 @@ Provider.prototype.checkStatus = function () {
 
         case "youtube.com":
             p = document.getElementById("movie_player") || document.querySelector('.html5-video-player');
-
             if (p && p.getPlayerState) {
                 status = p.getPlayerState() == 1 ? 'playing' : 'paused';
             } else if (document.querySelector('.html5-main-video')) {
-                status = document.querySelector('.html5-main-video').paused ? 'paused' : 'playing';
+                var video = document.querySelector('.html5-main-video');
+                status = (video.paused || (!video.paused && video.currentTime == 0)) ? 'paused' : 'playing';
             } else if (document.getElementById("movie_player")) {
                 status = document.getElementById("movie_player") && document.getElementById("movie_player").classList.contains('playing-mode') ? 'playing' : 'paused';
             }
