@@ -158,19 +158,21 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 
 chrome.browserAction.onClicked.addListener(function(e) {
 	var lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId')),
+        lastPlayingFrameId = parseInt(DataStorage.get('lastPlayingFrameId')) || 0,
 		lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId')),
+        lastPausedFrameId = parseInt(DataStorage.get('lastPausedFrameId')) || 0,
 		status = DataStorage.get('status');
 
 	switch(status) {
 		case "playing":
 			if(lastPlayingTabId) {
-				chrome.tabs.sendMessage(lastPlayingTabId, {action: 'pause'});
+				chrome.tabs.sendMessage(lastPlayingTabId, {action: 'pause'}, {frameId: lastPlayingFrameId});
 			}
 			break;
 
 		case "paused":
 			if(lastPlayingTabId) {
-				chrome.tabs.sendMessage(lastPlayingTabId, {action: 'play'});
+				chrome.tabs.sendMessage(lastPausedTabId, {action: 'play'}, {frameId: lastPausedFrameId});
 			}
 			break;
 	}
@@ -178,6 +180,7 @@ chrome.browserAction.onClicked.addListener(function(e) {
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	var lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId')),
+		lastPlayingFrameId = parseInt(DataStorage.get('lastPlayingFrameId')) || 0,
 		lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId')),
 		status = DataStorage.get('status');
 
@@ -191,23 +194,24 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 				break;
 
 			case 'started':
-				if(lastPlayingTabId && sender.tab.id != lastPlayingTabId) {
-					chrome.tabs.sendMessage(lastPlayingTabId, {action: 'pause'});
+				var isFrameIdChanged = (lastPlayingTabId && sender.frameId != lastPlayingFrameId);
+				if(lastPlayingTabId && sender.tab.id != lastPlayingTabId || isFrameIdChanged) {
+					chrome.tabs.sendMessage(lastPlayingTabId, {action: 'pause'}, {frameId: lastPlayingFrameId});
 				}
 				DataStorage.set('lastPlayingTabId', sender.tab.id);
+				DataStorage.set('lastPlayingFrameId', sender.frameId);
 				DataStorage.set('status', 'playing');
 				chrome.browserAction.setIcon({path: STOP_ICON});
-
 				if (request.title) {
 					chrome.browserAction.setTitle({title: "Playing: " + request.title});
 				} else {
 					chrome.browserAction.setTitle({title: "Playing: " + sender.tab.title});
 				}
-
 				break;
 
 			case 'paused':
 				DataStorage.set('lastPausedTabId', sender.tab.id);
+				DataStorage.set('lastPausedFrameId', sender.frameId);
 				DataStorage.set('status', 'paused');
 				chrome.browserAction.setIcon({path: PLAY_ICON});
 				chrome.browserAction.setTitle({title: "StoPlay" });
@@ -226,20 +230,22 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 chrome.commands.onCommand.addListener(function(command) {
     var lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId')),
         lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId')),
+        lastPausedFrameId = parseInt(DataStorage.get('lastPausedFrameId')) || 0,
         status = DataStorage.get('status');
     if(lastPlayingTabId) {
         var action = (status == 'playing') ? 'pause' : 'play';
-        chrome.tabs.sendMessage(lastPlayingTabId, {action: action});
+        chrome.tabs.sendMessage(lastPlayingTabId, {action: action}, {frameId: lastPausedFrameId});
     }
 });
 chrome.tabs.onRemoved.addListener(function(tabId){
 	var lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId')),
-		lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId'));
-
+		lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId')),
+		lastPausedFrameId = parseInt(DataStorage.get('lastPausedFrameId')) || 0;
 	if(tabId == lastPlayingTabId) {
 		DataStorage.set('lastPlayingTabId', null);
 		if(lastPausedTabId != tabId) {
-			chrome.tabs.sendMessage(lastPausedTabId, {action: 'play'});
+			chrome.tabs.sendMessage(lastPausedTabId, {action: 'play'}, {frameId: lastPausedFrameId});
 		}
 	}
 });
+
