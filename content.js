@@ -114,7 +114,7 @@ Provider.prototype.attachEvents = function () {
 };
 
 Provider.prototype.__changeState = function (status) {
-    if (status != this.status) {
+    if (status != this.status || status == "playing") {
         switch(status) {
             case "playing":
                 this.trigger( 'start' );
