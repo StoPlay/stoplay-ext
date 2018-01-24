@@ -174,11 +174,6 @@ Provider.prototype.checkStatus = function () {
     var status, p;
 
     switch(this.host) {
-        case "baboom.com":
-            status = document.querySelector('#player .main-player-view')
-                && document.querySelector('#player .main-player-view').classList.contains('state-playing') ? 'playing' : 'paused';
-            break;
-
         case "vk.com":
             var player_obj = document.querySelector('.top_audio_player');
             if (player_obj) {
@@ -327,11 +322,6 @@ Provider.prototype.pause = function () {
     var p;
     if (this.status == 'playing') {
         switch(this.host) {
-            case "baboom.com":
-                document.querySelector('#player .main-player-view')
-                    && document.querySelector('#player .main-player-view .btn-ctrl-pause').click();
-                break;
-
             case "vk.com":
                 document.querySelector('.top_audio_player_play').click();
                 break;
@@ -458,11 +448,6 @@ Provider.prototype.play = function () {
     var p;
     if (this.status != 'playing') {
         switch(this.host) {
-            case "baboom.com":
-                document.querySelector('#player .main-player-view')
-                    && document.querySelector('#player .main-player-view .btn-ctrl-play').click();
-                break;
-
             case "vk.com":
                 document.querySelector('.top_audio_player_play').click();
                 break;
