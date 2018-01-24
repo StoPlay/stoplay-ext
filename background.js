@@ -34,7 +34,6 @@ var providersList =
 	"facebook.com",
 	"kickstarter.com",
 	"hearthis.at",
-	"baboom.com",
 	"player.vimeo.com",
 	"courses.prometheus.org.ua",
 	"dailymotion.com",

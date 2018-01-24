@@ -29,10 +29,11 @@ At the moment we fully support (stop and play)
 * Seasonvar
 * Yandex.Music
 * TuneIn.com
-* Baboom.com
 * Prometheus.com.ua
 * DailyMotion.com
 * coursera.org
+* slipstreamradio.com
+* jazzradio.com
 
 ## How it works
 It just works!
