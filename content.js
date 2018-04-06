@@ -154,19 +154,6 @@ Provider.prototype.checkTitle = function () {
 Provider.prototype.init = function () {
     this.attachEvents();
     switch(this.host) {
-        case "dailymotion.com":
-            StoPlay.injectScript(`setInterval(function () {
-                window.playerV5.addEventListener("play", function () {
-                    window.localStorage.setItem('stoplaystate', 'playing');
-                });
-                window.playerV5.addEventListener("pause", function () {
-                    window.localStorage.setItem('stoplaystate', 'paused');
-                });
-                window.playerV5.addEventListener("ended", function () {
-                    window.localStorage.setItem('stoplaystate', 'paused');
-                });
-            }, 200);`);
-            break;
         case "deezer.com":
             StoPlay.injectScript(`
                 function stoplayGetStatus() {
@@ -310,8 +297,16 @@ Provider.prototype.checkStatus = function () {
             status = document.querySelector('.video-controls .video_control').classList.contains('pause') ? 'playing' : 'paused';
             break;
         case "dailymotion.com":
-            localStorageState = window.localStorage.getItem('stoplaystate');
-            status = localStorageState ? localStorageState : null;
+            p = document.getElementById("dmp_Video");
+            status = "paused";
+
+            if (p
+                // check for muted as when you close the video it starts playing in header muted
+                && p.muted === false
+                && p.paused === false
+            ) {
+                status = "playing";
+            }
             break;
         case "deezer.com":
             localStorageState = window.localStorage.getItem('stoplaystate');
@@ -453,7 +448,9 @@ Provider.prototype.pause = function () {
                 }
                 break;
             case "dailymotion.com":
-                StoPlay.injectScript("window.playerV5.paused ? null : window.playerV5.pause();");
+                p = document.getElementById("dmp_Video");
+
+                p && !p.paused && p.pause();
                 break;
             case "deezer.com":
                 StoPlay.injectScript("dzPlayer.playing ? dzPlayer.control.pause() : void(0);");
@@ -583,7 +580,9 @@ Provider.prototype.play = function () {
                 }
                 break;
             case "dailymotion.com":
-                StoPlay.injectScript("window.playerV5.paused ? window.playerV5.play() : null;");
+                p = document.getElementById("dmp_Video");
+
+                p && p.paused && p.play();
                 break;
             case "deezer.com":
                 StoPlay.injectScript("dzPlayer.paused ? dzPlayer.control.play() : void(0);");
