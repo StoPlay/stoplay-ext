@@ -167,6 +167,24 @@ Provider.prototype.init = function () {
                 });
             }, 200);`);
             break;
+        case "deezer.com":
+            StoPlay.injectScript(`
+                function stoplayGetStatus() {
+                    return window.dzPlayer.playing ? "playing" : "paused";
+                }
+
+                let stoplayLastStatus = stoplayGetStatus();
+
+                setInterval(function () {
+                    let currentStatus = stoplayGetStatus();
+
+                    if (stoplayLastStatus !== currentStatus) {
+                        stoplayLastStatus = currentStatus;
+                        window.localStorage.setItem('stoplaystate', currentStatus);
+                    }
+                }, 400);
+            `);
+            break;
     }
 };
 
@@ -295,7 +313,11 @@ Provider.prototype.checkStatus = function () {
             localStorageState = window.localStorage.getItem('stoplaystate');
             status = localStorageState ? localStorageState : null;
             break;
-         case "coursera.org":
+        case "deezer.com":
+            localStorageState = window.localStorage.getItem('stoplaystate');
+            status = localStorageState ? localStorageState : null;
+        break;
+        case "coursera.org":
             var selector = document.querySelector('.c-video-control.vjs-control');
             status = selector && selector.classList.contains('vjs-playing') ? 'playing' : 'paused';
             break;
@@ -433,6 +455,9 @@ Provider.prototype.pause = function () {
             case "dailymotion.com":
                 StoPlay.injectScript("window.playerV5.paused ? null : window.playerV5.pause();");
                 break;
+            case "deezer.com":
+                StoPlay.injectScript("dzPlayer.playing ? dzPlayer.control.pause() : void(0);");
+                break;
             case "coursera.org":
                 var button = document.querySelector('.c-video-control.vjs-control.vjs-playing');
                 if (button) {
@@ -559,6 +584,9 @@ Provider.prototype.play = function () {
                 break;
             case "dailymotion.com":
                 StoPlay.injectScript("window.playerV5.paused ? window.playerV5.play() : null;");
+                break;
+            case "deezer.com":
+                StoPlay.injectScript("dzPlayer.paused ? dzPlayer.control.play() : void(0);");
                 break;
             case "coursera.org":
                 var button = document.querySelector('.c-video-control.vjs-control.vjs-paused');
