@@ -308,6 +308,14 @@ Provider.prototype.checkStatus = function () {
                 status = "playing";
             }
             break;
+        case "netflix.com":
+            p = document.querySelector(".VideoContainer video");
+            status = "paused";
+
+            if (p && p.paused === false) {
+                status = "playing";
+            }
+            break;
         case "deezer.com":
             localStorageState = window.localStorage.getItem('stoplaystate');
             status = localStorageState ? localStorageState : null;
@@ -452,6 +460,11 @@ Provider.prototype.pause = function () {
 
                 p && !p.paused && p.pause();
                 break;
+            case "netflix.com":
+                p = document.querySelector(".VideoContainer video");
+
+                p && !p.paused && p.pause();
+                break;
             case "deezer.com":
                 StoPlay.injectScript("dzPlayer.playing ? dzPlayer.control.pause() : void(0);");
                 break;
@@ -581,6 +594,11 @@ Provider.prototype.play = function () {
                 break;
             case "dailymotion.com":
                 p = document.getElementById("dmp_Video");
+
+                p && p.paused && p.play();
+                break;
+            case "netflix.com":
+                p = document.querySelector(".VideoContainer video");
 
                 p && p.paused && p.play();
                 break;
