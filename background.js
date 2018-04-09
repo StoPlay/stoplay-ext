@@ -38,7 +38,8 @@ var providersList =
 	"courses.prometheus.org.ua",
 	"dailymotion.com",
 	"coursera.org",
-	"deezer.com"];
+	"deezer.com",
+	"netflix.com"];
 var providersDefault = providersList.map(function(item) {
 	return {uri: item, enabled: true};
 });
