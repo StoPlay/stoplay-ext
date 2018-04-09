@@ -36,6 +36,8 @@ At the moment we fully support (stop and play)
 * coursera.org
 * slipstreamradio.com
 * jazzradio.com
+* Deezer.com
+* Netflix
 
 ## How it works
 It just works!
