@@ -261,6 +261,7 @@ Provider.prototype.checkStatus = function () {
         case "play.google.com":
             p = document.querySelector('[data-id="play-pause"]');
             var p2 = document.querySelector(".lava-player video");
+            var p3 = document.querySelector(".playback-button.playing");
 
             if (p) {
                 status = p.classList.contains('playing') ? 'playing' : 'paused';
@@ -270,6 +271,8 @@ Provider.prototype.checkStatus = function () {
                 if (p2.paused === false) {
                     status = "playing";
                 }
+            } else if (p3) {
+                status = "playing";
             }
             break;
 
@@ -429,11 +432,14 @@ Provider.prototype.pause = function () {
             case "play.google.com":
                 p = document.querySelector('[data-id="play-pause"]');
                 var p2 = document.querySelector(".lava-player video");
+                var p3 = document.querySelector(".playback-button.playing");
 
                 if (p) {
                     p.click();
                 } else if (p2) {
                     p2.pause();
+                } else if (p3) {
+                    p3.click();
                 }
                 break;
 
@@ -572,11 +578,14 @@ Provider.prototype.play = function () {
             case "play.google.com":
                 p = document.querySelector('[data-id="play-pause"]');
                 var p2 = document.querySelector(".lava-player video");
+                var p3 = document.querySelector(".playback-button");
 
                 if (p) {
                     p.click();
                 } else if (p2) {
                     p2.play();
+                } else if (p3) {
+                    p3.click();
                 }
 
                 break;
