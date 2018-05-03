@@ -132,10 +132,15 @@ Provider.prototype.getTitle = function () {
 
     switch(this.host) {
         case "play.google.com":
-            var songName = document.getElementById('currently-playing-title').textContent;
-            var songArtist = document.getElementById('player-artist').textContent;
+            var songNameNode = document.getElementById('currently-playing-title');
+            var songArtistNode = document.getElementById('player-artist');
 
-            title = songArtist + ' - ' + songName;
+            if (songNameNode && songArtistNode) {
+                var songName = songNameNode.textContent;
+                var songArtist = songArtistNode.textContent;
+
+                title = songArtist + ' - ' + songName;
+            }
             break;
     }
 
@@ -254,7 +259,18 @@ Provider.prototype.checkStatus = function () {
             break;
 
         case "play.google.com":
-            status = document.querySelector('[data-id="play-pause"]').classList.contains('playing') ? 'playing' : 'paused';
+            p = document.querySelector('[data-id="play-pause"]');
+            var p2 = document.querySelector(".lava-player video");
+
+            if (p) {
+                status = p.classList.contains('playing') ? 'playing' : 'paused';
+            } else if (p2) {
+                status = "paused";
+
+                if (p2.paused === false) {
+                    status = "playing";
+                }
+            }
             break;
 
         case "music.yandex.ru":
@@ -411,7 +427,14 @@ Provider.prototype.pause = function () {
                 break;
 
             case "play.google.com":
-                document.querySelector('[data-id="play-pause"]') && document.querySelector('[data-id="play-pause"]').click();
+                p = document.querySelector('[data-id="play-pause"]');
+                var p2 = document.querySelector(".lava-player video");
+
+                if (p) {
+                    p.click();
+                } else if (p2) {
+                    p2.pause();
+                }
                 break;
 
             case "music.yandex.ru":
@@ -547,7 +570,15 @@ Provider.prototype.play = function () {
                 break;
 
             case "play.google.com":
-                document.querySelector('[data-id="play-pause"]') && document.querySelector('[data-id="play-pause"]').click();
+                p = document.querySelector('[data-id="play-pause"]');
+                var p2 = document.querySelector(".lava-player video");
+
+                if (p) {
+                    p.click();
+                } else if (p2) {
+                    p2.play();
+                }
+
                 break;
 
             case "music.yandex.ru":
