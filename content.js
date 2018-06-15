@@ -343,6 +343,13 @@ Provider.prototype.checkStatus = function () {
             var selector = document.querySelector('.c-video-control.vjs-control');
             status = selector && selector.classList.contains('vjs-playing') ? 'playing' : 'paused';
             break;
+        case "egghead.io":
+            var p = document.querySelector('.bitmovinplayer-container video');
+            status = "paused";
+            if (p && p.paused === false) {
+                status = "playing";
+            }
+            break;
    }
 
     status && this.__changeState(status);
@@ -503,6 +510,12 @@ Provider.prototype.pause = function () {
                     button.click();
                 }
                 break;
+            case "egghead.io":
+                var button = document.querySelector('.bmpui-ui-playbacktoggle-overlay button');
+                if (button) {
+                    button.click();
+                }
+                break;
         }
         this.__changeState('paused');
     }
@@ -647,6 +660,12 @@ Provider.prototype.play = function () {
                 break;
             case "coursera.org":
                 var button = document.querySelector('.c-video-control.vjs-control.vjs-paused');
+                if (button) {
+                    button.click();
+                }
+                break;
+            case "egghead.io":
+                var button = document.querySelector('.bmpui-ui-playbacktoggle-overlay button');
                 if (button) {
                     button.click();
                 }
