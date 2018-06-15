@@ -39,7 +39,8 @@ var providersList =
 	"dailymotion.com",
 	"coursera.org",
 	"deezer.com",
-	"netflix.com"];
+	"netflix.com",
+	"egghead.io"];
 var providersDefault = providersList.map(function(item) {
 	return {uri: item, enabled: true};
 });
