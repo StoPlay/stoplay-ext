@@ -40,7 +40,8 @@ var providersList =
 	"coursera.org",
 	"deezer.com",
 	"netflix.com",
-	"egghead.io"];
+	"egghead.io",
+	"audible.com"];
 var providersDefault = providersList.map(function(item) {
 	return {uri: item, enabled: true};
 });
