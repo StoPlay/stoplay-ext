@@ -347,6 +347,13 @@ Provider.prototype.checkStatus = function () {
             if (p && p.paused === false) {
                 status = "playing";
             }
+
+        case "audible.ca":
+        case "audible.com":
+        case "audible.com.au":
+            var selector = document.querySelector('#adbl-cloud-player-controls .adblPauseButton');
+
+            status = selector && !selector.classList.contains('bc-hidden') ? 'playing' : 'paused';
             break;
    }
 
@@ -501,6 +508,16 @@ Provider.prototype.pause = function () {
                 var button = document.querySelector('.bmpui-ui-playbacktoggle-overlay button');
                 if (button) {
                     button.click();
+                }
+                break;
+
+            case "audible.ca":
+            case "audible.com":
+            case "audible.com.au":
+                var selector = document.querySelector('#adbl-cloud-player-controls .adblPauseButton');
+    
+                if (selector && !selector.classList.contains('bc-hidden')) {
+                    selector.click();
                 }
                 break;
         }
@@ -658,6 +675,15 @@ Provider.prototype.play = function () {
                 }
                 break;
 
+            case "audible.ca":
+            case "audible.com":
+            case "audible.com.au":
+                var selector = document.querySelector('#adbl-cloud-player-controls .adblPlayButton');
+    
+                if (selector && !selector.classList.contains('bc-hidden')) {
+                    selector.click();
+                }
+                break;    
         }
         this.__changeState('playing');
     }
