@@ -19,8 +19,14 @@ module.exports = function(grunt) {
         },
         webstore_upload: {
             "accounts": {
-                "default": { //account under this section will be used by default
-                    publish: false, //publish item right after uploading. default false
+                "default": {
+                    publish: true,
+                    client_id: process.env.ChromeAPI_clientId,
+                    client_secret: process.env.ChromeAPI_clientSecret,
+                    refresh_token: process.env.ChromeAPI_refreshToken
+                },
+                "defaultNoPublish": {
+                    publish: false,
                     client_id: process.env.ChromeAPI_clientId,
                     client_secret: process.env.ChromeAPI_clientSecret,
                     refresh_token: process.env.ChromeAPI_refreshToken
@@ -28,9 +34,7 @@ module.exports = function(grunt) {
             },
             "extensions": {
                 "StoPlay": {
-                    //required
                     appID: process.env.extensionId,
-                    //required, we can use dir name and upload most recent zip file
                     zip: 'builds/<%= pkg.name + "-" + pkg.version %>.zip'      
                 }
             },
