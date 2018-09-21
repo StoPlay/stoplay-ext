@@ -1,14 +1,16 @@
 {
   "name": "stoplayExt-build",
-  "version": "1.1.23",
+  "version": "1.1.24",
   "author": "Alex Buznik",
   "dependencies": {},
   "devDependencies": {
+    "chrome-webstore-upload": "^0.2.2",
     "grunt": "~0.4.5",
-    "grunt-cli": "*",
     "grunt-bumpup": "*",
+    "grunt-cli": "*",
     "grunt-release": "*",
     "grunt-tagrelease": "*",
+    "grunt-webstore-upload": "^0.9.21",
     "grunt-zip": "*"
   }
 }
