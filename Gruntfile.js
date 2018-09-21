@@ -27,7 +27,7 @@ module.exports = function(grunt) {
                 },
             },
             "extensions": {
-                "extension1": {
+                "StoPlay": {
                     //required
                     appID: process.env.extensionId,
                     //required, we can use dir name and upload most recent zip file
