@@ -40,6 +40,10 @@ module.exports = function(grunt) {
             },
             onComplete: function(result) {
                 console.log('webstore_upload result', result);
+                var firstResult = result[0];
+                if (firstResult.success !== true) {
+                    grunt.fail.fatal(firstResult.errorMsg);
+                }
             }
         }
     });
