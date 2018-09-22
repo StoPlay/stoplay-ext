@@ -10,7 +10,12 @@ module.exports = function(grunt) {
             },
             files: ['manifest.json', 'package.json']
         },
-        tagrelease: '<%= pkg.version %>',
+        tagrelease: {
+            file: 'manifest.json',
+            commit:  false,
+            message: 'Release <%= pkg.version %>',
+            annotate: false,
+        },
         zip: {
             'long-format': {
                 src: ['css/**', 'img/**', '*.js*', '*.css', '*.md', '*.html', 'LICENSE', '!Gruntfile.js', '!package.json'],
