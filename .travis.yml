@@ -5,4 +5,4 @@ before_install: npm install -g grunt-cli
 install: npm install
 before_script: grunt build
 script: grunt deploy
-after_success: .travis/push.sh
+after_success: sh .travis/push.sh
