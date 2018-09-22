@@ -4,3 +4,7 @@ node_js:
 before_install: npm install -g grunt-cli
 install: npm install
 script: grunt deploy && sh .travis/push.sh
+branches:
+  only:
+    - master
+    - develop
