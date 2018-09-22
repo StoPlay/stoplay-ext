@@ -6,9 +6,7 @@
   "devDependencies": {
     "grunt": "~0.4.5",
     "grunt-bumpup": "*",
-    "grunt-cli": "*",
-    "grunt-release": "*",
-    "grunt-tagrelease": "*",
+    "grunt-release": "^0.14.0",
     "grunt-webstore-upload": "^0.9.21",
     "grunt-zip": "*"
   }
