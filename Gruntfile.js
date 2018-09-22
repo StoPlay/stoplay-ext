@@ -10,12 +10,20 @@ module.exports = function(grunt) {
             },
             files: ['manifest.json', 'package.json']
         },
-        tagrelease: {
-            file: 'manifest.json',
-            commit:  false,
-            message: 'Release <%= pkg.version %>',
-            annotate: false,
+        release: {
+            options: {
+                bump: false,
+                file: 'manifest.json',
+                additionalFiles: ['package.json'],
+                push: false,
+                pushTags: false,
+                npm: false,
+                tagName: 'v-<%= version %>',
+                commitMessage: 'Release <%= version %>',
+                tagMessage: 'Release <%= version %>'
+            }
         },
+
         zip: {
             'long-format': {
                 src: ['css/**', 'img/**', '*.js*', '*.css', '*.md', '*.html', 'LICENSE', '!Gruntfile.js', '!package.json'],
@@ -55,7 +63,7 @@ module.exports = function(grunt) {
 
     // Loading the plugins
     grunt.loadNpmTasks('grunt-bumpup');
-    grunt.loadNpmTasks('grunt-tagrelease');
+    grunt.loadNpmTasks('grunt-release');
     grunt.loadNpmTasks('grunt-zip');
     grunt.loadNpmTasks('grunt-webstore-upload');
 
@@ -63,12 +71,12 @@ module.exports = function(grunt) {
     grunt.registerTask('makeRelease', function (type) {
         type = type ? type : 'patch';     // Default release type
         grunt.task.run('bumpup:' + type); // Bump up the version
-        grunt.task.run('tagrelease');     // Commit & tag the release
+        grunt.task.run('release');     // Commit & tag the release
         grunt.task.run('zip');     // Compress an archive
     });
 
     grunt.registerTask('default', []);
     grunt.registerTask('build', ['makeRelease']);
     grunt.registerTask('pack', ['zip']);
-    grunt.registerTask('deploy', ['build', 'webstore_upload']);
+    grunt.registerTask('deploy', ['bumpup', 'pack', 'webstore_upload']);
 }
