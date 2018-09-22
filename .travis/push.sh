@@ -7,7 +7,5 @@ git config --global push.default current
 git stash
 git checkout ${TRAVIS_BRANCH}
 git stash pop
-grunt tagrelease
-# commit should be already created by grunt bumpup job
-# git remote add origin-stoplay https://${GH_TOKEN}@github.com/stoplay/stoplay-ext.git > /dev/null 2>&1
+grunt release
 git push https://${GH_TOKEN}@github.com/stoplay/stoplay-ext.git
