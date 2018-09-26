@@ -30,6 +30,10 @@ module.exports = function(grunt) {
                 dest: 'builds/<%= pkg.name + "-" + pkg.version %>.zip'
             }
         },
+        exec: {
+            fork_release: 'git checkout -b release/<%= pkg.version %>',
+            push_release: 'git push origin release/<%= pkg.version %>'
+        },
         webstore_upload: {
             "accounts": {
                 "default": {
@@ -62,6 +66,7 @@ module.exports = function(grunt) {
     });
 
     // Loading the plugins
+    grunt.loadNpmTasks('grunt-exec');
     grunt.loadNpmTasks('grunt-bumpup');
     grunt.loadNpmTasks('grunt-release');
     grunt.loadNpmTasks('grunt-zip');
@@ -70,13 +75,14 @@ module.exports = function(grunt) {
     // Alias task for release
     grunt.registerTask('makeRelease', function (type) {
         type = type ? type : 'patch';     // Default release type
-        grunt.task.run('bumpup:' + type); // Bump up the version
-        grunt.task.run('release');     // Commit & tag the release
-        grunt.task.run('zip');     // Compress an archive
+        grunt.task.run('bumpup:' + type);
+        grunt.task.run('exec:fork_release');
+        grunt.task.run('release');
+        grunt.task.run('exec:push_release');
     });
 
     grunt.registerTask('default', []);
     grunt.registerTask('build', ['makeRelease']);
     grunt.registerTask('pack', ['zip']);
-    grunt.registerTask('deploy', ['bumpup', 'pack', 'webstore_upload']);
+    grunt.registerTask('deploy', ['pack', 'webstore_upload']);
 }
