@@ -44,6 +44,7 @@ var providersList =
 	"audible.ca",
 	"audible.com",
 	"audible.com.au",
+	"di.fm"
 ];
 var providersDefault = providersList.map(function(item) {
 	return {uri: item, enabled: true};
