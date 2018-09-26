@@ -241,6 +241,7 @@ Provider.prototype.checkStatus = function () {
             }
             break;
 
+        case "gaming.youtube.com":
         case "youtube.com":
             p = document.getElementById("movie_player") || document.querySelector('.html5-video-player');
             if (p && p.getPlayerState) {
@@ -425,6 +426,7 @@ Provider.prototype.pause = function () {
                 }
                 break;
 
+            case "gaming.youtube.com":
             case "youtube.com":
                 p = document.getElementById("movie_player") || document.querySelector('.html5-video-player');
                 if (p && p.pauseVideo) {
@@ -594,6 +596,7 @@ Provider.prototype.play = function () {
                 }
                 break;
 
+            case "gaming.youtube.com":
             case "youtube.com":
                 p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
                 if (p && p.playVideo) {
