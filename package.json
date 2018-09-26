@@ -1,14 +1,18 @@
 {
   "name": "stoplayExt-build",
-  "version": "1.1.23",
+  "version": "1.1.49",
   "author": "Alex Buznik",
   "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/StoPlay/stoplay-ext.git"
+  },
   "devDependencies": {
     "grunt": "~0.4.5",
-    "grunt-cli": "*",
     "grunt-bumpup": "*",
-    "grunt-release": "*",
-    "grunt-tagrelease": "*",
+    "grunt-exec": "^3.0.0",
+    "grunt-release": "^0.14.0",
+    "grunt-webstore-upload": "^0.9.21",
     "grunt-zip": "*"
   }
 }
