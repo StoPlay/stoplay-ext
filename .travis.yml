@@ -3,7 +3,7 @@ node_js:
   - "8.11.1"
 before_install: npm install -g grunt-cli
 install: npm install
-script: grunt deploy && sh .travis/push.sh
+script: grunt deploy
 branches:
   only:
     - /^release\/.*$/
