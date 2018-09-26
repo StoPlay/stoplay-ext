@@ -38,6 +38,7 @@ At the moment we fully support (stop and play)
 * jazzradio.com
 * Deezer.com
 * Netflix
+* di.fm
 
 ## How it works
 It just works!

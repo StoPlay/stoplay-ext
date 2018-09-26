@@ -336,7 +336,7 @@ Provider.prototype.checkStatus = function () {
         case "deezer.com":
             localStorageState = window.localStorage.getItem('stoplaystate');
             status = localStorageState ? localStorageState : null;
-        break;
+            break;
         case "coursera.org":
             var selector = document.querySelector('.c-video-control.vjs-control');
             status = selector && selector.classList.contains('vjs-playing') ? 'playing' : 'paused';
@@ -347,6 +347,14 @@ Provider.prototype.checkStatus = function () {
             if (p && p.paused === false) {
                 status = "playing";
             }
+
+        case "di.fm":
+            var button = document.querySelector('#webplayer-region .controls .icon-pause');
+            status = "paused";
+            if (button) {
+                status = "playing";
+            }
+            break;
 
         case "audible.ca":
         case "audible.com":
@@ -511,6 +519,13 @@ Provider.prototype.pause = function () {
                 }
                 break;
 
+            case "di.fm":
+                var button = document.querySelector('#webplayer-region .controls .icon-pause');
+                if (button) {
+                    button.click();
+                }
+                break;
+
             case "audible.ca":
             case "audible.com":
             case "audible.com.au":
@@ -670,6 +685,13 @@ Provider.prototype.play = function () {
                 break;
             case "egghead.io":
                 var button = document.querySelector('.bmpui-ui-playbacktoggle-overlay button');
+                if (button) {
+                    button.click();
+                }
+                break;
+
+            case "di.fm":
+                var button = document.querySelector('#webplayer-region .controls .icon-play');
                 if (button) {
                     button.click();
                 }
