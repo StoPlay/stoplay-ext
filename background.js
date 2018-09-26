@@ -11,6 +11,7 @@ var debug = false;
 var providersList =
 	["vk.com",
 	"new.vk.com",
+	"gaming.youtube.com",
 	"youtube.com",
 	"vimeo.com",
 	"muzebra.com",
