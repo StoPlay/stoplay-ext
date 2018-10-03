@@ -39,6 +39,7 @@ At the moment we fully support (stop and play)
 * Deezer.com
 * Netflix
 * di.fm
+* mubert.com
 
 ## How it works
 It just works!

@@ -25,6 +25,8 @@ var Provider = function () {
 
     this.isInstalled();
 
+    this.customLastPlayerSelector = null;
+
     // check if not disabled globally or this very service
     chrome.storage.sync.get({
         enabled: true,
@@ -364,7 +366,16 @@ Provider.prototype.checkStatus = function () {
 
             status = selector && !selector.classList.contains('bc-hidden') ? 'playing' : 'paused';
             break;
-   }
+
+        case "play.mubert.com":
+            var selector = document.querySelector('#genres .playing');
+
+            status = selector ? 'playing' : 'paused';
+            if (selector) {
+                this.customLastPlayerSelector = selector;
+            }
+            break;
+    }
 
     status && this.__changeState(status);
 };
@@ -537,6 +548,13 @@ Provider.prototype.pause = function () {
                     selector.click();
                 }
                 break;
+            case "play.mubert.com":
+                var selector = this.customLastPlayerSelector;
+                if (selector && selector.classList.contains('playing')) {
+                    selector.click();
+                }
+                break;
+
         }
         this.__changeState('paused');
     }
@@ -709,6 +727,12 @@ Provider.prototype.play = function () {
                     selector.click();
                 }
                 break;    
+            case "play.mubert.com":
+                var selector = this.customLastPlayerSelector;
+                if (selector && !selector.classList.contains('playing')) {
+                    selector.click();
+                }
+                break;
         }
         this.__changeState('playing');
     }
