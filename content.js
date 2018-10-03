@@ -58,16 +58,17 @@ Provider.prototype._parseChanges = function(changes) {
         if (changes.enabled.newValue !== this.enabled) {
             // just in case
             this.enabled = changes.enabled.newValue;
-            if (this.enabled) {
-                this._detectProviderAndStartCheckInterval();
-            } else {
+            if (!this.enabled) {
                 this._stopCheckInterval();
             }
         }
     }
     if (typeof changes.providers !== 'undefined') {
         this._parseAllowedProviders(changes.providers.newValue);
-        this._restartCheckInterval();
+    }
+    
+    if (this.enabled) {
+        this._detectProviderAndStartCheckInterval();
     }
 };
 
