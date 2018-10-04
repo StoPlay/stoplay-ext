@@ -39,6 +39,7 @@ At the moment we fully support (stop and play)
 * Deezer.com
 * Netflix
 * di.fm
+* mubert.com
 
 ## How it works
 It just works!
@@ -47,8 +48,9 @@ The extension automatically pauses your previous playing media when you open
 a new one (in case if supported, of course).
 
 Also you can click the pause bar button to stop it.
-![Click the pause bar button to stop it](http://monosnap.com/image/rv29Wlv8VZfVPlAldgHrhMr5J.png)
+![Click the pause bar button to stop it](https://i.imgur.com/tEoV7qF.png)
 
+![Alt text]()
 ## Debugging
 Q: New version seems to have the player support I need, but can't see it in the options. What can I do?
 
