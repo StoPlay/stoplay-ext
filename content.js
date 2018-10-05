@@ -299,9 +299,18 @@ Provider.prototype.checkStatus = function () {
                 document.getElementById('statusLabel')
                 .textContent.toLocaleLowerCase() == 'playing' ? 'playing' : 'paused';
             break;
-        case "play.spotify.com":
+
+        case "play.spotify.com": // old UI, may be available somewhere
             status = document.getElementById('play-pause') &&
                 document.getElementById('play-pause').classList.contains('playing') ? 'playing' : 'paused';
+            break;
+        case "open.spotify.com": // new UI
+            p = document.querySelector(".control-button[class*='pause']");
+            status = "paused";
+
+            if (p) {
+                status = "playing";
+            }
             break;
         case "bandcamp.com":
             status = document.querySelector('.inline_player .playbutton') &&
@@ -481,8 +490,15 @@ Provider.prototype.pause = function () {
             case "v5player.slipstreamradio.com":
                 document.getElementById('pause_button') && document.getElementById('pause_button').click();
                 break;
-            case "play.spotify.com":
+            case "play.spotify.com": // old UI
                 document.getElementById('play-pause') && document.getElementById('play-pause').click();
+                break;
+            case "open.spotify.com": // new UI
+                p = document.querySelector(".control-button[class*='pause']");
+
+                if (p) {
+                    p.click();
+                }
                 break;
             case "bandcamp.com":
                 document.querySelector('.inline_player .playbutton') &&
@@ -660,8 +676,15 @@ Provider.prototype.play = function () {
             case "v5player.slipstreamradio.com":
                 document.getElementById('play_button') && document.getElementById('play_button').click();
                 break;
-            case "play.spotify.com":
+            case "play.spotify.com": // old UI
                 document.getElementById('play-pause') && document.getElementById('play-pause').click();
+                break;
+            case "open.spotify.com": // new UI
+                p = document.querySelector(".control-button[class*='play']");
+
+                if (p) {
+                    p.click();
+                }
                 break;
             case "bandcamp.com":
                 document.querySelector('.inline_player .playbutton') &&

@@ -30,6 +30,7 @@ var providersList =
 	"tunein.com",
 	"spotify.com",
 	"play.spotify.com",
+	"open.spotify.com",
 	"bandcamp.com",
 	"promodj.com",
 	"facebook.com",
