@@ -10,7 +10,12 @@ var StoPlay = {
         target.parentNode.insertBefore(script, target);
         return script;
     }
-}
+};
+
+var Status = {
+    paused: "paused",
+    playing: "playing"
+};
 
 var Provider = function () {
     var _this = this;
@@ -223,6 +228,15 @@ Provider.prototype.checkStatus = function () {
             status = document.getElementById('tuner') && document.getElementById('tuner').classList.contains('playing') ? 'playing' : 'paused';
             break;
 
+        case "megogo.net":
+            p = document.querySelector("video.player:video");
+            status = Status.paused;
+
+            if (p && p.paused === false) {
+                status = Status.playing;
+            }
+            break;
+
         case "muzebra.com":
             status = document.querySelector('#player button.play').classList.contains('icon-pause') ? 'playing' : 'paused';
             break;
@@ -417,8 +431,9 @@ Provider.prototype.pause = function () {
                 break;
 
             case "megogo.net":
-                p = document.getElementById("playerFrame");
-                p && p.contentDocument && p.contentDocument.getElementById('player_object') && p.contentDocument.getElementById('player_object').megogoPlayerPause && p.contentDocument.getElementById('player_object').megogoPlayerPause();
+                p = document.querySelector("video.player:video");
+
+                p && !p.paused && p.pause();
                 break;
 
             case "muzebra.com":
@@ -594,8 +609,9 @@ Provider.prototype.play = function () {
                 break;
 
             case "megogo.net":
-                p = document.getElementById("playerFrame");
-                p && p.contentDocument && p.contentDocument.getElementById('player_object') && p.contentDocument.getElementById('player_object').megogoPlayerResume && p.contentDocument.getElementById('player_object').megogoPlayerResume();
+                p = document.querySelector("video.player:video");
+
+                p && p.paused && p.play();
                 break;
 
             case "muzebra.com":
