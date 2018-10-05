@@ -40,6 +40,7 @@ At the moment we fully support (stop and play)
 * Netflix
 * di.fm
 * mubert.com
+* udemy.com
 
 ## How it works
 It just works!
