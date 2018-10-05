@@ -375,6 +375,14 @@ Provider.prototype.checkStatus = function () {
                 this.customLastPlayerSelector = selector;
             }
             break;
+
+        case "udemy.com":
+            var p = document.querySelector("video-viewer video");
+
+            status = "paused";
+            if (p && p.paused === false) {
+                status = "playing";
+            }
     }
 
     status && this.__changeState(status);
@@ -555,6 +563,11 @@ Provider.prototype.pause = function () {
                 }
                 break;
 
+            case "udemy.com":
+                p = document.querySelector("video-viewer video");
+
+                p && !p.paused && p.pause();
+                break;
         }
         this.__changeState('paused');
     }
@@ -732,6 +745,12 @@ Provider.prototype.play = function () {
                 if (selector && !selector.classList.contains('playing')) {
                     selector.click();
                 }
+                break;
+
+            case "udemy.com":
+                p = document.querySelector("video-viewer video");
+
+                p && p.paused && p.play();
                 break;
         }
         this.__changeState('playing');

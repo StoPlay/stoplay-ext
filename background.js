@@ -46,7 +46,8 @@ var providersList =
 	"audible.com",
 	"audible.com.au",
 	"di.fm",
-	"play.mubert.com"
+	"play.mubert.com",
+	"udemy.com",
 ];
 var providersDefault = providersList.map(function(item) {
 	return {uri: item, enabled: true};
