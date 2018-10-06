@@ -383,6 +383,10 @@ Provider.prototype.checkStatus = function () {
             } else {
                 status = 'paused';
             }
+        case "livestream.com":
+            var selector = document.querySelector('.playback-control .play-holder');
+
+            status = selector && selector.classList.contains('lsp-hidden') ? 'playing' : 'paused';
             break;
     }
 
@@ -570,6 +574,13 @@ Provider.prototype.pause = function () {
                     selector.click()
                 }
                 break;
+            case "livestream.com":
+                var selector = document.querySelector('.playback-control .play-holder');
+
+                if (selector && selector.classList.contains('lsp-hidden')) {
+                    document.querySelector('.playback-control .pause-holder').click();                       
+                };
+                break;
         }
         this.__changeState('paused');
     }
@@ -754,6 +765,12 @@ Provider.prototype.play = function () {
                 if (selector) {
                     selector.click()
                 }
+            case "livestream.com":
+                var selector = document.querySelector('.playback-control .play-holder');
+
+                if (selector && !selector.classList.contains('lsp-hidden')) {
+                    document.querySelector('.playback-control .play-holder').click();                       
+                };
                 break;
         }
         this.__changeState('playing');
