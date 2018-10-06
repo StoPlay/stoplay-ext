@@ -46,6 +46,7 @@ var providersList =
 	"audible.com",
 	"audible.com.au",
 	"di.fm",
+	"coub.com",
 	"play.mubert.com"
 ];
 var providersDefault = providersList.map(function(item) {

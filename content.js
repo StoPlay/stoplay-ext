@@ -375,6 +375,15 @@ Provider.prototype.checkStatus = function () {
                 this.customLastPlayerSelector = selector;
             }
             break;
+        case "coub.com":
+            var selector = document.querySelector('.coub.active');
+
+            if (selector) {
+                status = selector.getAttribute('play-state');
+            } else {
+                status = 'paused';
+            }
+            break;
     }
 
     status && this.__changeState(status);
@@ -554,7 +563,13 @@ Provider.prototype.pause = function () {
                     selector.click();
                 }
                 break;
+            case "coub.com":
+                var selector = document.querySelector('.coub.active .viewer__click');
 
+                if (selector) {
+                    selector.click()
+                }
+                break;
         }
         this.__changeState('paused');
     }
@@ -731,6 +746,13 @@ Provider.prototype.play = function () {
                 var selector = this.customLastPlayerSelector;
                 if (selector && !selector.classList.contains('playing')) {
                     selector.click();
+                }
+                break;
+            case "coub.com":
+                var selector = document.querySelector('.coub.active .viewer__replay');
+
+                if (selector) {
+                    selector.click()
                 }
                 break;
         }
