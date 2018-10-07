@@ -41,6 +41,7 @@ At the moment we fully support (stop and play)
 * Netflix
 * di.fm
 * mubert.com
+* livestream.com
 
 ## How it works
 It just works!
