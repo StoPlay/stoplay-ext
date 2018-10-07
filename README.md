@@ -14,6 +14,7 @@ At the moment we fully support (stop and play)
 * Spotify
 * PromoDJ
 * Bandcamp
+* Coub.com
 * vkontakte
 * Google Music
 * vimeo
