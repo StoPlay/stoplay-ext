@@ -13,8 +13,8 @@ var StoPlay = {
 };
 
 var Status = {
-    paused: "paused",
-    playing: "playing"
+    PAUSED: "paused",
+    PLAYING: "playing"
 };
 
 var Provider = function () {
