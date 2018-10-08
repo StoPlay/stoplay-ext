@@ -384,6 +384,16 @@ Provider.prototype.checkStatus = function () {
                 this.customLastPlayerSelector = selector;
             }
             break;
+
+        case "udemy.com":
+            var p = document.querySelector("video-viewer video");
+
+            status = "paused";
+            if (p && p.paused === false) {
+                status = "playing";
+            }
+            break;
+
         case "coub.com":
             var selector = document.querySelector('.coub.active');
 
@@ -392,6 +402,8 @@ Provider.prototype.checkStatus = function () {
             } else {
                 status = 'paused';
             }
+            break;
+
         case "livestream.com":
             var selector = document.querySelector('.playback-control .play-holder');
 
@@ -577,12 +589,14 @@ Provider.prototype.pause = function () {
                     selector.click();
                 }
                 break;
+
             case "play.mubert.com":
                 var selector = this.customLastPlayerSelector;
                 if (selector && selector.classList.contains('playing')) {
                     selector.click();
                 }
                 break;
+
             case "coub.com":
                 var selector = document.querySelector('.coub.active .viewer__click');
 
@@ -590,12 +604,19 @@ Provider.prototype.pause = function () {
                     selector.click()
                 }
                 break;
+
             case "livestream.com":
                 var selector = document.querySelector('.playback-control .play-holder');
 
                 if (selector && selector.classList.contains('lsp-hidden')) {
                     document.querySelector('.playback-control .pause-holder').click();                       
                 };
+                break;
+
+            case "udemy.com":
+                p = document.querySelector("video-viewer video");
+
+                p && !p.paused && p.pause();
                 break;
         }
         this.__changeState('paused');
@@ -782,12 +803,21 @@ Provider.prototype.play = function () {
                     selector.click();
                 }
                 break;
+
+            case "udemy.com":
+                p = document.querySelector("video-viewer video");
+
+                p && p.paused && p.play();
+                break;
+
             case "coub.com":
                 var selector = document.querySelector('.coub.active .viewer__replay');
 
                 if (selector) {
                     selector.click()
                 }
+                break;
+
             case "livestream.com":
                 var selector = document.querySelector('.playback-control .play-holder');
 
