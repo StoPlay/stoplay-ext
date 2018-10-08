@@ -229,7 +229,7 @@ Provider.prototype.checkStatus = function () {
             break;
 
         case "megogo.net":
-            p = document.querySelector("video[class='player:video']");
+            p = document.querySelector("video[class*='player:video']");
             status = Status.PAUSED;
 
             if (p && p.paused === false) {
@@ -465,7 +465,7 @@ Provider.prototype.pause = function () {
                 break;
 
             case "megogo.net":
-                p = document.querySelector("video[class='player:video']");
+                p = document.querySelector("video[class*='player:video']");
 
                 p && !p.paused && p.pause();
                 break;
@@ -672,7 +672,7 @@ Provider.prototype.play = function () {
                 break;
 
             case "megogo.net":
-                p = document.querySelector("video[class='player:video']");
+                p = document.querySelector("video[class*='player:video']");
 
                 p && p.paused && p.play();
                 break;
