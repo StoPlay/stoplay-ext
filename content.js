@@ -230,10 +230,10 @@ Provider.prototype.checkStatus = function () {
 
         case "megogo.net":
             p = document.querySelector("video.player:video");
-            status = Status.paused;
+            status = Status.PAUSED;
 
             if (p && p.paused === false) {
-                status = Status.playing;
+                status = Status.PLAYING;
             }
             break;
 
