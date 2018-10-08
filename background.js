@@ -31,6 +31,7 @@ var providersList =
 	"megogo.net",
 	"spotify.com",
 	"play.spotify.com",
+	"open.spotify.com",
 	"bandcamp.com",
 	"promodj.com",
 	"facebook.com",
@@ -47,7 +48,10 @@ var providersList =
 	"audible.com",
 	"audible.com.au",
 	"di.fm",
-	"play.mubert.com"
+	"play.mubert.com",
+	"coub.com",
+	"livestream.com",
+	"udemy.com",
 ];
 var providersDefault = providersList.map(function(item) {
 	return {uri: item, enabled: true};

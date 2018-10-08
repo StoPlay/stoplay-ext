@@ -14,6 +14,7 @@ At the moment we fully support (stop and play)
 * Spotify
 * PromoDJ
 * Bandcamp
+* Coub.com
 * vkontakte
 * Google Music
 * vimeo
@@ -41,6 +42,8 @@ At the moment we fully support (stop and play)
 * Netflix
 * di.fm
 * mubert.com
+* udemy.com
+* livestream.com
 
 ## How it works
 It just works!
