@@ -299,9 +299,18 @@ Provider.prototype.checkStatus = function () {
                 document.getElementById('statusLabel')
                 .textContent.toLocaleLowerCase() == 'playing' ? 'playing' : 'paused';
             break;
-        case "play.spotify.com":
+
+        case "play.spotify.com": // old UI, may be available somewhere
             status = document.getElementById('play-pause') &&
                 document.getElementById('play-pause').classList.contains('playing') ? 'playing' : 'paused';
+            break;
+        case "open.spotify.com": // new UI
+            p = document.querySelector(".control-button[class*='pause']");
+            status = "paused";
+
+            if (p) {
+                status = "playing";
+            }
             break;
         case "bandcamp.com":
             status = document.querySelector('.inline_player .playbutton') &&
@@ -383,6 +392,23 @@ Provider.prototype.checkStatus = function () {
             if (p && p.paused === false) {
                 status = "playing";
             }
+            break;
+
+        case "coub.com":
+            var selector = document.querySelector('.coub.active');
+
+            if (selector) {
+                status = selector.getAttribute('play-state');
+            } else {
+                status = 'paused';
+            }
+            break;
+
+        case "livestream.com":
+            var selector = document.querySelector('.playback-control .play-holder');
+
+            status = selector && selector.classList.contains('lsp-hidden') ? 'playing' : 'paused';
+            break;
     }
 
     status && this.__changeState(status);
@@ -489,8 +515,15 @@ Provider.prototype.pause = function () {
             case "v5player.slipstreamradio.com":
                 document.getElementById('pause_button') && document.getElementById('pause_button').click();
                 break;
-            case "play.spotify.com":
+            case "play.spotify.com": // old UI
                 document.getElementById('play-pause') && document.getElementById('play-pause').click();
+                break;
+            case "open.spotify.com": // new UI
+                p = document.querySelector(".control-button[class*='pause']");
+
+                if (p) {
+                    p.click();
+                }
                 break;
             case "bandcamp.com":
                 document.querySelector('.inline_player .playbutton') &&
@@ -556,11 +589,28 @@ Provider.prototype.pause = function () {
                     selector.click();
                 }
                 break;
+
             case "play.mubert.com":
                 var selector = this.customLastPlayerSelector;
                 if (selector && selector.classList.contains('playing')) {
                     selector.click();
                 }
+                break;
+
+            case "coub.com":
+                var selector = document.querySelector('.coub.active .viewer__click');
+
+                if (selector) {
+                    selector.click()
+                }
+                break;
+
+            case "livestream.com":
+                var selector = document.querySelector('.playback-control .play-holder');
+
+                if (selector && selector.classList.contains('lsp-hidden')) {
+                    document.querySelector('.playback-control .pause-holder').click();                       
+                };
                 break;
 
             case "udemy.com":
@@ -673,8 +723,15 @@ Provider.prototype.play = function () {
             case "v5player.slipstreamradio.com":
                 document.getElementById('play_button') && document.getElementById('play_button').click();
                 break;
-            case "play.spotify.com":
+            case "play.spotify.com": // old UI
                 document.getElementById('play-pause') && document.getElementById('play-pause').click();
+                break;
+            case "open.spotify.com": // new UI
+                p = document.querySelector(".control-button[class*='play']");
+
+                if (p) {
+                    p.click();
+                }
                 break;
             case "bandcamp.com":
                 document.querySelector('.inline_player .playbutton') &&
@@ -751,6 +808,22 @@ Provider.prototype.play = function () {
                 p = document.querySelector("video-viewer video");
 
                 p && p.paused && p.play();
+                break;
+
+            case "coub.com":
+                var selector = document.querySelector('.coub.active .viewer__replay');
+
+                if (selector) {
+                    selector.click()
+                }
+                break;
+
+            case "livestream.com":
+                var selector = document.querySelector('.playback-control .play-holder');
+
+                if (selector && !selector.classList.contains('lsp-hidden')) {
+                    document.querySelector('.playback-control .play-holder').click();                       
+                };
                 break;
         }
         this.__changeState('playing');
