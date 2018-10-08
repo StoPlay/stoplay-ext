@@ -28,6 +28,7 @@ var providersList =
 	"v5player.slipstreamradio.com",
 	"jazzradio.com",
 	"tunein.com",
+	"megogo.net",
 	"spotify.com",
 	"play.spotify.com",
 	"open.spotify.com",

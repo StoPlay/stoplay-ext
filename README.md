@@ -32,6 +32,7 @@ At the moment we fully support (stop and play)
 * Seasonvar
 * Yandex.Music
 * TuneIn.com
+* megogo.net
 * Prometheus.com.ua
 * DailyMotion.com
 * coursera.org
