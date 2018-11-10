@@ -10,20 +10,27 @@ var StoPlay = {
         target.parentNode.insertBefore(script, target);
         return script;
     }
-}
+};
+
+var Status = {
+    PAUSED: "paused",
+    PLAYING: "playing"
+};
 
 var Provider = function () {
     var _this = this;
 
     this.allowed = [];
 
-    this.status = 'paused';
+    this.status = Status.PAUSED;
     this.playingTitle = '';
     this.interval = null;
     this.checkTitleInterval = null;
     this.events = {};
 
     this.isInstalled();
+
+    this.customLastPlayerSelector = null;
 
     // check if not disabled globally or this very service
     chrome.storage.sync.get({
@@ -101,12 +108,12 @@ Provider.prototype.attachEvents = function () {
 
     this
         .on('start', function () {
-            _this.status = 'playing';
+            _this.status = Status.PLAYING;
             chrome.runtime.sendMessage({action: 'started', title: _this.getTitle()});
         })
         .on('pause', function () {
-            _this.status = 'paused';
-            chrome.runtime.sendMessage({action: 'paused'});
+            _this.status = Status.PAUSED;
+            chrome.runtime.sendMessage({action: Status.PAUSED});
         })
         .on('updateTitle', function () {
             chrome.runtime.sendMessage({action: 'updateTitle', title: _this.playingTitle});
@@ -114,13 +121,13 @@ Provider.prototype.attachEvents = function () {
 };
 
 Provider.prototype.__changeState = function (status) {
-    if (status != this.status || status == "playing") {
+    if (status != this.status || status == Status.PLAYING) {
         switch(status) {
-            case "playing":
+            case Status.PLAYING:
                 this.trigger( 'start' );
                 break;
 
-            case "paused":
+            case Status.PAUSED:
                 this.trigger( 'pause' );
                 break;
         }
@@ -162,7 +169,7 @@ Provider.prototype.init = function () {
         case "deezer.com":
             StoPlay.injectScript(`
                 function stoplayGetStatus() {
-                    return window.dzPlayer.playing ? "playing" : "paused";
+                    return window.dzPlayer.playing ? Status.PLAYING : Status.PAUSED;
                 }
 
                 let stoplayLastStatus = stoplayGetStatus();
@@ -187,18 +194,18 @@ Provider.prototype.checkStatus = function () {
         case "vk.com":
             var player_obj = document.querySelector('.top_audio_player');
             if (player_obj) {
-                status = player_obj && player_obj.classList.contains('top_audio_player_playing') ? 'playing' : 'paused';
+                status = player_obj && player_obj.classList.contains('top_audio_player_playing') ? Status.PLAYING : Status.PAUSED;
             }
             console.log('StoPlay vk.com status', status);
             break;
 
         case "new.vk.com":
             status = document.querySelector('.top_audio_player')
-                && document.querySelector('.top_audio_player').classList.contains('top_audio_player_playing') ? 'playing' : 'paused';
+                && document.querySelector('.top_audio_player').classList.contains('top_audio_player_playing') ? Status.PLAYING : Status.PAUSED;
             break;
 
         case "last.fm":
-            status = document.getElementById('webRadio').classList.contains('playing') ? 'playing' : 'paused';
+            status = document.getElementById('webRadio').classList.contains('playing') ? Status.PLAYING : Status.PAUSED;
             break;
 
         case "rutube.ru":
@@ -209,20 +216,29 @@ Provider.prototype.checkStatus = function () {
             break;
 
         case "pleer.net":
-            status = document.querySelector('#player #play').classList.contains('pause') ? 'playing' : 'paused';
+            status = document.querySelector('#player #play').classList.contains('pause') ? Status.PLAYING : Status.PAUSED;
             break;
 
         case "vimeo.com":
         case "player.vimeo.com":
-            status = document.querySelector('.play.state-playing') ? 'playing' : 'paused';
+            status = document.querySelector('.play.state-playing') ? Status.PLAYING : Status.PAUSED;
             break;
 
         case "tunein.com":
-            status = document.getElementById('tuner') && document.getElementById('tuner').classList.contains('playing') ? 'playing' : 'paused';
+            status = document.getElementById('tuner') && document.getElementById('tuner').classList.contains('playing') ? Status.PLAYING : Status.PAUSED;
+            break;
+
+        case "megogo.net":
+            p = document.querySelector("video[class*='player:video']");
+            status = Status.PAUSED;
+
+            if (p && p.paused === false) {
+                status = Status.PLAYING;
+            }
             break;
 
         case "muzebra.com":
-            status = document.querySelector('#player button.play').classList.contains('icon-pause') ? 'playing' : 'paused';
+            status = document.querySelector('#player button.play').classList.contains('icon-pause') ? Status.PLAYING : Status.PAUSED;
             break;
 
         case "ted.com":
@@ -231,31 +247,32 @@ Provider.prototype.checkStatus = function () {
             var videos = document.getElementsByTagName('video');
 
             if (videos.length > 0) {
-                status = 'paused';
+                status = Status.PAUSED;
 
                 for (var i = 0; i < videos.length; i++) {
                     if (videos[i] && !videos[i].paused) {
-                        status = 'playing';
+                        status = Status.PLAYING;
                     }
                 }
             }
             break;
 
+        case "gaming.youtube.com":
         case "youtube.com":
             p = document.getElementById("movie_player") || document.querySelector('.html5-video-player');
             if (p && p.getPlayerState) {
-                status = p.getPlayerState() == 1 ? 'playing' : 'paused';
+                status = p.getPlayerState() == 1 ? Status.PLAYING : Status.PAUSED;
             } else if (document.querySelector('.html5-main-video')) {
                 var video = document.querySelector('.html5-main-video');
-                status = (video.paused || (!video.paused && video.currentTime == 0)) ? 'paused' : 'playing';
+                status = (video.paused || (!video.paused && video.currentTime == 0)) ? Status.PAUSED : Status.PLAYING;
             } else if (document.getElementById("movie_player")) {
-                status = document.getElementById("movie_player") && document.getElementById("movie_player").classList.contains('playing-mode') ? 'playing' : 'paused';
+                status = document.getElementById("movie_player") && document.getElementById("movie_player").classList.contains('playing-mode') ? Status.PLAYING : Status.PAUSED;
             }
             break;
 
         case "seasonvar.ru":
             status = document.querySelector('#vpcenter object').getUppod && document.querySelector('#vpcenter object').getUppod('getstatus');
-            status = status == 1 ? 'playing' : 'paused';
+            status = status == 1 ? Status.PLAYING : Status.PAUSED;
             break;
 
         case "play.google.com":
@@ -264,98 +281,149 @@ Provider.prototype.checkStatus = function () {
             var p3 = document.querySelector(".playback-button.playing");
 
             if (p) {
-                status = p.classList.contains('playing') ? 'playing' : 'paused';
+                status = p.classList.contains('playing') ? Status.PLAYING : Status.PAUSED;
             } else if (p2) {
-                status = "paused";
+                status = Status.PAUSED;
 
                 if (p2.paused === false) {
-                    status = "playing";
+                    status = Status.PLAYING;
                 }
             } else if (p3) {
-                status = "playing";
+                status = Status.PLAYING;
             }
             break;
 
         case "music.yandex.ru":
         case "music.yandex.ua":
-            status = document.querySelector('.player-controls__btn_play').classList.contains('player-controls__btn_pause') ? 'playing' : 'paused';
+            status = document.querySelector('.player-controls__btn_play').classList.contains('player-controls__btn_pause') ? Status.PLAYING : Status.PAUSED;
             break;
         case "mixcloud.com":
             status = document.querySelector('.player-control') &&
                 document.querySelector('.player-control')
-                .classList.contains('pause-state') ? 'playing' : 'paused';
+                .classList.contains('pause-state') ? Status.PLAYING : Status.PAUSED;
             break;
         case "soundcloud.com":
-            status = document.querySelector('.playControl').classList.contains('playing') ? 'playing' : 'paused';
+            status = document.querySelector('.playControl').classList.contains('playing') ? Status.PLAYING : Status.PAUSED;
             break;
         case "jazzradio.com":
-            status = document.querySelector('#play-button .icon-pause') ? 'playing' : 'paused';
+            status = document.querySelector('#play-button .icon-pause') ? Status.PLAYING : Status.PAUSED;
             break;
         case "v5player.slipstreamradio.com":
             status = document.getElementById('statusLabel') &&
                 document.getElementById('statusLabel')
-                .textContent.toLocaleLowerCase() == 'playing' ? 'playing' : 'paused';
+                .textContent.toLocaleLowerCase() == 'playing' ? Status.PLAYING : Status.PAUSED;
             break;
-        case "play.spotify.com":
+
+        case "play.spotify.com": // old UI, may be available somewhere
             status = document.getElementById('play-pause') &&
-                document.getElementById('play-pause').classList.contains('playing') ? 'playing' : 'paused';
+                document.getElementById('play-pause').classList.contains('playing') ? Status.PLAYING : Status.PAUSED;
+            break;
+        case "open.spotify.com": // new UI
+            p = document.querySelector(".control-button[class*='pause']");
+            status = Status.PAUSED;
+
+            if (p) {
+                status = Status.PLAYING;
+            }
             break;
         case "bandcamp.com":
             status = document.querySelector('.inline_player .playbutton') &&
-                document.querySelector('.inline_player .playbutton').classList.contains('playing') ? 'playing' : 'paused';
+                document.querySelector('.inline_player .playbutton').classList.contains('playing') ? Status.PLAYING : Status.PAUSED;
             break;
         case "promodj.com":
-            status = document.querySelector('.playerr_bigplaybutton .playerr_bigpausebutton') ? 'playing' : 'paused';
+            status = document.querySelector('.playerr_bigplaybutton .playerr_bigpausebutton') ? Status.PLAYING : Status.PAUSED;
             break;
         case "hearthis.at":
-            status = document.body.classList && document.body.classList.contains('play') ? 'playing' : 'paused';
+            status = document.body.classList && document.body.classList.contains('play') ? Status.PLAYING : Status.PAUSED;
             break;
         case "courses.prometheus.org.ua":
-            status = document.querySelector('.video-controls .video_control').classList.contains('pause') ? 'playing' : 'paused';
+            status = document.querySelector('.video-controls .video_control').classList.contains('pause') ? Status.PLAYING : Status.PAUSED;
             break;
         case "dailymotion.com":
             p = document.getElementById("dmp_Video");
-            status = "paused";
+            status = Status.PAUSED;
 
             if (p
                 // check for muted as when you close the video it starts playing in header muted
                 && p.muted === false
                 && p.paused === false
             ) {
-                status = "playing";
+                status = Status.PLAYING;
             }
             break;
         case "netflix.com":
             p = document.querySelector(".VideoContainer video");
-            status = "paused";
+            status = Status.PAUSED;
 
             if (p && p.paused === false) {
-                status = "playing";
+                status = Status.PLAYING;
             }
             break;
         case "deezer.com":
             localStorageState = window.localStorage.getItem('stoplaystate');
             status = localStorageState ? localStorageState : null;
-        break;
+            break;
         case "coursera.org":
             var selector = document.querySelector('.c-video-control.vjs-control');
-            status = selector && selector.classList.contains('vjs-playing') ? 'playing' : 'paused';
+            status = selector && selector.classList.contains('vjs-playing') ? Status.PLAYING : Status.PAUSED;
             break;
         case "egghead.io":
             var p = document.querySelector('.bitmovinplayer-container video');
-            status = "paused";
+            status = Status.PAUSED;
             if (p && p.paused === false) {
-                status = "playing";
+                status = Status.PLAYING;
             }
+
+        case "di.fm":
+            var button = document.querySelector('#webplayer-region .controls .icon-pause');
+            status = Status.PAUSED;
+            if (button) {
+                status = Status.PLAYING;
+            }
+            break;
 
         case "audible.ca":
         case "audible.com":
         case "audible.com.au":
             var selector = document.querySelector('#adbl-cloud-player-controls .adblPauseButton');
 
-            status = selector && !selector.classList.contains('bc-hidden') ? 'playing' : 'paused';
+            status = selector && !selector.classList.contains('bc-hidden') ? Status.PLAYING : Status.PAUSED;
             break;
-   }
+
+        case "play.mubert.com":
+            var selector = document.querySelector('#genres .playing');
+
+            status = selector ? Status.PLAYING : Status.PAUSED;
+            if (selector) {
+                this.customLastPlayerSelector = selector;
+            }
+            break;
+
+        case "udemy.com":
+            var p = document.querySelector("video-viewer video");
+
+            status = Status.PAUSED;
+            if (p && p.paused === false) {
+                status = Status.PLAYING;
+            }
+            break;
+
+        case "coub.com":
+            var selector = document.querySelector('.coub.active');
+
+            if (selector) {
+                status = selector.getAttribute('play-state');
+            } else {
+                status = Status.PAUSED;
+            }
+            break;
+
+        case "livestream.com":
+            var selector = document.querySelector('.playback-control .play-holder');
+
+            status = selector && selector.classList.contains('lsp-hidden') ? Status.PLAYING : Status.PAUSED;
+            break;
+    }
 
     status && this.__changeState(status);
 };
@@ -365,7 +433,7 @@ Provider.prototype.checkAnnoyingLightboxes = function () {
 
 Provider.prototype.pause = function () {
     var p;
-    if (this.status == 'playing') {
+    if (this.status == Status.PLAYING) {
         switch(this.host) {
             case "vk.com":
                 document.querySelector('.top_audio_player_play').click();
@@ -397,8 +465,9 @@ Provider.prototype.pause = function () {
                 break;
 
             case "megogo.net":
-                p = document.getElementById("playerFrame");
-                p && p.contentDocument && p.contentDocument.getElementById('player_object') && p.contentDocument.getElementById('player_object').megogoPlayerPause && p.contentDocument.getElementById('player_object').megogoPlayerPause();
+                p = document.querySelector("video[class*='player:video']");
+
+                p && !p.paused && p.pause();
                 break;
 
             case "muzebra.com":
@@ -417,6 +486,7 @@ Provider.prototype.pause = function () {
                 }
                 break;
 
+            case "gaming.youtube.com":
             case "youtube.com":
                 p = document.getElementById("movie_player") || document.querySelector('.html5-video-player');
                 if (p && p.pauseVideo) {
@@ -460,8 +530,15 @@ Provider.prototype.pause = function () {
             case "v5player.slipstreamradio.com":
                 document.getElementById('pause_button') && document.getElementById('pause_button').click();
                 break;
-            case "play.spotify.com":
+            case "play.spotify.com": // old UI
                 document.getElementById('play-pause') && document.getElementById('play-pause').click();
+                break;
+            case "open.spotify.com": // new UI
+                p = document.querySelector(".control-button[class*='pause']");
+
+                if (p) {
+                    p.click();
+                }
                 break;
             case "bandcamp.com":
                 document.querySelector('.inline_player .playbutton') &&
@@ -511,6 +588,13 @@ Provider.prototype.pause = function () {
                 }
                 break;
 
+            case "di.fm":
+                var button = document.querySelector('#webplayer-region .controls .icon-pause');
+                if (button) {
+                    button.click();
+                }
+                break;
+
             case "audible.ca":
             case "audible.com":
             case "audible.com.au":
@@ -520,14 +604,43 @@ Provider.prototype.pause = function () {
                     selector.click();
                 }
                 break;
+
+            case "play.mubert.com":
+                var selector = this.customLastPlayerSelector;
+                if (selector && selector.classList.contains('playing')) {
+                    selector.click();
+                }
+                break;
+
+            case "coub.com":
+                var selector = document.querySelector('.coub.active .viewer__click');
+
+                if (selector) {
+                    selector.click()
+                }
+                break;
+
+            case "livestream.com":
+                var selector = document.querySelector('.playback-control .play-holder');
+
+                if (selector && selector.classList.contains('lsp-hidden')) {
+                    document.querySelector('.playback-control .pause-holder').click();                       
+                };
+                break;
+
+            case "udemy.com":
+                p = document.querySelector("video-viewer video");
+
+                p && !p.paused && p.pause();
+                break;
         }
-        this.__changeState('paused');
+        this.__changeState(Status.PAUSED);
     }
 };
 
 Provider.prototype.play = function () {
     var p;
-    if (this.status != 'playing') {
+    if (this.status != Status.PLAYING) {
         switch(this.host) {
             case "vk.com":
                 document.querySelector('.top_audio_player_play').click();
@@ -559,8 +672,9 @@ Provider.prototype.play = function () {
                 break;
 
             case "megogo.net":
-                p = document.getElementById("playerFrame");
-                p && p.contentDocument && p.contentDocument.getElementById('player_object') && p.contentDocument.getElementById('player_object').megogoPlayerResume && p.contentDocument.getElementById('player_object').megogoPlayerResume();
+                p = document.querySelector("video[class*='player:video']");
+
+                p && p.paused && p.play();
                 break;
 
             case "muzebra.com":
@@ -579,6 +693,7 @@ Provider.prototype.play = function () {
                 }
                 break;
 
+            case "gaming.youtube.com":
             case "youtube.com":
                 p = document.getElementById("movie_player") || document.querySelector(".html5-video-player");
                 if (p && p.playVideo) {
@@ -624,8 +739,15 @@ Provider.prototype.play = function () {
             case "v5player.slipstreamradio.com":
                 document.getElementById('play_button') && document.getElementById('play_button').click();
                 break;
-            case "play.spotify.com":
+            case "play.spotify.com": // old UI
                 document.getElementById('play-pause') && document.getElementById('play-pause').click();
+                break;
+            case "open.spotify.com": // new UI
+                p = document.querySelector(".control-button[class*='play']");
+
+                if (p) {
+                    p.click();
+                }
                 break;
             case "bandcamp.com":
                 document.querySelector('.inline_player .playbutton') &&
@@ -675,6 +797,13 @@ Provider.prototype.play = function () {
                 }
                 break;
 
+            case "di.fm":
+                var button = document.querySelector('#webplayer-region .controls .icon-play');
+                if (button) {
+                    button.click();
+                }
+                break;
+
             case "audible.ca":
             case "audible.com":
             case "audible.com.au":
@@ -684,8 +813,36 @@ Provider.prototype.play = function () {
                     selector.click();
                 }
                 break;    
+            case "play.mubert.com":
+                var selector = this.customLastPlayerSelector;
+                if (selector && !selector.classList.contains('playing')) {
+                    selector.click();
+                }
+                break;
+
+            case "udemy.com":
+                p = document.querySelector("video-viewer video");
+
+                p && p.paused && p.play();
+                break;
+
+            case "coub.com":
+                var selector = document.querySelector('.coub.active .viewer__replay');
+
+                if (selector) {
+                    selector.click()
+                }
+                break;
+
+            case "livestream.com":
+                var selector = document.querySelector('.playback-control .play-holder');
+
+                if (selector && !selector.classList.contains('lsp-hidden')) {
+                    document.querySelector('.playback-control .play-holder').click();                       
+                };
+                break;
         }
-        this.__changeState('playing');
+        this.__changeState(Status.PLAYING);
     }
 };
 
