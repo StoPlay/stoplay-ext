@@ -30,13 +30,10 @@ var Provider = function () {
     chrome.storage.sync.get({
         enabled: true,
         providers: []
-    }, this._parseOptions.bind(this));
+    }, options => this._parseOptions(options));
 
-    chrome.storage.onChanged.addListener(this._parseChanges.bind(this));
+    chrome.storage.onChanged.addListener(changes => this._parseChanges(changes));
 
-    if (this.enabled) {
-        this._detectProviderAndStartCheckInterval();
-    }
 };
 
 /**
@@ -44,7 +41,7 @@ var Provider = function () {
  */
 Provider.prototype._parseOptions = function(options) {
     this.enabled = options.enabled;
-    this._parseAllowedProviders.call(this, options.providers);
+    this._parseAllowedProviders(options.providers);
     if (this.enabled) {
         this._detectProviderAndStartCheckInterval();
     }
@@ -54,21 +51,19 @@ Provider.prototype._parseOptions = function(options) {
  * Parse changes
  */
 Provider.prototype._parseChanges = function(changes) {
+    if (typeof changes.providers !== 'undefined') {
+        this._parseAllowedProviders(changes.providers.newValue);
+    }
     if (typeof changes.enabled !== 'undefined') {
         if (changes.enabled.newValue !== this.enabled) {
             // just in case
             this.enabled = changes.enabled.newValue;
             if (!this.enabled) {
                 this._stopCheckInterval();
+            } else {
+                this._restartCheckInterval();
             }
         }
-    }
-    if (typeof changes.providers !== 'undefined') {
-        this._parseAllowedProviders(changes.providers.newValue);
-    }
-    
-    if (this.enabled) {
-        this._detectProviderAndStartCheckInterval();
     }
 };
 
@@ -87,10 +82,10 @@ Provider.prototype._parseAllowedProviders = function(providers) {
 Provider.prototype._detectProviderAndStartCheckInterval = function () {
     if (this.detectProvider()) {
         this.init();
-        this.interval = setInterval(function() {
+        this.interval = setInterval(() => {
             this.checkStatus();
             this.checkAnnoyingLightboxes();
-        }.bind(this), 1000);
+        }, 1000);
         this.checkTitleInterval = setInterval(this.checkTitle.bind(this), 10000);
     }
 };
