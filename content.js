@@ -33,14 +33,12 @@ var Provider = function () {
 
     this.customLastPlayerSelector = null;
 
-    // check if not disabled globally or this very service
     chrome.storage.sync.get({
         enabled: true,
         providers: []
     }, options => this._parseOptions(options));
 
     chrome.storage.onChanged.addListener(changes => this._parseChanges(changes));
-
 };
 
 /**
@@ -63,14 +61,14 @@ Provider.prototype._parseChanges = function(changes) {
     }
     if (typeof changes.enabled !== 'undefined') {
         if (changes.enabled.newValue !== this.enabled) {
-            // just in case
             this.enabled = changes.enabled.newValue;
-            if (!this.enabled) {
-                this._stopCheckInterval();
-            } else {
-                this._restartCheckInterval();
-            }
         }
+    }
+
+    if (!this.enabled) {
+        this._stopCheckInterval();
+    } else {
+        this._restartCheckInterval();
     }
 };
 
