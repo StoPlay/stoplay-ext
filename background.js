@@ -27,9 +27,14 @@ var providersList =
 	"music.yandex.ru",
 	"v5player.slipstreamradio.com",
 	"jazzradio.com",
+	"rockradio.com",
+	"radiotunes.com",
+	"classicalradio.com",
 	"tunein.com",
+	"megogo.net",
 	"spotify.com",
 	"play.spotify.com",
+	"open.spotify.com",
 	"bandcamp.com",
 	"promodj.com",
 	"facebook.com",
@@ -45,7 +50,11 @@ var providersList =
 	"audible.ca",
 	"audible.com",
 	"audible.com.au",
-	"di.fm"
+	"di.fm",
+	"play.mubert.com",
+	"coub.com",
+	"livestream.com",
+	"udemy.com",
 ];
 var providersDefault = providersList.map(function(item) {
 	return {uri: item, enabled: true};
@@ -112,19 +121,10 @@ function mergeProviders(oldItems) {
 	var providersFull = [],
 		found = {};
 
-	// remove old providers if they are not supported already
-	var oldItemsClean = oldItems.filter(function(itemOld) {
-		// if item is not found in providersDefault, then it is obsolete
-		var itemsInBothLists = providersDefault.some(function(item) {
-			return item.uri === itemOld.uri
-		});
-		return itemsInBothLists;
-	});
-
 	providersFull = providersDefault.map(function(itemDefault) {
 		// looking if any of the new items have appeared
 		// in older version of settings
-		var found = oldItemsClean.find(function(itemOld) {
+		var found = oldItems.find(function(itemOld) {
 			return itemOld.uri === itemDefault.uri;
 		});
 		// if not found, add it
