@@ -21,7 +21,8 @@ var Provider = function () {
     var _this = this;
 
     this.allowed = [];
-
+    this.enabled = true;
+    this.LOG = 'STOPLAY';
     this.status = Status.PAUSED;
     this.playingTitle = '';
     this.interval = null;
@@ -32,16 +33,43 @@ var Provider = function () {
 
     this.customLastPlayerSelector = null;
 
-    // check if not disabled globally or this very service
     chrome.storage.sync.get({
         enabled: true,
         providers: []
-    }, function(items) {
-        if (items.enabled === true) {
-            this._parseAllowedProviders.call(this, items.providers);
-        }
-    }.bind(this));
+    }, options => this._parseOptions(options));
 
+    chrome.storage.onChanged.addListener(changes => this._parseChanges(changes));
+};
+
+/**
+ * Parse options
+ */
+Provider.prototype._parseOptions = function(options) {
+    this.enabled = options.enabled;
+    this._parseAllowedProviders(options.providers);
+    if (this.enabled) {
+        this._detectProviderAndStartCheckInterval();
+    }
+};
+
+/**
+ * Parse changes
+ */
+Provider.prototype._parseChanges = function(changes) {
+    if (typeof changes.providers !== 'undefined') {
+        this._parseAllowedProviders(changes.providers.newValue);
+    }
+    if (typeof changes.enabled !== 'undefined') {
+        if (changes.enabled.newValue !== this.enabled) {
+            this.enabled = changes.enabled.newValue;
+        }
+    }
+
+    if (!this.enabled) {
+        this._stopCheckInterval();
+    } else {
+        this._restartCheckInterval();
+    }
 };
 
 Provider.prototype._parseAllowedProviders = function(providers) {
@@ -54,16 +82,28 @@ Provider.prototype._parseAllowedProviders = function(providers) {
         return provider.uri;
     });
     this.allowed = allowed;
+};
 
+Provider.prototype._detectProviderAndStartCheckInterval = function () {
     if (this.detectProvider()) {
         this.init();
-        this.interval = setInterval(function() {
+        this.interval = setInterval(() => {
             this.checkStatus();
             this.checkAnnoyingLightboxes();
-        }.bind(this), 1000);
+        }, 1000);
         this.checkTitleInterval = setInterval(this.checkTitle.bind(this), 10000);
     }
-}
+};
+
+Provider.prototype._stopCheckInterval = function () {
+    clearInterval(this.interval);
+    clearInterval(this.checkTitleInterval);
+};
+
+Provider.prototype._restartCheckInterval = function () {
+    this._stopCheckInterval();
+    this._detectProviderAndStartCheckInterval();
+};
 
 Provider.prototype.isInstalled = function () {
     if (window.location.host.replace('www.', '') == 'stoplay_page.dev'
@@ -306,6 +346,9 @@ Provider.prototype.checkStatus = function () {
             status = document.querySelector('.playControl').classList.contains('playing') ? Status.PLAYING : Status.PAUSED;
             break;
         case "jazzradio.com":
+        case "rockradio.com":
+        case "radiotunes.com":
+        case "classicalradio.com":
             status = document.querySelector('#play-button .icon-pause') ? Status.PLAYING : Status.PAUSED;
             break;
         case "v5player.slipstreamradio.com":
@@ -525,6 +568,9 @@ Provider.prototype.pause = function () {
                 document.querySelector('.playControl.playing') && document.querySelector('.playControl').click();
                 break;
             case "jazzradio.com":
+            case "rockradio.com":
+            case "radiotunes.com":
+            case "classicalradio.com":
                 document.querySelector('#play-button .ctl') && document.querySelector('#play-button .ctl').click();
                 break;
             case "v5player.slipstreamradio.com":
@@ -734,6 +780,9 @@ Provider.prototype.play = function () {
                 document.querySelector('.playControl') && document.querySelector('.playControl').click();
                 break;
             case "jazzradio.com":
+            case "rockradio.com":
+            case "radiotunes.com":
+            case "classicalradio.com":
                 document.querySelector('#play-button .ctl') && document.querySelector('#play-button .ctl').click();
                 break;
             case "v5player.slipstreamradio.com":
