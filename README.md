@@ -15,6 +15,7 @@ At the moment we fully support (stop and play)
 * PromoDJ
 * Bandcamp
 * Coub.com
+* Classicalradio.com
 * vkontakte
 * Google Music
 * vimeo
@@ -34,6 +35,8 @@ At the moment we fully support (stop and play)
 * TuneIn.com
 * megogo.net
 * Prometheus.com.ua
+* Radiotunes.com
+* Rockradio.com
 * DailyMotion.com
 * coursera.org
 * slipstreamradio.com
