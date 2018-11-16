@@ -1,5 +1,15 @@
 /* StoPlay Content JS */
 
+function safeGetElementTextContentByQuery(query) {
+    try {
+        const element = document.querySelector(query);
+
+        return element.textContent;
+    } catch (e) {
+        return "";
+    }
+}
+
 var StoPlay = {
     injectScript: function (scriptText) {
         var script   = document.createElement('script');
@@ -18,8 +28,6 @@ var Status = {
 };
 
 var Provider = function () {
-    var _this = this;
-
     this.allowed = [];
     this.enabled = true;
     this.LOG = 'STOPLAY';
@@ -73,15 +81,16 @@ Provider.prototype._parseChanges = function(changes) {
 };
 
 Provider.prototype._parseAllowedProviders = function(providers) {
-    if (!providers.length) return;
-    var allowed = [];
-    allowed = providers.filter(function(provider) {
+    if (!providers.length) {
+        return;
+    }
+
+    this.allowed = providers.filter(function (provider) {
         // check if any of the providers is disabled
         return provider.enabled === true;
-    }).map(function(provider) {
+    }).map(function (provider) {
         return provider.uri;
     });
-    this.allowed = allowed;
 };
 
 Provider.prototype._detectProviderAndStartCheckInterval = function () {
@@ -161,7 +170,7 @@ Provider.prototype.attachEvents = function () {
 };
 
 Provider.prototype.__changeState = function (status) {
-    if (status != this.status || status == Status.PLAYING) {
+    if (status !== this.status || status === Status.PLAYING) {
         switch(status) {
             case Status.PLAYING:
                 this.trigger( 'start' );
@@ -175,23 +184,25 @@ Provider.prototype.__changeState = function (status) {
 };
 
 Provider.prototype.getTitle = function () {
-    var title = '';
+    let songName;
+    let artistName;
 
-    switch(this.host) {
+    switch (this.host) {
+        case "music.youtube.com":
+            songName = safeGetElementTextContentByQuery(".ytmusic-player-bar.title");
+            artistName = safeGetElementTextContentByQuery(".ytmusic-player-bar.byline a:first-child");
+            break;
         case "play.google.com":
-            var songNameNode = document.getElementById('currently-playing-title');
-            var songArtistNode = document.getElementById('player-artist');
-
-            if (songNameNode && songArtistNode) {
-                var songName = songNameNode.textContent;
-                var songArtist = songArtistNode.textContent;
-
-                title = songArtist + ' - ' + songName;
-            }
+            songName = safeGetElementTextContentByQuery("#currently-playing-title");
+            artistName = safeGetElementTextContentByQuery("#player-artist");
             break;
     }
 
-    return title;
+    if (artistName && songName) {
+        return `${artistName} - ${songName}`;
+    }
+
+    return "";
 };
 
 Provider.prototype.checkTitle = function () {
@@ -292,16 +303,13 @@ Provider.prototype.checkStatus = function () {
         case "ted.com":
         case "facebook.com":
         case "kickstarter.com":
-            var videos = document.getElementsByTagName('video');
+        case "music.youtube.com":
+            const videos = document.getElementsByTagName("video");
 
             if (videos.length > 0) {
-                status = Status.PAUSED;
+                var hasPlayingVideo = Array.from(videos).some((player) => !player.paused);
 
-                for (var i = 0; i < videos.length; i++) {
-                    if (videos[i] && !videos[i].paused) {
-                        status = Status.PLAYING;
-                    }
-                }
+                status = hasPlayingVideo ? Status.PLAYING : Status.PAUSED;
             }
             break;
 
@@ -411,7 +419,7 @@ Provider.prototype.checkStatus = function () {
             }
             break;
         case "deezer.com":
-            localStorageState = window.localStorage.getItem('stoplaystate');
+            var localStorageState = window.localStorage.getItem('stoplaystate');
             status = localStorageState ? localStorageState : null;
             break;
         case "coursera.org":
@@ -484,7 +492,7 @@ Provider.prototype.checkAnnoyingLightboxes = function () {
 
 Provider.prototype.pause = function () {
     var p;
-    if (this.status == Status.PLAYING) {
+    if (this.status === Status.PLAYING) {
         switch(this.host) {
             case "vk.com":
                 document.querySelector('.top_audio_player_play').click();
@@ -540,13 +548,14 @@ Provider.prototype.pause = function () {
             case "ted.com":
             case 'facebook.com':
             case "kickstarter.com":
-                var videos = document.getElementsByTagName('video');
+            case "music.youtube.com":
+                const videos = document.getElementsByTagName("video");
 
-                for (var i = 0; i < videos.length; i++) {
-                    if (videos[i] && !videos[i].paused) {
-                        videos[i].pause();
-                    }
-                }
+                Array.from(videos)
+                    .filter((player) => !player.paused)
+                    .forEach((player) => {
+                        player.pause();
+                    });
                 break;
 
             case "gaming.youtube.com":
@@ -706,7 +715,7 @@ Provider.prototype.pause = function () {
 
 Provider.prototype.play = function () {
     var p;
-    if (this.status != Status.PLAYING) {
+    if (this.status !== Status.PLAYING) {
         switch(this.host) {
             case "vk.com":
                 document.querySelector('.top_audio_player_play').click();
@@ -762,13 +771,14 @@ Provider.prototype.play = function () {
             case "ted.com":
             case 'facebook.com':
             case "kickstarter.com":
-                var videos = document.getElementsByTagName('video');
+            case "music.youtube.com":
+                const videos = document.getElementsByTagName("video");
 
-                for (var i = 0; i < videos.length; i++) {
-                    if (videos[i] && videos[i].paused && videos[i].played.length > 0) {
-                        videos[i].play();
-                    }
-                }
+                Array.from(videos)
+                    .filter((player) => player.paused && player.played.length > 0)
+                    .forEach((player) => {
+                        player.play();
+                    });
                 break;
 
             case "gaming.youtube.com":
@@ -931,11 +941,11 @@ var ProviderInstance = new Provider();
 
 if (ProviderInstance) {
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-        if (request.action == 'pause') {
+        if (request.action === 'pause') {
             ProviderInstance.pause();
         }
 
-        if (request.action == 'play') {
+        if (request.action === 'play') {
             ProviderInstance.play();
         }
     });
