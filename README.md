@@ -20,6 +20,7 @@ At the moment we fully support (stop and play)
 * Google Music
 * vimeo
 * YouTube
+* YouTube Music
 * Facebook
 * Kickstarter
 * hearthis.at
