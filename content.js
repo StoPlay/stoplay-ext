@@ -276,7 +276,15 @@ Provider.prototype.checkStatus = function () {
             break;
 
         case "tunein.com":
-            status = document.getElementById('tuner') && document.getElementById('tuner').classList.contains('playing') ? Status.PLAYING : Status.PAUSED;
+            var audios = document.getElementsByTagName("audio");
+
+            if (audios.length > 0) {
+                var hasPlayingAudio = Array.from(audios).some((player) => !player.paused);
+
+                status = hasPlayingAudio ? Status.PLAYING : Status.PAUSED;
+            } else {
+                status = document.getElementById('tuner') && document.getElementById('tuner').classList.contains('playing') ? Status.PLAYING : Status.PAUSED;
+            }
             break;
 
         case "megogo.net":
@@ -516,7 +524,19 @@ Provider.prototype.pause = function () {
                 break;
 
             case "tunein.com":
-                document.querySelector('#tuner.playing .playbutton-cont') && document.querySelector('#tuner.playing .playbutton-cont').click();
+                var audios = document.getElementsByTagName("audio");
+
+                if (audios.length > 0) {
+                    var audiosArray = Array.from(audios);
+
+                    audiosArray
+                        .filter((player) => !player.paused)
+                        .forEach((player) => {
+                            player.pause();
+                        })
+                } else {
+                    document.querySelector('#tuner.playing .playbutton-cont') && document.querySelector('#tuner.playing .playbutton-cont').click();
+                }
                 break;
 
             case "megogo.net":
@@ -727,7 +747,19 @@ Provider.prototype.play = function () {
                 break;
 
             case "tunein.com":
-                document.querySelector('#tuner.stopped .playbutton-cont') && document.querySelector('#tuner.stopped .playbutton-cont').click();
+                var audios = document.getElementsByTagName("audio");
+
+                if (audios.length > 0) {
+                    var audiosArray = Array.from(audios);
+
+                    audiosArray
+                        .filter((player) => player.paused && player.played.length > 0)
+                        .forEach((player) => {
+                            player.play();
+                        })
+                } else {
+                    document.querySelector('#tuner.stopped .playbutton-cont') && document.querySelector('#tuner.stopped .playbutton-cont').click();
+                }
                 break;
 
             case "megogo.net":
