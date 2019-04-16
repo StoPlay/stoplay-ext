@@ -537,7 +537,8 @@ Provider.prototype.pause = function () {
                 break;
 
             case "armyfm.com.ua":
-                document.querySelector(".cl_play").click();
+                p = document.querySelector(".cl_play");
+                p && p.click();
                 break;
 
             case "megogo.net":
@@ -764,7 +765,8 @@ Provider.prototype.play = function () {
                 break;
                 
             case "armyfm.com.ua":
-                document.querySelector(".cl_play").click();
+                p = document.querySelector(".cl_play");
+                p && p.click();
                 break;
 
             case "megogo.net":
