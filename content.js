@@ -275,6 +275,7 @@ Provider.prototype.checkStatus = function () {
             status = document.querySelector('.play.state-playing') ? Status.PLAYING : Status.PAUSED;
             break;
 
+        case "armyfm.com.ua":
         case "tunein.com":
             var audios = document.getElementsByTagName("audio");
 
@@ -535,6 +536,10 @@ Provider.prototype.pause = function () {
                 }
                 break;
 
+            case "armyfm.com.ua":
+                document.querySelector(".cl_play").click();
+                break;
+
             case "megogo.net":
                 p = document.querySelector("video[class*='player:video']");
 
@@ -756,6 +761,10 @@ Provider.prototype.play = function () {
                 } else {
                     document.querySelector('#tuner.stopped .playbutton-cont') && document.querySelector('#tuner.stopped .playbutton-cont').click();
                 }
+                break;
+                
+            case "armyfm.com.ua":
+                document.querySelector(".cl_play").click();
                 break;
 
             case "megogo.net":
