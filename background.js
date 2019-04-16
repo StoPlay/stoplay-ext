@@ -11,6 +11,7 @@ var debug = false;
 var providersList =
 	["vk.com",
 	"new.vk.com",
+	"music.youtube.com",
 	"gaming.youtube.com",
 	"youtube.com",
 	"vimeo.com",
@@ -55,6 +56,7 @@ var providersList =
 	"coub.com",
 	"livestream.com",
 	"udemy.com",
+	"armyfm.com.ua"
 ];
 var providersDefault = providersList.map(function(item) {
 	return {uri: item, enabled: true};
