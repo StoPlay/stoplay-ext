@@ -366,6 +366,7 @@ Provider.prototype.checkStatus = function () {
         case "rockradio.com":
         case "radiotunes.com":
         case "classicalradio.com":
+        case "zenradio.com":
             status = document.querySelector('#play-button .icon-pause') ? Status.PLAYING : Status.PAUSED;
             break;
         case "v5player.slipstreamradio.com":
@@ -606,6 +607,7 @@ Provider.prototype.pause = function () {
             case "rockradio.com":
             case "radiotunes.com":
             case "classicalradio.com":
+            case "zenradio.com":
                 document.querySelector('#play-button .ctl') && document.querySelector('#play-button .ctl').click();
                 break;
             case "v5player.slipstreamradio.com":
@@ -836,6 +838,7 @@ Provider.prototype.play = function () {
             case "rockradio.com":
             case "radiotunes.com":
             case "classicalradio.com":
+            case "zenradio.com":
                 document.querySelector('#play-button .ctl') && document.querySelector('#play-button .ctl').click();
                 break;
             case "v5player.slipstreamradio.com":
