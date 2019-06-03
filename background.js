@@ -56,7 +56,8 @@ var providersList =
 	"coub.com",
 	"livestream.com",
 	"udemy.com",
-	"armyfm.com.ua"
+	"armyfm.com.ua",
+	"zenradio.com"
 ];
 var providersDefault = providersList.map(function(item) {
 	return {uri: item, enabled: true};
