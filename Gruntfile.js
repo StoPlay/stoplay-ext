@@ -82,7 +82,9 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('default', []);
+    // to make release run this one
     grunt.registerTask('build', ['makeRelease']);
     grunt.registerTask('pack', ['zip']);
+    // only should be run by CI, not manually
     grunt.registerTask('deploy', ['pack', 'webstore_upload']);
 }

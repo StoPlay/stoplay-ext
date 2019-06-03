@@ -47,6 +47,8 @@ At the moment we fully support (stop and play)
 * mubert.com
 * udemy.com
 * livestream.com
+* armyfm.com.ua
+* zenradio.com
 
 ## How it works
 It just works!
