@@ -27,13 +27,16 @@ var Status = {
     PLAYING: "playing"
 };
 
+var CHECK_TIMEOUT = 1000;
+var TITLE_TIMEOUT = 10000;
+
 var Provider = function () {
     this.allowed = [];
     this.enabled = true;
     this.LOG = 'STOPLAY';
     this.status = Status.PAUSED;
     this.playingTitle = '';
-    this.interval = null;
+    this.timer = null;
     this.checkTitleInterval = null;
     this.events = {};
 
@@ -94,18 +97,25 @@ Provider.prototype._parseAllowedProviders = function(providers) {
 };
 
 Provider.prototype._detectProviderAndStartCheckInterval = function () {
+    let repeatedCheck;
     if (this.detectProvider()) {
-        this.init();
-        this.interval = setInterval(() => {
+        repeatedCheck = () => {
             this.checkStatus();
             this.checkAnnoyingLightboxes();
-        }, 1000);
-        this.checkTitleInterval = setInterval(this.checkTitle.bind(this), 10000);
+            return setTimeout(repeatedCheck, CHECK_TIMEOUT);
+        };
+        repeatedTitleCheck = () => {
+            this.checkTitle.call(this);
+            return setTimeout(repeatedTitleCheck, TITLE_TIMEOUT);
+        }
+        this.init();
+        this.timer = repeatedCheck();
+        this.checkTitleInterval = repeatedTitleCheck();
     }
 };
 
 Provider.prototype._stopCheckInterval = function () {
-    clearInterval(this.interval);
+    clearInterval(this.timer);
     clearInterval(this.checkTitleInterval);
 };
 
@@ -640,7 +650,7 @@ Provider.prototype.pause = function () {
                 break;
             case "courses.prometheus.org.ua":
                 var button   = document.querySelector('.video-controls .video_control.pause');
-                
+
                 if (button) {
                     button.click();
                 }
@@ -682,7 +692,7 @@ Provider.prototype.pause = function () {
             case "audible.com":
             case "audible.com.au":
                 var selector = document.querySelector('#adbl-cloud-player-controls .adblPauseButton');
-    
+
                 if (selector && !selector.classList.contains('bc-hidden')) {
                     selector.click();
                 }
@@ -707,7 +717,7 @@ Provider.prototype.pause = function () {
                 var selector = document.querySelector('.playback-control .play-holder');
 
                 if (selector && selector.classList.contains('lsp-hidden')) {
-                    document.querySelector('.playback-control .pause-holder').click();                       
+                    document.querySelector('.playback-control .pause-holder').click();
                 };
                 break;
 
@@ -765,7 +775,7 @@ Provider.prototype.play = function () {
                     document.querySelector('#tuner.stopped .playbutton-cont') && document.querySelector('#tuner.stopped .playbutton-cont').click();
                 }
                 break;
-                
+
             case "armyfm.com.ua":
                 p = document.querySelector(".cl_play");
                 p && p.click();
@@ -871,7 +881,7 @@ Provider.prototype.play = function () {
                 break;
             case "courses.prometheus.org.ua":
                 var button   = document.querySelector('.video-controls .video_control.play');
-                
+
                 if (button) {
                     button.click();
                 }
@@ -913,11 +923,11 @@ Provider.prototype.play = function () {
             case "audible.com":
             case "audible.com.au":
                 var selector = document.querySelector('#adbl-cloud-player-controls .adblPlayButton');
-    
+
                 if (selector && !selector.classList.contains('bc-hidden')) {
                     selector.click();
                 }
-                break;    
+                break;
             case "play.mubert.com":
                 var selector = this.customLastPlayerSelector;
                 if (selector && !selector.classList.contains('playing')) {
@@ -943,7 +953,7 @@ Provider.prototype.play = function () {
                 var selector = document.querySelector('.playback-control .play-holder');
 
                 if (selector && !selector.classList.contains('lsp-hidden')) {
-                    document.querySelector('.playback-control .play-holder').click();                       
+                    document.querySelector('.playback-control .play-holder').click();
                 };
                 break;
         }
