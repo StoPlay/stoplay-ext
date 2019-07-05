@@ -32,7 +32,7 @@
     "*://*/*"
    ],
    "js": [
-    "src/content/index.js"
+    "dist/index.js"
    ],
    "all_frames": true
   }

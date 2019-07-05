@@ -1,4 +1,5 @@
 /* StoPlay Content JS */
+import { CheckTimer } from './CheckTimer.js';
 
 function safeGetElementTextContentByQuery(query) {
     try {
@@ -97,26 +98,37 @@ Provider.prototype._parseAllowedProviders = function(providers) {
 };
 
 Provider.prototype._detectProviderAndStartCheckInterval = function () {
-    let repeatedCheck;
+    let repeatedCheck, repeatedTitleCheck;
     if (this.detectProvider()) {
         repeatedCheck = () => {
             this.checkStatus();
             this.checkAnnoyingLightboxes();
-            return setTimeout(repeatedCheck, CHECK_TIMEOUT);
         };
         repeatedTitleCheck = () => {
             this.checkTitle.call(this);
-            return setTimeout(repeatedTitleCheck, TITLE_TIMEOUT);
         }
+
+        this.timer = new CheckTimer({
+            delay: CHECK_TIMEOUT,
+            callback: repeatedCheck,
+            recursive: true
+        });
+        this.timer.start();
+
+        this.checkTitleInterval = new CheckTimer({
+            delay: TITLE_TIMEOUT,
+            callback: repeatedTitleCheck,
+            recursive: true
+        });
+        this.checkTitleInterval.start();
+
         this.init();
-        this.timer = repeatedCheck();
-        this.checkTitleInterval = repeatedTitleCheck();
     }
 };
 
 Provider.prototype._stopCheckInterval = function () {
-    clearInterval(this.timer);
-    clearInterval(this.checkTitleInterval);
+    this.timer.stop();
+    this.checkTitleInterval.stop();
 };
 
 Provider.prototype._restartCheckInterval = function () {

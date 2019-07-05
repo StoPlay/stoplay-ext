@@ -9,10 +9,12 @@
   },
   "devDependencies": {
     "grunt": "~1.0.4",
-    "grunt-bumpup": "*",
+    "grunt-babel": "^8.0.0",
+    "grunt-bumpup": "^0.6.3",
     "grunt-exec": "^3.0.0",
     "grunt-release": "^0.14.0",
+    "grunt-rollup": "^10.0.0",
     "grunt-webstore-upload": "^0.9.21",
-    "grunt-zip": "*"
+    "grunt-zip": "^0.18.2"
   }
 }
