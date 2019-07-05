@@ -32,15 +32,13 @@
     "*://*/*"
    ],
    "js": [
-    "content.js"
+    "src/content/index.js"
    ],
    "all_frames": true
   }
  ],
  "background": {
-  "scripts": [
-   "background.js"
-  ]
+  "page": "src/background/index.html"
  },
  "permissions": [
   "tabs",
@@ -59,7 +57,7 @@
   }
  },
  "options_ui": {
-  "page": "options.html",
+  "page": "src/options/index.html",
   "chrome_style": true
  }
 }

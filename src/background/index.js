@@ -1,78 +1,13 @@
-/* StoPlay Background JS */
-"use strict";
+import {AppIcons} from "./AppIcons.js";
+import {DataStorage} from "./DataStorage.js";
+import {ProvidersList} from "./ProvidersList.js";
 
-var STOP_ICON = '/img/stop128.png',
-	PLAY_ICON = '/img/icon128.png',
-	DISABLED_ICON = '/img/icon128_disabled.png';
+const version = chrome.app.getDetails().version;
 
-var version = chrome.app.getDetails().version;
-var debug = false;
-
-var providersList =
-	["vk.com",
-	"new.vk.com",
-	"music.youtube.com",
-	"gaming.youtube.com",
-	"youtube.com",
-	"vimeo.com",
-	"muzebra.com",
-	"pleer.net",
-	"last.fm",
-	"rutube.ru",
-	"ted.com",
-	"mixcloud.com",
-	"soundcloud.com",
-	"seasonvar.ru",
-	"play.google.com",
-	"music.yandex.ua",
-	"music.yandex.ru",
-	"v5player.slipstreamradio.com",
-	"jazzradio.com",
-	"rockradio.com",
-	"radiotunes.com",
-	"classicalradio.com",
-	"tunein.com",
-	"megogo.net",
-	"spotify.com",
-	"play.spotify.com",
-	"open.spotify.com",
-	"bandcamp.com",
-	"promodj.com",
-	"facebook.com",
-	"kickstarter.com",
-	"hearthis.at",
-	"player.vimeo.com",
-	"courses.prometheus.org.ua",
-	"dailymotion.com",
-	"coursera.org",
-	"deezer.com",
-	"netflix.com",
-	"egghead.io",
-	"audible.ca",
-	"audible.com",
-	"audible.com.au",
-	"di.fm",
-	"play.mubert.com",
-	"coub.com",
-	"livestream.com",
-	"udemy.com",
-	"armyfm.com.ua",
-	"zenradio.com"
-];
-var providersDefault = providersList.map(function(item) {
+let debug = false;
+const providersDefault = ProvidersList.map(function(item) {
 	return {uri: item, enabled: true};
 });
-
-var DataStorage = {};
-DataStorage.storage = localStorage;
-DataStorage.get = function (name) {
-    var value = this.storage.getItem(name);
-
-    return value ? JSON.parse(value) : false;
-};
-DataStorage.set = function (name, value) {
-    this.storage.setItem(name, JSON.stringify(value));
-};
 
 if (DataStorage.get('debug_mode')) {
 	debug = true;
@@ -158,9 +93,9 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 		var storageChange = changes[key];
 
 		if (namespace === "sync" && key === "enabled") {
-			var icon = PLAY_ICON;
+			var icon = AppIcons.PLAY_ICON;
 			if (storageChange.newValue !== true) {
-				icon = DISABLED_ICON;
+				icon = AppIcons.DISABLED_ICON;
 			}
 			chrome.browserAction.setIcon({path: icon});
 		}
@@ -212,7 +147,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 				DataStorage.set('lastPlayingTabId', sender.tab.id);
 				DataStorage.set('lastPlayingFrameId', sender.frameId);
 				DataStorage.set('status', 'playing');
-				chrome.browserAction.setIcon({path: STOP_ICON});
+				chrome.browserAction.setIcon({path: AppIcons.STOP_ICON});
 				if (request.title) {
 					chrome.browserAction.setTitle({title: "Playing: " + request.title});
 				} else {
@@ -224,7 +159,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 				DataStorage.set('lastPausedTabId', sender.tab.id);
 				DataStorage.set('lastPausedFrameId', sender.frameId);
 				DataStorage.set('status', 'paused');
-				chrome.browserAction.setIcon({path: PLAY_ICON});
+				chrome.browserAction.setIcon({path: AppIcons.PLAY_ICON});
 				chrome.browserAction.setTitle({title: "StoPlay" });
 				break;
 
