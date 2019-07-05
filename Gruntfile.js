@@ -2,6 +2,7 @@
 module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('manifest.json'),
+
         bumpup: {
             options: {
                 updateProps: {
@@ -10,6 +11,7 @@ module.exports = function(grunt) {
             },
             files: ['manifest.json', 'package.json']
         },
+
         release: {
             options: {
                 bump: false,
@@ -30,10 +32,12 @@ module.exports = function(grunt) {
                 dest: 'builds/<%= pkg.name + "-" + pkg.version %>.zip'
             }
         },
+
         exec: {
             fork_release: 'git checkout -b release/<%= pkg.version %>',
             push_release: 'git push origin release/<%= pkg.version %>'
         },
+
         webstore_upload: {
             "accounts": {
                 "default": {
