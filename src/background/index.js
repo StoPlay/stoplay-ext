@@ -194,4 +194,3 @@ chrome.tabs.onRemoved.addListener(function(tabId){
 		}
 	}
 });
-
