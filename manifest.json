@@ -38,7 +38,9 @@
   }
  ],
  "background": {
-  "page": "src/background/index.html"
+  "scripts": [
+    "dist/background.js"
+  ]
  },
  "permissions": [
   "tabs",

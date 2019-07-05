@@ -9,7 +9,6 @@ export class CheckTimer {
     recursive (boolean) - restart timer after callback is fired
 
    */
-
   constructor(options) {
     this.options = options;
     this.timer = null;

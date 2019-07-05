@@ -27,19 +27,30 @@ module.exports = function(grunt) {
         },
 
         rollup: {
-          options: {
-            format: "iife"
-          },
-          dist: {
-            files: {
-              "./dist/index.js": "./src/content/main.js"
+            options: {
+                format: "iife"
+            },
+            dist: {
+                files: {
+                    "./dist/index.js": "./src/content/main.js",
+                    "./dist/background.js": "./src/background/index.js",
+                }
             }
-          }
+        },
+
+        watch: {
+            scripts: {
+                files: ['src/**/*.js'],
+                tasks: ['rollup'],
+                options: {
+                   spawn: false,
+                },
+            },
         },
 
         zip: {
             'long-format': {
-                src: ['img/**', 'dist/index.js', 'src/options/**', '*.css', '*.md', '*.html', 'LICENSE', '!Gruntfile.js', '!package.json'],
+                src: ['img/**', 'dist/*.js', 'src/options/**', 'vendors/**', 'manifest.json', 'LICENSE', '!Gruntfile.js', '!package.json'],
                 dest: 'builds/<%= pkg.name + "-" + pkg.version %>.zip'
             }
         },
@@ -86,6 +97,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-release');
     grunt.loadNpmTasks('grunt-zip');
     grunt.loadNpmTasks('grunt-rollup');
+    grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-webstore-upload');
 
     // Alias task for release
@@ -100,7 +112,7 @@ module.exports = function(grunt) {
     grunt.registerTask('default', [ 'rollup' ]);
     // to make release run this one
     grunt.registerTask('build', [ 'makeRelease' ]);
-    grunt.registerTask('pack', [ 'zip' ]);
+    grunt.registerTask('pack', [ 'rollup', 'zip' ]);
     // only should be run by CI, not manually
     grunt.registerTask('deploy', ['pack', 'webstore_upload']);
 }
