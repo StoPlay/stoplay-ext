@@ -19,7 +19,7 @@ export class CheckTimer {
   }
 
   check() {
-    clearTimeout(this.timer);
+    this.stop();
     this.timer = setTimeout(() => {
       this.options.callback();
 
