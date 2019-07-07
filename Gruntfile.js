@@ -109,7 +109,7 @@ module.exports = function(grunt) {
         grunt.task.run('exec:push_release');
     });
 
-    grunt.registerTask('default', [ 'rollup' ]);
+    grunt.registerTask('default', [ 'watch' ]);
     // to make release run this one
     grunt.registerTask('build', [ 'makeRelease' ]);
     grunt.registerTask('pack', [ 'rollup', 'zip' ]);

@@ -31,26 +31,38 @@ var Status = {
 var CHECK_TIMEOUT = 1000;
 var TITLE_TIMEOUT = 10000;
 
-var Provider = function () {
-    this.allowed = [];
-    this.enabled = true;
-    this.LOG = 'STOPLAY';
-    this.status = Status.PAUSED;
-    this.playingTitle = '';
-    this.timer = null;
-    this.checkTitleInterval = null;
-    this.events = {};
+class Provider {
+    constructor() {
+        this.allowed = [];
+        this.enabled = true;
+        this.LOG = 'STOPLAY';
+        this.status = Status.PAUSED;
+        this.playingTitle = '';
+        this.timer = null;
+        this.checkTitleInterval = null;
+        this.events = {};
 
-    this.isInstalled();
+        this.isInstalled();
+        this.customLastPlayerSelector = null;
 
-    this.customLastPlayerSelector = null;
+        chrome.storage.sync.get({
+            enabled: true,
+            providers: []
+        }, options => this._parseOptions(options));
 
-    chrome.storage.sync.get({
-        enabled: true,
-        providers: []
-    }, options => this._parseOptions(options));
+        this.timer = new CheckTimer({
+            delay: CHECK_TIMEOUT,
+            callback: this.checkStatus.bind(this),
+            recursive: true
+        });
+        this.checkTitleInterval = new CheckTimer({
+            delay: TITLE_TIMEOUT,
+            callback: this.checkTitle.bind(this),
+            recursive: true
+        });
 
-    chrome.storage.onChanged.addListener(changes => this._parseChanges(changes));
+        chrome.storage.onChanged.addListener(changes => this._parseChanges(changes));
+    }
 };
 
 /**
@@ -98,28 +110,8 @@ Provider.prototype._parseAllowedProviders = function(providers) {
 };
 
 Provider.prototype._detectProviderAndStartCheckInterval = function () {
-    let repeatedCheck, repeatedTitleCheck;
     if (this.detectProvider()) {
-        repeatedCheck = () => {
-            this.checkStatus();
-            this.checkAnnoyingLightboxes();
-        };
-        repeatedTitleCheck = () => {
-            this.checkTitle.call(this);
-        }
-
-        this.timer = new CheckTimer({
-            delay: CHECK_TIMEOUT,
-            callback: repeatedCheck,
-            recursive: true
-        });
         this.timer.start();
-
-        this.checkTitleInterval = new CheckTimer({
-            delay: TITLE_TIMEOUT,
-            callback: repeatedTitleCheck,
-            recursive: true
-        });
         this.checkTitleInterval.start();
 
         this.init();
@@ -227,9 +219,8 @@ Provider.prototype.getTitle = function () {
     return "";
 };
 
-Provider.prototype.checkTitle = function () {
+Provider.prototype.checkTitle = function() {
     var currentTitle = this.getTitle();
-
     if (currentTitle !== this.playingTitle) {
         this.playingTitle = currentTitle;
         this.trigger('updateTitle');
@@ -260,7 +251,7 @@ Provider.prototype.init = function () {
     }
 };
 
-Provider.prototype.checkStatus = function () {
+Provider.prototype.checkStatus = function() {
     var status, p;
 
     switch(this.host) {
@@ -509,9 +500,6 @@ Provider.prototype.checkStatus = function () {
     }
 
     status && this.__changeState(status);
-};
-
-Provider.prototype.checkAnnoyingLightboxes = function () {
 };
 
 Provider.prototype.pause = function () {

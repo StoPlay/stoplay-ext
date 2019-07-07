@@ -13,23 +13,24 @@ export class CheckTimer {
     this.options = options;
     this.timer = null;
 
+    this.check = this.check.bind(this);
     this.start = this.start.bind(this);
     this.stop = this.stop.bind(this);
   }
 
-  start() {
-    let _this = this;
-    let check = function() {
-      clearTimeout(_this.timer);
-      _this.timer = setTimeout(function() {
-        _this.options.callback();
+  check() {
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      this.options.callback();
 
-        if (_this.options.recursive) {
-          check();
-        }
-      }, _this.options.delay);
-    }
-    check();
+      if (this.options.recursive) {
+        this.check();
+      }
+    }, this.options.delay);
+  }
+
+  start() {
+    this.check();
   }
 
   stop() {
