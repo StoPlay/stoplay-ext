@@ -32,7 +32,7 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    "./dist/content.js": "./src/content/main.js",
+                    "./dist/content.js": "./src/content/index.js",
                     "./dist/background.js": "./src/background/index.js",
                 }
             }
