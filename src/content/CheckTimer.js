@@ -34,6 +34,10 @@ export class CheckTimer {
   }
 
   stop() {
+    if (!this.timer) {
+        return;
+    }
+
     clearTimeout(this.timer);
   }
 };
