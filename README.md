@@ -84,6 +84,8 @@ To prepare your dev version, see
 [Chrome Dev Getting Started](http://developer.chrome.com/extensions/getstarted.html#unpacked).
 There are also lots of useful info there.
 
+To run the extension unpacked you need to compile javascript - run `grunt rollup`.
+
 Git flow is simple:
 * all features/bugfixes in separate branches
 * then push the branch and create a pull-request

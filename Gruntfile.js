@@ -2,6 +2,7 @@
 module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('manifest.json'),
+
         bumpup: {
             options: {
                 updateProps: {
@@ -10,6 +11,7 @@ module.exports = function(grunt) {
             },
             files: ['manifest.json', 'package.json']
         },
+
         release: {
             options: {
                 bump: false,
@@ -24,16 +26,40 @@ module.exports = function(grunt) {
             }
         },
 
+        rollup: {
+            options: {
+                format: "iife"
+            },
+            dist: {
+                files: {
+                    "./dist/content.js": "./src/content/index.js",
+                    "./dist/background.js": "./src/background/index.js",
+                }
+            }
+        },
+
+        watch: {
+            scripts: {
+                files: ['src/**/*.js'],
+                tasks: ['rollup'],
+                options: {
+                   spawn: false,
+                },
+            },
+        },
+
         zip: {
             'long-format': {
-                src: ['css/**', 'img/**', '*.js*', '*.css', '*.md', '*.html', 'LICENSE', '!Gruntfile.js', '!package.json'],
+                src: ['img/**', 'dist/*.js', 'src/options/**', 'vendors/**', 'manifest.json', 'LICENSE', '!Gruntfile.js', '!package.json'],
                 dest: 'builds/<%= pkg.name + "-" + pkg.version %>.zip'
             }
         },
+
         exec: {
             fork_release: 'git checkout -b release/<%= pkg.version %>',
             push_release: 'git push origin release/<%= pkg.version %>'
         },
+
         webstore_upload: {
             "accounts": {
                 "default": {
@@ -52,7 +78,7 @@ module.exports = function(grunt) {
             "extensions": {
                 "StoPlay": {
                     appID: process.env.extensionId,
-                    zip: 'builds/<%= pkg.name + "-" + pkg.version %>.zip'      
+                    zip: 'builds/<%= pkg.name + "-" + pkg.version %>.zip'
                 }
             },
             onComplete: function(result) {
@@ -70,6 +96,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-bumpup');
     grunt.loadNpmTasks('grunt-release');
     grunt.loadNpmTasks('grunt-zip');
+    grunt.loadNpmTasks('grunt-rollup');
+    grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-webstore-upload');
 
     // Alias task for release
@@ -81,10 +109,10 @@ module.exports = function(grunt) {
         grunt.task.run('exec:push_release');
     });
 
-    grunt.registerTask('default', []);
+    grunt.registerTask('default', [ 'watch' ]);
     // to make release run this one
-    grunt.registerTask('build', ['makeRelease']);
-    grunt.registerTask('pack', ['zip']);
+    grunt.registerTask('build', [ 'makeRelease' ]);
+    grunt.registerTask('pack', [ 'rollup', 'zip' ]);
     // only should be run by CI, not manually
     grunt.registerTask('deploy', ['pack', 'webstore_upload']);
 }
