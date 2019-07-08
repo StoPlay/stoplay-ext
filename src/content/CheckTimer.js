@@ -14,8 +14,6 @@ export class CheckTimer {
     this.timer = null;
 
     this.check = this.check.bind(this);
-    this.start = this.start.bind(this);
-    this.stop = this.stop.bind(this);
   }
 
   check() {
