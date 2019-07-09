@@ -11,11 +11,6 @@ const providersDefault = ProvidersList.map((item) => {
 	return {uri: item, enabled: true};
 });
 
-
-function saveVersion() {
-	appState.setVersion(version);
-}
-
 function saveToOptions(dataObject) {
 	chrome.storage.sync.set(dataObject, () => {
 		Logger.log('STOPLAY saveToOptions saved');
