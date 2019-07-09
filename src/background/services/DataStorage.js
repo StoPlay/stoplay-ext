@@ -1,4 +1,6 @@
-let instance = null;
+import {Logger} from "./Logger";
+
+let instance;
 
 export class DataStorageEngine {
     constructor(storageEngine) {
@@ -20,7 +22,15 @@ export class DataStorageEngine {
             return false;
         }
 
-        return JSON.parse(value);
+        let parsedValue;
+
+        try {
+            parsedValue = JSON.parse(value);
+        } catch (exception) {
+            Logger.error(exception)
+        }
+
+        return parsedValue;
     }
 
     set(name, value) {

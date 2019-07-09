@@ -1,35 +1,24 @@
 import {AppIcons} from "./models/AppIcons.js";
-import {DataStorage} from "./services/DataStorage.js";
 import {ProvidersList} from "./models/ProvidersList.js";
 import {Actions} from "./models/Actions.js";
 import {Status} from "./models/Status.js";
+import {AppState} from "./services/AppState.js";
+import {Logger} from "./services/Logger.js";
 
+const appState = AppState.getInstance();
 const version = chrome.app.getDetails().version;
-
-let debug = false;
 const providersDefault = ProvidersList.map((item) => {
 	return {uri: item, enabled: true};
 });
 
-if (DataStorage.get('debug_mode')) {
-	debug = true;
-}
-
-function logging() {
-	if (!debug) {
-		return;
-	}
-
-	console.log.apply(null, arguments);
-}
-
 
 function saveVersion() {
-	DataStorage.set('version', version);
+	appState.setVersion(version);
 }
+
 function saveToOptions(dataObject) {
 	chrome.storage.sync.set(dataObject, () => {
-		logging('STOPLAY saveToOptions saved');
+		Logger.log('STOPLAY saveToOptions saved');
 	});
 }
 
@@ -48,23 +37,21 @@ function restoreOptions(callback) {
 }
 
 function onFirstRun() {
-	logging('STOPLAY first_run');
-	saveVersion();
+	Logger.log('STOPLAY first_run');
+	appState.setVersion(version);
 	saveToOptions({providers: providersDefault});
 }
 
 // find missing providers and add from defaults
 function mergeProviders(oldItems) {
 	if (!Array.isArray(oldItems)) {
-		logging('STOPLAY mergeProviders returning default values');
+		Logger.log('STOPLAY mergeProviders returning default values');
 		return providersDefault;
 	}
 
-	logging('STOPLAY mergeProviders', oldItems);
+	Logger.log('STOPLAY mergeProviders', oldItems);
 
-	let providersFull = [];
-
-	providersFull = providersDefault.map(function(itemDefault) {
+	return providersDefault.map(function(itemDefault) {
 		// looking if any of the new items have appeared
 		// in older version of settings
 		const found = oldItems.find((itemOld) => {
@@ -78,18 +65,16 @@ function mergeProviders(oldItems) {
 			return found;
 		}
 	});
-
-	return providersFull;
 }
 
-DataStorage.set('status', 'silent');
+appState.setStatus("silent");
 
-if (!DataStorage.get('version')) {
+if (!appState.getVersion()) {
 	// first run
 	onFirstRun();
-} else if (DataStorage.get('version') != version) {
+} else if (appState.getVersion() !== version) {
 	// extension updated
-	saveVersion();
+	appState.setVersion(version);
 	restoreOptions((providersMerged) => {
 		saveToOptions({providers: providersMerged});
 	});
@@ -112,11 +97,11 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 });
 
 chrome.browserAction.onClicked.addListener(() => {
-	const lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId'));
-	const lastPlayingFrameId = parseInt(DataStorage.get('lastPlayingFrameId')) || 0;
-	const lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId'));
-	const lastPausedFrameId = parseInt(DataStorage.get('lastPausedFrameId')) || 0;
-	const status = DataStorage.get('status');
+	const lastPlayingTabId = appState.getLastPlayingTabId();
+	const lastPlayingFrameId = appState.getLastPlayingFrameId() || 0;
+	const lastPausedTabId = appState.getLastPausedTabId();
+	const lastPausedFrameId = appState.getLastPausedFrameId() || 0;
+	const status = appState.getStatus();
 
 	switch (status) {
 		case Status.PLAYING:
@@ -142,10 +127,10 @@ chrome.browserAction.onClicked.addListener(() => {
 })
 
 chrome.runtime.onMessage.addListener((request, sender) => {
-	const lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId'));
-	const lastPlayingFrameId = parseInt(DataStorage.get('lastPlayingFrameId')) || 0;
-	const lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId'));
-	const status = DataStorage.get('status');
+	const lastPlayingTabId = appState.getLastPlayingTabId();
+	const lastPlayingFrameId = appState.getLastPlayingFrameId() || 0;
+	const lastPausedTabId = appState.getLastPausedTabId();
+	const status = appState.getStatus();
 
 	if (!request.action || !sender.tab) {
 		return;
@@ -173,9 +158,9 @@ chrome.runtime.onMessage.addListener((request, sender) => {
 				);
 			}
 
-			DataStorage.set('lastPlayingTabId', sender.tab.id);
-			DataStorage.set('lastPlayingFrameId', sender.frameId);
-			DataStorage.set('status', Status.PLAYING);
+			appState.setLastPlayingTabId(sender.tab.id);
+			appState.setLastPlayingFrameId(sender.frameId);
+			appState.setStatus(Status.PLAYING);
 
 			chrome.browserAction.setIcon({path: AppIcons.STOP_ICON});
 
@@ -187,9 +172,9 @@ chrome.runtime.onMessage.addListener((request, sender) => {
 			break;
 
 		case 'paused':
-			DataStorage.set('lastPausedTabId', sender.tab.id);
-			DataStorage.set('lastPausedFrameId', sender.frameId);
-			DataStorage.set('status', Status.PAUSED);
+			appState.setLastPausedTabId(sender.tab.id);
+			appState.setLastPausedFrameId(sender.frameId);
+			appState.setStatus(Status.PAUSED);
 
 			chrome.browserAction.setIcon({path: AppIcons.PLAY_ICON});
 			chrome.browserAction.setTitle({title: "StoPlay"});
@@ -211,11 +196,11 @@ chrome.runtime.onMessage.addListener((request, sender) => {
 });
 
 chrome.commands.onCommand.addListener(() => {
-	const lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId'));
-	const lastPlayingFrameId = parseInt(DataStorage.get('lastPlayingFrameId')) || 0;
-	const lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId'));
-	const lastPausedFrameId = parseInt(DataStorage.get('lastPausedFrameId')) || 0;
-	const status = DataStorage.get('status');
+	const lastPlayingTabId = appState.getLastPlayingTabId();
+	const lastPlayingFrameId = appState.getLastPlayingFrameId() || 0;
+	const lastPausedTabId = appState.getLastPausedTabId();
+	const lastPausedFrameId = appState.getLastPausedFrameId() || 0;
+	const status = appState.getStatus();
 
 	let action = Actions.PAUSE;
 	let frameId = lastPlayingFrameId;
@@ -233,12 +218,12 @@ chrome.commands.onCommand.addListener(() => {
 });
 
 chrome.tabs.onRemoved.addListener((tabId) => {
-	const lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId'));
-	const lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId'));
-	const lastPausedFrameId = parseInt(DataStorage.get('lastPausedFrameId')) || 0;
+	const lastPlayingTabId = appState.getLastPlayingTabId();
+	const lastPausedTabId = appState.getLastPausedTabId();
+	const lastPausedFrameId = appState.getLastPausedFrameId() || 0;
 
 	if (tabId === lastPlayingTabId) {
-		DataStorage.set('lastPlayingTabId', null);
+		appState.setLastPlayingTabId(null);
 
 		if (lastPausedTabId !== tabId) {
 			chrome.tabs.sendMessage(
