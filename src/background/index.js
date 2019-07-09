@@ -7,7 +7,7 @@ import {Status} from "./models/Status.js";
 const version = chrome.app.getDetails().version;
 
 let debug = false;
-const providersDefault = ProvidersList.map(function (item) {
+const providersDefault = ProvidersList.map((item) => {
 	return {uri: item, enabled: true};
 });
 
@@ -28,7 +28,7 @@ function saveVersion() {
 	DataStorage.set('version', version);
 }
 function saveToOptions(dataObject) {
-	chrome.storage.sync.set(dataObject, function () {
+	chrome.storage.sync.set(dataObject, () => {
 		logging('STOPLAY saveToOptions saved');
 	});
 }
@@ -38,7 +38,7 @@ function restoreOptions(callback) {
 	chrome.storage.sync.get({
 		enabled: true,
 		providers: providersDefault
-	}, function (items) {
+	}, (items) => {
 		const providersCurrent = mergeProviders(items.providers);
 
 		if (callback) {
@@ -67,7 +67,7 @@ function mergeProviders(oldItems) {
 	providersFull = providersDefault.map(function(itemDefault) {
 		// looking if any of the new items have appeared
 		// in older version of settings
-		const found = oldItems.find(function (itemOld) {
+		const found = oldItems.find((itemOld) => {
 			return itemOld.uri === itemDefault.uri;
 		});
 
@@ -90,12 +90,12 @@ if (!DataStorage.get('version')) {
 } else if (DataStorage.get('version') != version) {
 	// extension updated
 	saveVersion();
-	restoreOptions(function (providersMerged) {
+	restoreOptions((providersMerged) => {
 		saveToOptions({providers: providersMerged});
 	});
 }
 
-chrome.storage.onChanged.addListener(function (changes, namespace) {
+chrome.storage.onChanged.addListener((changes, namespace) => {
 	for (const key in changes) {
 		const storageChange = changes[key];
 
@@ -111,7 +111,7 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
 	}
 });
 
-chrome.browserAction.onClicked.addListener(function () {
+chrome.browserAction.onClicked.addListener(() => {
 	const lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId'));
 	const lastPlayingFrameId = parseInt(DataStorage.get('lastPlayingFrameId')) || 0;
 	const lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId'));
@@ -141,7 +141,7 @@ chrome.browserAction.onClicked.addListener(function () {
 	}
 })
 
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener((request, sender) => {
 	const lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId'));
 	const lastPlayingFrameId = parseInt(DataStorage.get('lastPlayingFrameId')) || 0;
 	const lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId'));
@@ -210,7 +210,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	}
 });
 
-chrome.commands.onCommand.addListener(function (command) {
+chrome.commands.onCommand.addListener(() => {
 	const lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId'));
 	const lastPlayingFrameId = parseInt(DataStorage.get('lastPlayingFrameId')) || 0;
 	const lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId'));
@@ -232,7 +232,7 @@ chrome.commands.onCommand.addListener(function (command) {
 	}
 });
 
-chrome.tabs.onRemoved.addListener(function (tabId){
+chrome.tabs.onRemoved.addListener((tabId) => {
 	const lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId'));
 	const lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId'));
 	const lastPausedFrameId = parseInt(DataStorage.get('lastPausedFrameId')) || 0;
