@@ -49,6 +49,7 @@ At the moment we fully support (stop and play)
 * livestream.com
 * armyfm.com.ua
 * zenradio.com
+* musicforprogramming.net
 
 ## How it works
 It just works!
@@ -83,6 +84,8 @@ try to include it in the extension as soon as possible. Check the [existing issu
 To prepare your dev version, see 
 [Chrome Dev Getting Started](http://developer.chrome.com/extensions/getstarted.html#unpacked).
 There are also lots of useful info there.
+
+To run the extension unpacked you need to compile javascript - run `grunt rollup`.
 
 Git flow is simple:
 * all features/bugfixes in separate branches
