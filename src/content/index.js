@@ -744,7 +744,6 @@ class Provider {
 
     play() {
         var p;
-        console.log('AAAAA', this.status, this.host);
         if (this.status !== Status.PLAYING) {
             switch(this.host) {
                 case "vk.com":
