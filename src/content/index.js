@@ -209,6 +209,9 @@ class Provider {
                 songName = safeGetElementTextContentByQuery("#currently-playing-title");
                 artistName = safeGetElementTextContentByQuery("#player-artist");
                 break;
+            case "musicforprogramming.net":
+                songName = safeGetElementTextContentByQuery('.pad a');
+                artistName = "Music for Programming"
         }
 
         if (artistName && songName) {
@@ -496,6 +499,11 @@ class Provider {
 
                 status = selector && selector.classList.contains('lsp-hidden') ? Status.PLAYING : Status.PAUSED;
                 break;
+            
+            case "musicforprogramming.net":
+                var player = document.getElementById('player');
+                status = player && !player.paused ? Status.PLAYING : Status.PAUSED;
+                break;
         }
 
         status && this.__changeState(status);
@@ -725,6 +733,10 @@ class Provider {
 
                     p && !p.paused && p.pause();
                     break;
+
+                case "musicforprogramming.net":
+                    document.getElementById("player_playpause").click();
+                    break;
             }
             this.__changeState(Status.PAUSED);
         }
@@ -732,6 +744,7 @@ class Provider {
 
     play() {
         var p;
+        console.log('AAAAA', this.status, this.host);
         if (this.status !== Status.PLAYING) {
             switch(this.host) {
                 case "vk.com":
@@ -954,6 +967,10 @@ class Provider {
                     if (selector && !selector.classList.contains('lsp-hidden')) {
                         document.querySelector('.playback-control .play-holder').click();
                     };
+                    break;
+
+                case "musicforprogramming.net":
+                    document.getElementById("player_playpause").click();
                     break;
             }
             this.__changeState(Status.PLAYING);

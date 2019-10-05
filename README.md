@@ -49,6 +49,7 @@ At the moment we fully support (stop and play)
 * livestream.com
 * armyfm.com.ua
 * zenradio.com
+* musicforprogramming.net
 
 ## How it works
 It just works!

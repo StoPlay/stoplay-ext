@@ -48,4 +48,5 @@ export const ProvidersList = [
     "udemy.com",
     "armyfm.com.ua",
     "zenradio.com",
+    "musicforprogramming.net",
 ];
