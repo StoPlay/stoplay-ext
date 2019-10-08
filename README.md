@@ -11,45 +11,46 @@ popular streaming services.
 
 
 At the moment we fully support (stop and play)
-* Spotify
-* PromoDJ
 * Bandcamp
-* Coub.com
 * Classicalradio.com
-* vkontakte
-* Google Music
-* vimeo
-* YouTube
+* Coub.com
+* DailyMotion.com
+* Deezer.com
 * Facebook
+* Google Music
 * Kickstarter
-* hearthis.at
-* Rutube
-* TED.com
-* Muzebra
-* Pleer.net (pleer.com)
 * Last.fm (web-version)
-* Soundcloud
 * Mixcloud
-* Seasonvar
-* Yandex.Music
-* TuneIn.com
-* megogo.net
+* Muzebra
+* Netflix
+* Pleer.net (pleer.com)
 * Prometheus.com.ua
+* PromoDJ
 * Radiotunes.com
 * Rockradio.com
-* DailyMotion.com
-* coursera.org
-* slipstreamradio.com
-* jazzradio.com
-* Deezer.com
-* Netflix
-* di.fm
-* mubert.com
-* udemy.com
-* livestream.com
+* Rutube
+* Seasonvar
+* Soundcloud
+* Spotify
+* TED.com
+* TuneIn.com
+* Yandex.Music
+* YouTube
 * armyfm.com.ua
-* zenradio.com
+* coursera.org
+* di.fm
+* hearthis.at
+* jazzradio.com
+* livestream.com
+* megogo.net
+* mubert.com
 * musicforprogramming.net
+* radiolist.com.ua
+* slipstreamradio.com
+* udemy.com
+* vimeo
+* vkontakte
+* zenradio.com
 
 ## How it works
 It just works!
