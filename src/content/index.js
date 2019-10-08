@@ -257,12 +257,15 @@ class Provider {
         var status, p;
 
         switch(this.host) {
+            case "radiolist.com.ua":
+                status = !!document.querySelector('.jouele-status-playing') ? Status.PLAYING : Status.PAUSED;
+                break;
+
             case "vk.com":
                 var player_obj = document.querySelector('.top_audio_player');
                 if (player_obj) {
                     status = player_obj && player_obj.classList.contains('top_audio_player_playing') ? Status.PLAYING : Status.PAUSED;
                 }
-                console.log('StoPlay vk.com status', status);
                 break;
 
             case "new.vk.com":
@@ -499,7 +502,7 @@ class Provider {
 
                 status = selector && selector.classList.contains('lsp-hidden') ? Status.PLAYING : Status.PAUSED;
                 break;
-            
+
             case "musicforprogramming.net":
                 var player = document.getElementById('player');
                 status = player && !player.paused ? Status.PLAYING : Status.PAUSED;
@@ -513,6 +516,14 @@ class Provider {
         var p;
         if (this.status === Status.PLAYING) {
             switch(this.host) {
+                case "radiolist.com.ua":
+                    var pauseButton = document.querySelector('.jouele-status-playing .jouele-info-control-button-icon_pause');
+                    if (pauseButton) {
+                        pauseButton.click();
+                        this.customLastPlayerSelector = pauseButton.previousSibling;
+                    }
+                break;
+
                 case "vk.com":
                     document.querySelector('.top_audio_player_play').click();
                     break;
@@ -746,6 +757,12 @@ class Provider {
         var p;
         if (this.status !== Status.PLAYING) {
             switch(this.host) {
+                case "radiolist.com.ua":
+                    if (this.customLastPlayerSelector) {
+                        this.customLastPlayerSelector.click();
+                    }
+                break;
+
                 case "vk.com":
                     document.querySelector('.top_audio_player_play').click();
                     break;

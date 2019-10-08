@@ -37,8 +37,8 @@ function restoreOptions(callback) {
 		providers: providersDefault
 	}, function(items) {
 		var providersCurrent = mergeProviders(items.providers);
-		if (callback) {
-			callback.call(null, providersCurrent);
+		if (typeof callback === 'function') {
+			callback(providersCurrent);
 		}
 	});
 }
@@ -75,6 +75,15 @@ function mergeProviders(oldItems) {
 	return providersFull;
 }
 
+function resetProviders(callback) {
+	restoreOptions(function(providersMerged) {
+		saveToOptions({providers: providersMerged});
+		if (typeof callback === 'function') {
+			callback(providersMerged);
+		}
+	})
+}
+
 DataStorage.set('status', 'silent');
 
 if (!DataStorage.get('version')) {
@@ -83,9 +92,7 @@ if (!DataStorage.get('version')) {
 } else if (DataStorage.get('version') != version) {
 	// extension updated
 	saveVersion();
-	restoreOptions(function(providersMerged) {
-		saveToOptions({providers: providersMerged});
-	});
+	resetProviders();
 }
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
@@ -128,9 +135,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	var lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId')),
 		lastPlayingFrameId = parseInt(DataStorage.get('lastPlayingFrameId')) || 0,
 		lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId')),
-		status = DataStorage.get('status');
+		status = DataStorage.get('status'),
+		isOptionsPage = sender.url.indexOf(chrome.runtime.id) > -1
 
-	if(request.action && sender.tab) {
+	if(request.action && (sender.tab || isOptionsPage)) {
 		switch(request.action) {
 			case 'updateTitle':
 				if (request.title) {
@@ -161,6 +169,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 				DataStorage.set('status', 'paused');
 				chrome.browserAction.setIcon({path: AppIcons.PLAY_ICON});
 				chrome.browserAction.setTitle({title: "StoPlay" });
+				break;
+
+			case 'resetProviders':
+				resetProviders((providers) => {
+					sendResponse({
+						providers
+					})
+				});
 				break;
 
 			case 'toggle':
