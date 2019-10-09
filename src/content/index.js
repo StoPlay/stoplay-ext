@@ -23,6 +23,8 @@ var StoPlay = {
     }
 };
 
+var button = null;
+
 var Status = {
     PAUSED: "paused",
     PLAYING: "playing"
@@ -44,6 +46,7 @@ class Provider {
 
         this.isInstalled();
         this.customLastPlayerSelector = null;
+        this.customLastPauseSelector = null;
 
         chrome.storage.sync.get({
             enabled: true,
@@ -258,7 +261,13 @@ class Provider {
 
         switch(this.host) {
             case "radiolist.com.ua":
-                status = !!document.querySelector('.jouele-status-playing') ? Status.PLAYING : Status.PAUSED;
+                button = document.querySelector('.jouele-status-playing .jouele-info-control-button-icon_pause');
+                if (button) {
+                    status = Status.PLAYING;
+                    this.customLastPlayerSelector = button;
+                } else {
+                    status = Status.PAUSED;
+                }
                 break;
 
             case "vk.com":
@@ -454,7 +463,7 @@ class Provider {
                 }
 
             case "di.fm":
-                var button = document.querySelector('#webplayer-region .controls .icon-pause');
+                button = document.querySelector('#webplayer-region .controls .icon-pause');
                 status = Status.PAUSED;
                 if (button) {
                     status = Status.PLAYING;
@@ -517,11 +526,10 @@ class Provider {
         if (this.status === Status.PLAYING) {
             switch(this.host) {
                 case "radiolist.com.ua":
-                    var pauseButton = document.querySelector('.jouele-status-playing .jouele-info-control-button-icon_pause');
-                    if (pauseButton) {
-                        pauseButton.click();
-                        this.customLastPlayerSelector = pauseButton.previousSibling;
+                    if (this.customLastPlayerSelector) {
+                        this.customLastPlayerSelector.click();
                     }
+
                 break;
 
                 case "vk.com":
@@ -667,8 +675,7 @@ class Provider {
                     target.parentNode.insertBefore(script, target);
                     break;
                 case "courses.prometheus.org.ua":
-                    var button   = document.querySelector('.video-controls .video_control.pause');
-
+                    button = document.querySelector('.video-controls .video_control.pause');
                     if (button) {
                         button.click();
                     }
@@ -687,20 +694,20 @@ class Provider {
                     StoPlay.injectScript("dzPlayer.playing ? dzPlayer.control.pause() : void(0);");
                     break;
                 case "coursera.org":
-                    var button = document.querySelector('.c-video-control.vjs-control.vjs-playing');
+                    button = document.querySelector('.c-video-control.vjs-control.vjs-playing');
                     if (button) {
                         button.click();
                     }
                     break;
                 case "egghead.io":
-                    var button = document.querySelector('.bmpui-ui-playbacktoggle-overlay button');
+                    button = document.querySelector('.bmpui-ui-playbacktoggle-overlay button');
                     if (button) {
                         button.click();
                     }
                     break;
 
                 case "di.fm":
-                    var button = document.querySelector('#webplayer-region .controls .icon-pause');
+                    button = document.querySelector('#webplayer-region .controls .icon-pause');
                     if (button) {
                         button.click();
                     }
@@ -759,7 +766,7 @@ class Provider {
             switch(this.host) {
                 case "radiolist.com.ua":
                     if (this.customLastPlayerSelector) {
-                        this.customLastPlayerSelector.click();
+                        this.customLastPlayerSelector.previousSibling.click();
                     }
                 break;
 
@@ -908,8 +915,7 @@ class Provider {
                     target.parentNode.insertBefore(script, target);
                     break;
                 case "courses.prometheus.org.ua":
-                    var button   = document.querySelector('.video-controls .video_control.play');
-
+                    button = document.querySelector('.video-controls .video_control.play');
                     if (button) {
                         button.click();
                     }
@@ -928,20 +934,20 @@ class Provider {
                     StoPlay.injectScript("dzPlayer.paused ? dzPlayer.control.play() : void(0);");
                     break;
                 case "coursera.org":
-                    var button = document.querySelector('.c-video-control.vjs-control.vjs-paused');
+                    button = document.querySelector('.c-video-control.vjs-control.vjs-paused');
                     if (button) {
                         button.click();
                     }
                     break;
                 case "egghead.io":
-                    var button = document.querySelector('.bmpui-ui-playbacktoggle-overlay button');
+                    button = document.querySelector('.bmpui-ui-playbacktoggle-overlay button');
                     if (button) {
                         button.click();
                     }
                     break;
 
                 case "di.fm":
-                    var button = document.querySelector('#webplayer-region .controls .icon-play');
+                    button = document.querySelector('#webplayer-region .controls .icon-play');
                     if (button) {
                         button.click();
                     }
