@@ -23,6 +23,8 @@ var StoPlay = {
     }
 };
 
+var button = null;
+
 var Status = {
     PAUSED: "paused",
     PLAYING: "playing"
@@ -44,6 +46,7 @@ class Provider {
 
         this.isInstalled();
         this.customLastPlayerSelector = null;
+        this.customLastPauseSelector = null;
 
         chrome.storage.sync.get({
             enabled: true,
@@ -257,12 +260,21 @@ class Provider {
         var status, p;
 
         switch(this.host) {
+            case "radiolist.com.ua":
+                button = document.querySelector('.jouele-status-playing .jouele-info-control-button-icon_pause');
+                if (button) {
+                    status = Status.PLAYING;
+                    this.customLastPlayerSelector = button;
+                } else {
+                    status = Status.PAUSED;
+                }
+                break;
+
             case "vk.com":
                 var player_obj = document.querySelector('.top_audio_player');
                 if (player_obj) {
                     status = player_obj && player_obj.classList.contains('top_audio_player_playing') ? Status.PLAYING : Status.PAUSED;
                 }
-                console.log('StoPlay vk.com status', status);
                 break;
 
             case "new.vk.com":
@@ -451,7 +463,7 @@ class Provider {
                 }
 
             case "di.fm":
-                var button = document.querySelector('#webplayer-region .controls .icon-pause');
+                button = document.querySelector('#webplayer-region .controls .icon-pause');
                 status = Status.PAUSED;
                 if (button) {
                     status = Status.PLAYING;
@@ -499,7 +511,7 @@ class Provider {
 
                 status = selector && selector.classList.contains('lsp-hidden') ? Status.PLAYING : Status.PAUSED;
                 break;
-            
+
             case "musicforprogramming.net":
                 var player = document.getElementById('player');
                 status = player && !player.paused ? Status.PLAYING : Status.PAUSED;
@@ -513,6 +525,13 @@ class Provider {
         var p;
         if (this.status === Status.PLAYING) {
             switch(this.host) {
+                case "radiolist.com.ua":
+                    if (this.customLastPlayerSelector) {
+                        this.customLastPlayerSelector.click();
+                    }
+
+                break;
+
                 case "vk.com":
                     document.querySelector('.top_audio_player_play').click();
                     break;
@@ -656,8 +675,7 @@ class Provider {
                     target.parentNode.insertBefore(script, target);
                     break;
                 case "courses.prometheus.org.ua":
-                    var button   = document.querySelector('.video-controls .video_control.pause');
-
+                    button = document.querySelector('.video-controls .video_control.pause');
                     if (button) {
                         button.click();
                     }
@@ -676,20 +694,20 @@ class Provider {
                     StoPlay.injectScript("dzPlayer.playing ? dzPlayer.control.pause() : void(0);");
                     break;
                 case "coursera.org":
-                    var button = document.querySelector('.c-video-control.vjs-control.vjs-playing');
+                    button = document.querySelector('.c-video-control.vjs-control.vjs-playing');
                     if (button) {
                         button.click();
                     }
                     break;
                 case "egghead.io":
-                    var button = document.querySelector('.bmpui-ui-playbacktoggle-overlay button');
+                    button = document.querySelector('.bmpui-ui-playbacktoggle-overlay button');
                     if (button) {
                         button.click();
                     }
                     break;
 
                 case "di.fm":
-                    var button = document.querySelector('#webplayer-region .controls .icon-pause');
+                    button = document.querySelector('#webplayer-region .controls .icon-pause');
                     if (button) {
                         button.click();
                     }
@@ -746,6 +764,12 @@ class Provider {
         var p;
         if (this.status !== Status.PLAYING) {
             switch(this.host) {
+                case "radiolist.com.ua":
+                    if (this.customLastPlayerSelector) {
+                        this.customLastPlayerSelector.previousSibling.click();
+                    }
+                break;
+
                 case "vk.com":
                     document.querySelector('.top_audio_player_play').click();
                     break;
@@ -891,8 +915,7 @@ class Provider {
                     target.parentNode.insertBefore(script, target);
                     break;
                 case "courses.prometheus.org.ua":
-                    var button   = document.querySelector('.video-controls .video_control.play');
-
+                    button = document.querySelector('.video-controls .video_control.play');
                     if (button) {
                         button.click();
                     }
@@ -911,20 +934,20 @@ class Provider {
                     StoPlay.injectScript("dzPlayer.paused ? dzPlayer.control.play() : void(0);");
                     break;
                 case "coursera.org":
-                    var button = document.querySelector('.c-video-control.vjs-control.vjs-paused');
+                    button = document.querySelector('.c-video-control.vjs-control.vjs-paused');
                     if (button) {
                         button.click();
                     }
                     break;
                 case "egghead.io":
-                    var button = document.querySelector('.bmpui-ui-playbacktoggle-overlay button');
+                    button = document.querySelector('.bmpui-ui-playbacktoggle-overlay button');
                     if (button) {
                         button.click();
                     }
                     break;
 
                 case "di.fm":
-                    var button = document.querySelector('#webplayer-region .controls .icon-play');
+                    button = document.querySelector('#webplayer-region .controls .icon-play');
                     if (button) {
                         button.click();
                     }
