@@ -273,7 +273,7 @@ class Provider {
     }
 
     checkStatus() {
-        let status, p, selector, playerPauseButton;
+        let status, p, selector, selectorQuery, playerPauseButton;
 
         switch(this.host) {
             case "radiolist.com.ua":
@@ -539,7 +539,14 @@ class Provider {
                 break;
 
             case "radio.garden":
-                const selectorQuery = ".icon-toggle.mod-mute .icon-button.mod-sound";
+                selectorQuery = ".icon-toggle.mod-mute .icon-button.mod-sound";
+                playerPauseButton = document.querySelector(selectorQuery);
+
+                status = playerPauseButton ? Status.PLAYING : Status.PAUSED;
+                break;
+
+            case "somafm.com":
+                selectorQuery = ".player .controls button .fa-stop";
                 playerPauseButton = document.querySelector(selectorQuery);
 
                 status = playerPauseButton ? Status.PLAYING : Status.PAUSED;
@@ -550,7 +557,7 @@ class Provider {
     }
 
     pause() {
-        let p, selector, playerPauseButton;
+        let p, selector, selectorQuery, playerPauseButton;
 
         if (this.status === Status.PLAYING) {
             switch(this.host) {
@@ -796,7 +803,7 @@ class Provider {
                     break;
 
                 case "radio.garden":
-                    const selectorQuery = ".icon-toggle.mod-mute .icon-button.mod-sound";
+                    selectorQuery = ".icon-toggle.mod-mute .icon-button.mod-sound";
                     playerPauseButton = document.querySelector(selectorQuery);
 
                     if (!playerPauseButton) {
@@ -805,13 +812,24 @@ class Provider {
 
                     playerPauseButton.click();
                     break;
+
+                case "somafm.com":
+                    selectorQuery = ".player .controls button .fa-stop";
+                    playerPauseButton = document.querySelector(selectorQuery);
+
+                    if (!playerPauseButton) {
+                        return;
+                    }
+
+                    playerPauseButton.parentElement.click();
+                    break;
             }
             this.__changeState(Status.PAUSED);
         }
     }
 
     play() {
-        let p, selector, playerPlayButton;
+        let p, selector, selectorQuery, playerPlayButton;
 
         if (this.status !== Status.PLAYING) {
             switch(this.host) {
@@ -1057,7 +1075,7 @@ class Provider {
                     break;
 
                 case "radio.garden":
-                    const selectorQuery = ".icon-toggle.mod-mute .icon-button.mod-muted";
+                    selectorQuery = ".icon-toggle.mod-mute .icon-button.mod-muted";
                     playerPlayButton = document.querySelector(selectorQuery);
 
                     if (!playerPlayButton) {
@@ -1066,6 +1084,16 @@ class Provider {
 
                     playerPlayButton.click();
                     break;
+
+                case "somafm.com":
+                    selectorQuery = ".player .controls button .fa-play";
+                    playerPlayButton = document.querySelector(selectorQuery);
+
+                    if (!playerPlayButton) {
+                        return;
+                    }
+
+                    playerPlayButton.parentElement.click();
             }
             this.__changeState(Status.PLAYING);
         }
