@@ -529,6 +529,10 @@ class Provider {
                 status = playerPauseButton ? Status.PLAYING : Status.PAUSED;
                 break;
 
+            case "radio.garden":
+                const selectorQuery = ".icon-toggle.mod-mute .icon-button.mod-sound";
+                playerPauseButton = document.querySelector(selectorQuery);
+
                 status = playerPauseButton ? Status.PLAYING : Status.PAUSED;
                 break;
         }
@@ -781,6 +785,10 @@ class Provider {
 
                     playerPauseButton.click();
                     break;
+
+                case "radio.garden":
+                    const selectorQuery = ".icon-toggle.mod-mute .icon-button.mod-sound";
+                    playerPauseButton = document.querySelector(selectorQuery);
 
                     if (!playerPauseButton) {
                         return;
@@ -1038,6 +1046,10 @@ class Provider {
 
                     playerPlayButton.click();
                     break;
+
+                case "radio.garden":
+                    const selectorQuery = ".icon-toggle.mod-mute .icon-button.mod-muted";
+                    playerPlayButton = document.querySelector(selectorQuery);
 
                     if (!playerPlayButton) {
                         return;

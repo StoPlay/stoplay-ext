@@ -36,6 +36,7 @@ export const ProvidersList = [
     'player.vimeo.com',
     'pleer.net',
     'promodj.com',
+    'radio.garden',
     'radiolist.com.ua',
     'radiotunes.com',
     'rockradio.com',
