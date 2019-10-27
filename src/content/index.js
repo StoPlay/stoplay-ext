@@ -214,7 +214,11 @@ class Provider {
                 break;
             case "musicforprogramming.net":
                 songName = safeGetElementTextContentByQuery('.pad a');
-                artistName = "Music for Programming"
+                artistName = "Music for Programming";
+                break;
+            case "beatport.com":
+                songName = safeGetElementTextContentByQuery('.player2 .track-title__primary');
+                artistName = safeGetElementTextContentByQuery(".player2 .track-artists");
         }
 
         if (artistName && songName) {
