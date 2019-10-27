@@ -221,10 +221,19 @@ class Provider {
             case "beatport.com":
                 songName = safeGetElementTextContentByQuery('.player2 .track-title__primary');
                 artistName = safeGetElementTextContentByQuery(".player2 .track-artists");
+                break;
+
+            case "radio.garden":
+                artistName = safeGetElementTextContentByQuery('.channel-list-item-name-container');
+                break;
         }
 
         if (artistName && songName) {
             return `${artistName} - ${songName}`;
+        }
+
+        if (artistName && !songName) {
+            return artistName;
         }
 
         return "";
