@@ -11,27 +11,27 @@ function safeGetElementTextContentByQuery(query) {
     }
 }
 
-var StoPlay = {
+const StoPlay = {
     injectScript: function (scriptText) {
-        var script   = document.createElement('script');
+        const script = document.createElement('script');
         script.type  = "text/javascript";
         script.text  = scriptText;
 
-        var target = document.getElementsByTagName('script')[0];
+        const target = document.getElementsByTagName('script')[0];
         target.parentNode.insertBefore(script, target);
         return script;
     }
 };
 
-var button = null;
+let button = null;
 
-var Status = {
+const Status = {
     PAUSED: "paused",
     PLAYING: "playing"
 };
 
-var CHECK_TIMEOUT = 1000;
-var TITLE_TIMEOUT = 10000;
+const CHECK_TIMEOUT = 1000;
+const TITLE_TIMEOUT = 10000;
 
 class Provider {
     constructor() {
@@ -111,7 +111,7 @@ class Provider {
         });
     }
 
-    _detectProviderAndStartCheckInterval () {
+    _detectProviderAndStartCheckInterval() {
         if (this.detectProvider()) {
             this.timer.start();
             this.checkTitleInterval.start();
@@ -120,24 +120,24 @@ class Provider {
         }
     }
 
-    _stopCheckInterval () {
+    _stopCheckInterval() {
         this.timer.stop();
         this.checkTitleInterval.stop();
     }
 
-    _restartCheckInterval () {
+    _restartCheckInterval() {
         this._stopCheckInterval();
         this._detectProviderAndStartCheckInterval();
     }
 
-    isInstalled () {
+    isInstalled() {
         if (window.location.host.replace('www.', '') == 'stoplay_page.dev'
             || window.location.host.replace('www.', '') == 'stoplay.github.io') {
             document.querySelector("body").className = document.querySelector("body").className + " m_installed";
         }
     }
 
-    on (name, callback) {
+    on(name, callback) {
         if (typeof this.events[name] === 'undefined') this.events[name] = [];
 
         this.events[name].push(callback);
@@ -145,21 +145,22 @@ class Provider {
         return this;
     }
 
-    trigger (name) {
+    trigger(name) {
         if (typeof this.events[name] === 'undefined') return;
 
-        var l = this.events[name].length,
-                i = 0;
+        let l = this.events[name].length;
+        let i = 0;
+
         while(i < l) {
             this.events[name][i].call();
             i++;
         }
     }
 
-    detectProvider () {
+    detectProvider() {
         this.host = window.location.host.replace('www.', '');
 
-        var clearSubDomains = "";
+        let clearSubDomains = "";
         if (this.host.split("bandcamp.com").length > 1) {
             clearSubDomains = "bandcamp.com";
         }
@@ -169,19 +170,17 @@ class Provider {
     }
 
     attachEvents () {
-        var _this = this;
-
         this
-            .on('start', function () {
-                _this.status = Status.PLAYING;
-                chrome.runtime.sendMessage({action: 'started', title: _this.getTitle()});
+            .on('start', () => {
+                this.status = Status.PLAYING;
+                chrome.runtime.sendMessage({action: 'started', title: this.getTitle()});
             })
-            .on('pause', function () {
-                _this.status = Status.PAUSED;
+            .on('pause', () => {
+                this.status = Status.PAUSED;
                 chrome.runtime.sendMessage({action: Status.PAUSED});
             })
-            .on('updateTitle', function () {
-                chrome.runtime.sendMessage({action: 'updateTitle', title: _this.playingTitle});
+            .on('updateTitle', () => {
+                chrome.runtime.sendMessage({action: 'updateTitle', title: this.playingTitle});
             });
     }
 
@@ -208,14 +207,17 @@ class Provider {
                 songName = safeGetElementTextContentByQuery(".ytmusic-player-bar.title");
                 artistName = safeGetElementTextContentByQuery(".ytmusic-player-bar.byline a:first-child");
                 break;
+
             case "play.google.com":
                 songName = safeGetElementTextContentByQuery("#currently-playing-title");
                 artistName = safeGetElementTextContentByQuery("#player-artist");
                 break;
+
             case "musicforprogramming.net":
                 songName = safeGetElementTextContentByQuery('.pad a');
                 artistName = "Music for Programming";
                 break;
+
             case "beatport.com":
                 songName = safeGetElementTextContentByQuery('.player2 .track-title__primary');
                 artistName = safeGetElementTextContentByQuery(".player2 .track-artists");
@@ -229,7 +231,8 @@ class Provider {
     }
 
     checkTitle() {
-        var currentTitle = this.getTitle();
+        const currentTitle = this.getTitle();
+
         if (currentTitle !== this.playingTitle) {
             this.playingTitle = currentTitle;
             this.trigger('updateTitle');
@@ -261,7 +264,7 @@ class Provider {
     }
 
     checkStatus() {
-        var status, p;
+        let status, p, selector, playerPauseButton;
 
         switch(this.host) {
             case "radiolist.com.ua":
@@ -275,7 +278,7 @@ class Provider {
                 break;
 
             case "vk.com":
-                var player_obj = document.querySelector('.top_audio_player');
+                const player_obj = document.querySelector('.top_audio_player');
                 if (player_obj) {
                     status = player_obj && player_obj.classList.contains('top_audio_player_playing') ? Status.PLAYING : Status.PAUSED;
                 }
@@ -308,10 +311,10 @@ class Provider {
 
             case "armyfm.com.ua":
             case "tunein.com":
-                var audios = document.getElementsByTagName("audio");
+                const audios = document.getElementsByTagName("audio");
 
                 if (audios.length > 0) {
-                    var hasPlayingAudio = Array.from(audios).some((player) => !player.paused);
+                    const hasPlayingAudio = Array.from(audios).some((player) => !player.paused);
 
                     status = hasPlayingAudio ? Status.PLAYING : Status.PAUSED;
                 } else {
@@ -339,7 +342,7 @@ class Provider {
                 const videos = document.getElementsByTagName("video");
 
                 if (videos.length > 0) {
-                    var hasPlayingVideo = Array.from(videos).some((player) => !player.paused);
+                    const hasPlayingVideo = Array.from(videos).some((player) => !player.paused);
 
                     status = hasPlayingVideo ? Status.PLAYING : Status.PAUSED;
                 }
@@ -351,7 +354,7 @@ class Provider {
                 if (p && p.getPlayerState) {
                     status = p.getPlayerState() == 1 ? Status.PLAYING : Status.PAUSED;
                 } else if (document.querySelector('.html5-main-video')) {
-                    var video = document.querySelector('.html5-main-video');
+                    const video = document.querySelector('.html5-main-video');
                     status = (video.paused || (!video.paused && video.currentTime == 0)) ? Status.PAUSED : Status.PLAYING;
                 } else if (document.getElementById("movie_player")) {
                     status = document.getElementById("movie_player") && document.getElementById("movie_player").classList.contains('playing-mode') ? Status.PLAYING : Status.PAUSED;
@@ -365,8 +368,8 @@ class Provider {
 
             case "play.google.com":
                 p = document.querySelector('[data-id="play-pause"]');
-                var p2 = document.querySelector(".lava-player video");
-                var p3 = document.querySelector(".playback-button.playing");
+                const p2 = document.querySelector(".lava-player video");
+                const p3 = document.querySelector(".playback-button.playing");
 
                 if (p) {
                     status = p.classList.contains('playing') ? Status.PLAYING : Status.PAUSED;
@@ -452,15 +455,15 @@ class Provider {
                 }
                 break;
             case "deezer.com":
-                var localStorageState = window.localStorage.getItem('stoplaystate');
+                const localStorageState = window.localStorage.getItem('stoplaystate');
                 status = localStorageState ? localStorageState : null;
                 break;
             case "coursera.org":
-                var selector = document.querySelector('.c-video-control.vjs-control');
+                selector = document.querySelector('.c-video-control.vjs-control');
                 status = selector && selector.classList.contains('vjs-playing') ? Status.PLAYING : Status.PAUSED;
                 break;
             case "egghead.io":
-                var p = document.querySelector('.bitmovinplayer-container video');
+                p = document.querySelector('.bitmovinplayer-container video');
                 status = Status.PAUSED;
                 if (p && p.paused === false) {
                     status = Status.PLAYING;
@@ -477,13 +480,13 @@ class Provider {
             case "audible.ca":
             case "audible.com":
             case "audible.com.au":
-                var selector = document.querySelector('#adbl-cloud-player-controls .adblPauseButton');
+                selector = document.querySelector('#adbl-cloud-player-controls .adblPauseButton');
 
                 status = selector && !selector.classList.contains('bc-hidden') ? Status.PLAYING : Status.PAUSED;
                 break;
 
             case "play.mubert.com":
-                var selector = document.querySelector('#genres .playing');
+                selector = document.querySelector('#genres .playing');
 
                 status = selector ? Status.PLAYING : Status.PAUSED;
                 if (selector) {
@@ -492,7 +495,7 @@ class Provider {
                 break;
 
             case "udemy.com":
-                var p = document.querySelector("video-viewer video");
+                p = document.querySelector("video-viewer video");
 
                 status = Status.PAUSED;
                 if (p && p.paused === false) {
@@ -501,7 +504,7 @@ class Provider {
                 break;
 
             case "coub.com":
-                var selector = document.querySelector('.coub.active');
+                selector = document.querySelector('.coub.active');
 
                 if (selector) {
                     status = selector.getAttribute('play-state');
@@ -511,18 +514,21 @@ class Provider {
                 break;
 
             case "livestream.com":
-                var selector = document.querySelector('.playback-control .play-holder');
+                selector = document.querySelector('.playback-control .play-holder');
 
                 status = selector && selector.classList.contains('lsp-hidden') ? Status.PLAYING : Status.PAUSED;
                 break;
 
             case "musicforprogramming.net":
-                var player = document.getElementById('player');
+                const player = document.getElementById('player');
                 status = player && !player.paused ? Status.PLAYING : Status.PAUSED;
                 break;
 
             case "beatport.com":
-                var playerPauseButton = document.getElementById('Player__pause-button');
+                playerPauseButton = document.getElementById('Player__pause-button');
+                status = playerPauseButton ? Status.PLAYING : Status.PAUSED;
+                break;
+
                 status = playerPauseButton ? Status.PLAYING : Status.PAUSED;
                 break;
         }
@@ -531,7 +537,8 @@ class Provider {
     }
 
     pause() {
-        var p;
+        let p, selector, playerPauseButton;
+
         if (this.status === Status.PLAYING) {
             switch(this.host) {
                 case "radiolist.com.ua":
@@ -567,10 +574,10 @@ class Provider {
                     break;
 
                 case "tunein.com":
-                    var audios = document.getElementsByTagName("audio");
+                    const audios = document.getElementsByTagName("audio");
 
                     if (audios.length > 0) {
-                        var audiosArray = Array.from(audios);
+                        const audiosArray = Array.from(audios);
 
                         audiosArray
                             .filter((player) => !player.paused)
@@ -626,8 +633,8 @@ class Provider {
 
                 case "play.google.com":
                     p = document.querySelector('[data-id="play-pause"]');
-                    var p2 = document.querySelector(".lava-player video");
-                    var p3 = document.querySelector(".playback-button.playing");
+                    const p2 = document.querySelector(".lava-player video");
+                    const p3 = document.querySelector(".playback-button.playing");
 
                     if (p) {
                         p.click();
@@ -676,11 +683,11 @@ class Provider {
                     document.querySelector('.playerr_bigplaybutton .playerr_bigpausebutton').click();
                     break;
                 case "hearthis.at":
-                    var script   = document.createElement('script');
+                    const script = document.createElement('script');
                     script.type  = "text/javascript";
                     script.text  = "soundManager.pauseAll();";
 
-                    var target = document.getElementsByTagName('script')[0];
+                    const target = document.getElementsByTagName('script')[0];
                     target.parentNode.insertBefore(script, target);
                     break;
                 case "courses.prometheus.org.ua":
@@ -725,7 +732,7 @@ class Provider {
                 case "audible.ca":
                 case "audible.com":
                 case "audible.com.au":
-                    var selector = document.querySelector('#adbl-cloud-player-controls .adblPauseButton');
+                    selector = document.querySelector('#adbl-cloud-player-controls .adblPauseButton');
 
                     if (selector && !selector.classList.contains('bc-hidden')) {
                         selector.click();
@@ -733,14 +740,14 @@ class Provider {
                     break;
 
                 case "play.mubert.com":
-                    var selector = this.customLastPlayerSelector;
+                    selector = this.customLastPlayerSelector;
                     if (selector && selector.classList.contains('playing')) {
                         selector.click();
                     }
                     break;
 
                 case "coub.com":
-                    var selector = document.querySelector('.coub.active .viewer__click');
+                    selector = document.querySelector('.coub.active .viewer__click');
 
                     if (selector) {
                         selector.click()
@@ -748,7 +755,7 @@ class Provider {
                     break;
 
                 case "livestream.com":
-                    var selector = document.querySelector('.playback-control .play-holder');
+                    selector = document.querySelector('.playback-control .play-holder');
 
                     if (selector && selector.classList.contains('lsp-hidden')) {
                         document.querySelector('.playback-control .pause-holder').click();
@@ -766,7 +773,14 @@ class Provider {
                     break;
 
                 case "beatport.com":
-                    var playerPauseButton = document.getElementById('Player__pause-button');
+                    playerPauseButton = document.getElementById('Player__pause-button');
+
+                    if (!playerPauseButton) {
+                        return;
+                    }
+
+                    playerPauseButton.click();
+                    break;
 
                     if (!playerPauseButton) {
                         return;
@@ -780,7 +794,8 @@ class Provider {
     }
 
     play() {
-        var p;
+        let p, selector, playerPlayButton;
+
         if (this.status !== Status.PLAYING) {
             switch(this.host) {
                 case "radiolist.com.ua":
@@ -815,10 +830,10 @@ class Provider {
                     break;
 
                 case "tunein.com":
-                    var audios = document.getElementsByTagName("audio");
+                    const audios = document.getElementsByTagName("audio");
 
                     if (audios.length > 0) {
-                        var audiosArray = Array.from(audios);
+                        const audiosArray = Array.from(audios);
 
                         audiosArray
                             .filter((player) => player.paused && player.played.length > 0)
@@ -874,8 +889,8 @@ class Provider {
 
                 case "play.google.com":
                     p = document.querySelector('[data-id="play-pause"]');
-                    var p2 = document.querySelector(".lava-player video");
-                    var p3 = document.querySelector(".playback-button");
+                    const p2 = document.querySelector(".lava-player video");
+                    const p3 = document.querySelector(".playback-button");
 
                     if (p) {
                         p.click();
@@ -926,11 +941,11 @@ class Provider {
                     document.querySelector('.playerr_bigplaybutton .playerr_bigplaybutton').click();
                     break;
                 case "hearthis.at":
-                    var script   = document.createElement('script');
+                    const script = document.createElement('script');
                     script.type  = "text/javascript";
                     script.text  = "soundManager.resumeAll();";
 
-                    var target = document.getElementsByTagName('script')[0];
+                    const target = document.getElementsByTagName('script')[0];
                     target.parentNode.insertBefore(script, target);
                     break;
                 case "courses.prometheus.org.ua":
@@ -975,14 +990,14 @@ class Provider {
                 case "audible.ca":
                 case "audible.com":
                 case "audible.com.au":
-                    var selector = document.querySelector('#adbl-cloud-player-controls .adblPlayButton');
+                    selector = document.querySelector('#adbl-cloud-player-controls .adblPlayButton');
 
                     if (selector && !selector.classList.contains('bc-hidden')) {
                         selector.click();
                     }
                     break;
                 case "play.mubert.com":
-                    var selector = this.customLastPlayerSelector;
+                    selector = this.customLastPlayerSelector;
                     if (selector && !selector.classList.contains('playing')) {
                         selector.click();
                     }
@@ -995,7 +1010,7 @@ class Provider {
                     break;
 
                 case "coub.com":
-                    var selector = document.querySelector('.coub.active .viewer__replay');
+                    selector = document.querySelector('.coub.active .viewer__replay');
 
                     if (selector) {
                         selector.click()
@@ -1003,11 +1018,11 @@ class Provider {
                     break;
 
                 case "livestream.com":
-                    var selector = document.querySelector('.playback-control .play-holder');
+                    selector = document.querySelector('.playback-control .play-holder');
 
                     if (selector && !selector.classList.contains('lsp-hidden')) {
                         document.querySelector('.playback-control .play-holder').click();
-                    };
+                    }
                     break;
 
                 case "musicforprogramming.net":
@@ -1015,7 +1030,14 @@ class Provider {
                     break;
 
                 case "beatport.com":
-                    var playerPlayButton = document.getElementById('Player__play-button');
+                    playerPlayButton = document.getElementById('Player__play-button');
+
+                    if (!playerPlayButton) {
+                        return;
+                    }
+
+                    playerPlayButton.click();
+                    break;
 
                     if (!playerPlayButton) {
                         return;
@@ -1027,9 +1049,9 @@ class Provider {
             this.__changeState(Status.PLAYING);
         }
     }
-};
+}
 
-var ProviderInstance = new Provider();
+const ProviderInstance = new Provider();
 
 if (ProviderInstance) {
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
