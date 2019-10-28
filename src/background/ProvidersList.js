@@ -4,6 +4,7 @@ export const ProvidersList = [
     'audible.com',
     'audible.com.au',
     'bandcamp.com',
+    'beatport.com',
     'classicalradio.com',
     'coub.com',
     'coursera.org',

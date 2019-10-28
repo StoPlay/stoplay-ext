@@ -214,7 +214,11 @@ class Provider {
                 break;
             case "musicforprogramming.net":
                 songName = safeGetElementTextContentByQuery('.pad a');
-                artistName = "Music for Programming"
+                artistName = "Music for Programming";
+                break;
+            case "beatport.com":
+                songName = safeGetElementTextContentByQuery('.player2 .track-title__primary');
+                artistName = safeGetElementTextContentByQuery(".player2 .track-artists");
         }
 
         if (artistName && songName) {
@@ -516,6 +520,11 @@ class Provider {
                 var player = document.getElementById('player');
                 status = player && !player.paused ? Status.PLAYING : Status.PAUSED;
                 break;
+
+            case "beatport.com":
+                var playerPauseButton = document.getElementById('Player__pause-button');
+                status = playerPauseButton ? Status.PLAYING : Status.PAUSED;
+                break;
         }
 
         status && this.__changeState(status);
@@ -743,7 +752,7 @@ class Provider {
 
                     if (selector && selector.classList.contains('lsp-hidden')) {
                         document.querySelector('.playback-control .pause-holder').click();
-                    };
+                    }
                     break;
 
                 case "udemy.com":
@@ -754,6 +763,16 @@ class Provider {
 
                 case "musicforprogramming.net":
                     document.getElementById("player_playpause").click();
+                    break;
+
+                case "beatport.com":
+                    var playerPauseButton = document.getElementById('Player__pause-button');
+
+                    if (!playerPauseButton) {
+                        return;
+                    }
+
+                    playerPauseButton.click();
                     break;
             }
             this.__changeState(Status.PAUSED);
@@ -993,6 +1012,16 @@ class Provider {
 
                 case "musicforprogramming.net":
                     document.getElementById("player_playpause").click();
+                    break;
+
+                case "beatport.com":
+                    var playerPlayButton = document.getElementById('Player__play-button');
+
+                    if (!playerPlayButton) {
+                        return;
+                    }
+
+                    playerPlayButton.click();
                     break;
             }
             this.__changeState(Status.PLAYING);
