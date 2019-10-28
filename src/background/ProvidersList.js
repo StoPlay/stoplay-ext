@@ -42,6 +42,7 @@ export const ProvidersList = [
     'rockradio.com',
     'rutube.ru',
     'seasonvar.ru',
+    'somafm.com',
     'soundcloud.com',
     'spotify.com',
     'ted.com',
