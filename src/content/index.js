@@ -1,5 +1,7 @@
 /* StoPlay Content JS */
 import { CheckTimer } from './CheckTimer.js';
+import { ProviderCheckStatus } from './ProviderCheckStatus.js';
+import { Status } from './Status.Types.js';
 
 function safeGetElementTextContentByQuery(query) {
     try {
@@ -25,11 +27,6 @@ const StoPlay = {
 
 let button = null;
 
-const Status = {
-    PAUSED: "paused",
-    PLAYING: "playing"
-};
-
 const CHECK_TIMEOUT = 1000;
 const TITLE_TIMEOUT = 10000;
 
@@ -44,9 +41,10 @@ class Provider {
         this.checkTitleInterval = null;
         this.events = {};
 
-        this.isInstalled();
         this.customLastPlayerSelector = null;
         this.customLastPauseSelector = null;
+
+        this.checkStatus = new ProviderCheckStatus();
 
         chrome.storage.sync.get({
             enabled: true,
@@ -55,7 +53,10 @@ class Provider {
 
         this.timer = new CheckTimer({
             delay: CHECK_TIMEOUT,
-            callback: this.checkStatus.bind(this),
+            callback: () => {
+                let status = this.checkStatus.check();
+                this.__changeState(status);
+            },
             recursive: true
         });
         this.checkTitleInterval = new CheckTimer({
@@ -112,7 +113,9 @@ class Provider {
     }
 
     _detectProviderAndStartCheckInterval() {
-        if (this.detectProvider()) {
+        let host = this.detectProvider();
+        if (this.providerAllowed(host)) {
+            this.checkStatus.setHost(host);
             this.timer.start();
             this.checkTitleInterval.start();
 
@@ -128,13 +131,6 @@ class Provider {
     _restartCheckInterval() {
         this._stopCheckInterval();
         this._detectProviderAndStartCheckInterval();
-    }
-
-    isInstalled() {
-        if (window.location.host.replace('www.', '') == 'stoplay_page.dev'
-            || window.location.host.replace('www.', '') == 'stoplay.github.io') {
-            document.querySelector("body").className = document.querySelector("body").className + " m_installed";
-        }
     }
 
     on(name, callback) {
@@ -165,8 +161,11 @@ class Provider {
             clearSubDomains = "bandcamp.com";
         }
         if (clearSubDomains) this.host = clearSubDomains;
+        return this.host;
+    }
 
-        return (this.allowed.indexOf(this.host) >= 0);
+    providerAllowed(host) {
+        return (this.allowed.indexOf(host) >= 0);
     }
 
     attachEvents () {
@@ -272,289 +271,7 @@ class Provider {
         }
     }
 
-    checkStatus() {
-        let status, p, selector, selectorQuery, playerPauseButton;
 
-        switch(this.host) {
-            case "radiolist.com.ua":
-                button = document.querySelector('.jouele-status-playing .jouele-info-control-button-icon_pause');
-                if (button) {
-                    status = Status.PLAYING;
-                    this.customLastPlayerSelector = button;
-                } else {
-                    status = Status.PAUSED;
-                }
-                break;
-
-            case "vk.com":
-                const player_obj = document.querySelector('.top_audio_player');
-                if (player_obj) {
-                    status = player_obj && player_obj.classList.contains('top_audio_player_playing') ? Status.PLAYING : Status.PAUSED;
-                }
-                break;
-
-            case "new.vk.com":
-                status = document.querySelector('.top_audio_player')
-                    && document.querySelector('.top_audio_player').classList.contains('top_audio_player_playing') ? Status.PLAYING : Status.PAUSED;
-                break;
-
-            case "last.fm":
-                status = document.getElementById('webRadio').classList.contains('playing') ? Status.PLAYING : Status.PAUSED;
-                break;
-
-            case "rutube.ru":
-                p = document.querySelector('#video-object-container iframe') && document.querySelector('#video-object-container iframe').contentDocument.getElementById('rutubePlayerHolder_flash_api');
-                if (p) {
-                    status = p.getPlayerState && p.getPlayerState();
-                }
-                break;
-
-            case "pleer.net":
-                status = document.querySelector('#player #play').classList.contains('pause') ? Status.PLAYING : Status.PAUSED;
-                break;
-
-            case "vimeo.com":
-            case "player.vimeo.com":
-                status = document.querySelector('.play.state-playing') ? Status.PLAYING : Status.PAUSED;
-                break;
-
-            case "armyfm.com.ua":
-            case "tunein.com":
-                const audios = document.getElementsByTagName("audio");
-
-                if (audios.length > 0) {
-                    const hasPlayingAudio = Array.from(audios).some((player) => !player.paused);
-
-                    status = hasPlayingAudio ? Status.PLAYING : Status.PAUSED;
-                } else {
-                    status = document.getElementById('tuner') && document.getElementById('tuner').classList.contains('playing') ? Status.PLAYING : Status.PAUSED;
-                }
-                break;
-
-            case "megogo.net":
-                p = document.querySelector("video[class*='player:video']");
-                status = Status.PAUSED;
-
-                if (p && p.paused === false) {
-                    status = Status.PLAYING;
-                }
-                break;
-
-            case "muzebra.com":
-                status = document.querySelector('#player button.play').classList.contains('icon-pause') ? Status.PLAYING : Status.PAUSED;
-                break;
-
-            case "ted.com":
-            case "facebook.com":
-            case "kickstarter.com":
-            case "music.youtube.com":
-                const videos = document.getElementsByTagName("video");
-
-                if (videos.length > 0) {
-                    const hasPlayingVideo = Array.from(videos).some((player) => !player.paused);
-
-                    status = hasPlayingVideo ? Status.PLAYING : Status.PAUSED;
-                }
-                break;
-
-            case "gaming.youtube.com":
-            case "youtube.com":
-                p = document.getElementById("movie_player") || document.querySelector('.html5-video-player');
-                if (p && p.getPlayerState) {
-                    status = p.getPlayerState() == 1 ? Status.PLAYING : Status.PAUSED;
-                } else if (document.querySelector('.html5-main-video')) {
-                    const video = document.querySelector('.html5-main-video');
-                    status = (video.paused || (!video.paused && video.currentTime == 0)) ? Status.PAUSED : Status.PLAYING;
-                } else if (document.getElementById("movie_player")) {
-                    status = document.getElementById("movie_player") && document.getElementById("movie_player").classList.contains('playing-mode') ? Status.PLAYING : Status.PAUSED;
-                }
-                break;
-
-            case "seasonvar.ru":
-                status = document.querySelector('#vpcenter object').getUppod && document.querySelector('#vpcenter object').getUppod('getstatus');
-                status = status == 1 ? Status.PLAYING : Status.PAUSED;
-                break;
-
-            case "play.google.com":
-                p = document.querySelector('[data-id="play-pause"]');
-                const p2 = document.querySelector(".lava-player video");
-                const p3 = document.querySelector(".playback-button.playing");
-
-                if (p) {
-                    status = p.classList.contains('playing') ? Status.PLAYING : Status.PAUSED;
-                } else if (p2) {
-                    status = Status.PAUSED;
-
-                    if (p2.paused === false) {
-                        status = Status.PLAYING;
-                    }
-                } else if (p3) {
-                    status = Status.PLAYING;
-                }
-                break;
-
-            case "music.yandex.ru":
-            case "music.yandex.ua":
-                status = document.querySelector('.player-controls__btn_play').classList.contains('player-controls__btn_pause') ? Status.PLAYING : Status.PAUSED;
-                break;
-            case "mixcloud.com":
-                status = document.querySelector('.player-control') &&
-                    document.querySelector('.player-control')
-                    .classList.contains('pause-state') ? Status.PLAYING : Status.PAUSED;
-                break;
-            case "soundcloud.com":
-                status = document.querySelector('.playControl').classList.contains('playing') ? Status.PLAYING : Status.PAUSED;
-                break;
-            case "jazzradio.com":
-            case "rockradio.com":
-            case "radiotunes.com":
-            case "classicalradio.com":
-            case "zenradio.com":
-                status = document.querySelector('#play-button .icon-pause') ? Status.PLAYING : Status.PAUSED;
-                break;
-            case "v5player.slipstreamradio.com":
-                status = document.getElementById('statusLabel') &&
-                    document.getElementById('statusLabel')
-                    .textContent.toLocaleLowerCase() == 'playing' ? Status.PLAYING : Status.PAUSED;
-                break;
-
-            case "play.spotify.com": // old UI, may be available somewhere
-                status = document.getElementById('play-pause') &&
-                    document.getElementById('play-pause').classList.contains('playing') ? Status.PLAYING : Status.PAUSED;
-                break;
-            case "open.spotify.com": // new UI
-                p = document.querySelector(".control-button[class*='pause']");
-                status = Status.PAUSED;
-
-                if (p) {
-                    status = Status.PLAYING;
-                }
-                break;
-            case "bandcamp.com":
-                status = document.querySelector('.inline_player .playbutton') &&
-                    document.querySelector('.inline_player .playbutton').classList.contains('playing') ? Status.PLAYING : Status.PAUSED;
-                break;
-            case "promodj.com":
-                status = document.querySelector('.playerr_bigplaybutton .playerr_bigpausebutton') ? Status.PLAYING : Status.PAUSED;
-                break;
-            case "hearthis.at":
-                status = document.body.classList && document.body.classList.contains('play') ? Status.PLAYING : Status.PAUSED;
-                break;
-            case "courses.prometheus.org.ua":
-                status = document.querySelector('.video-controls .video_control').classList.contains('pause') ? Status.PLAYING : Status.PAUSED;
-                break;
-            case "dailymotion.com":
-                p = document.getElementById("dmp_Video");
-                status = Status.PAUSED;
-
-                if (p
-                    // check for muted as when you close the video it starts playing in header muted
-                    && p.muted === false
-                    && p.paused === false
-                ) {
-                    status = Status.PLAYING;
-                }
-                break;
-            case "netflix.com":
-                p = document.querySelector(".VideoContainer video");
-                status = Status.PAUSED;
-
-                if (p && p.paused === false) {
-                    status = Status.PLAYING;
-                }
-                break;
-            case "deezer.com":
-                const localStorageState = window.localStorage.getItem('stoplaystate');
-                status = localStorageState ? localStorageState : null;
-                break;
-            case "coursera.org":
-                selector = document.querySelector('.c-video-control.vjs-control');
-                status = selector && selector.classList.contains('vjs-playing') ? Status.PLAYING : Status.PAUSED;
-                break;
-            case "egghead.io":
-                p = document.querySelector('.bitmovinplayer-container video');
-                status = Status.PAUSED;
-                if (p && p.paused === false) {
-                    status = Status.PLAYING;
-                }
-
-            case "di.fm":
-                button = document.querySelector('#webplayer-region .controls .icon-pause');
-                status = Status.PAUSED;
-                if (button) {
-                    status = Status.PLAYING;
-                }
-                break;
-
-            case "audible.ca":
-            case "audible.com":
-            case "audible.com.au":
-                selector = document.querySelector('#adbl-cloud-player-controls .adblPauseButton');
-
-                status = selector && !selector.classList.contains('bc-hidden') ? Status.PLAYING : Status.PAUSED;
-                break;
-
-            case "play.mubert.com":
-                selector = document.querySelector('#genres .playing');
-
-                status = selector ? Status.PLAYING : Status.PAUSED;
-                if (selector) {
-                    this.customLastPlayerSelector = selector;
-                }
-                break;
-
-            case "udemy.com":
-                p = document.querySelector("video-viewer video");
-
-                status = Status.PAUSED;
-                if (p && p.paused === false) {
-                    status = Status.PLAYING;
-                }
-                break;
-
-            case "coub.com":
-                selector = document.querySelector('.coub.active');
-
-                if (selector) {
-                    status = selector.getAttribute('play-state');
-                } else {
-                    status = Status.PAUSED;
-                }
-                break;
-
-            case "livestream.com":
-                selector = document.querySelector('.playback-control .play-holder');
-
-                status = selector && selector.classList.contains('lsp-hidden') ? Status.PLAYING : Status.PAUSED;
-                break;
-
-            case "musicforprogramming.net":
-                const player = document.getElementById('player');
-                status = player && !player.paused ? Status.PLAYING : Status.PAUSED;
-                break;
-
-            case "beatport.com":
-                playerPauseButton = document.getElementById('Player__pause-button');
-                status = playerPauseButton ? Status.PLAYING : Status.PAUSED;
-                break;
-
-            case "radio.garden":
-                selectorQuery = ".icon-toggle.mod-mute .icon-button.mod-sound";
-                playerPauseButton = document.querySelector(selectorQuery);
-
-                status = playerPauseButton ? Status.PLAYING : Status.PAUSED;
-                break;
-
-            case "somafm.com":
-                selectorQuery = ".player .controls button .fa-stop";
-                playerPauseButton = document.querySelector(selectorQuery);
-
-                status = playerPauseButton ? Status.PLAYING : Status.PAUSED;
-                break;
-        }
-
-        status && this.__changeState(status);
-    }
 
     pause() {
         let p, selector, selectorQuery, playerPauseButton;
