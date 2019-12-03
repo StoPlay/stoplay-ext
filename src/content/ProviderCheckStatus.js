@@ -1,9 +1,12 @@
 /* Checking status for all providers */
-import {Status} from './Status.Types.js';
+import { Status } from './Status.Types.js';
+
+import { GetProvider } from './Providers.js';
 
 export class ProviderCheckStatus {
   constructor() {
     this.host = null;
+    this.provider = null;
     this.customLastPlayerSelector = null;
 
     this.setHost = this.setHost.bind(this);
@@ -12,10 +15,10 @@ export class ProviderCheckStatus {
 
   setHost(host) {
     this.host = host;
+    this.provider = GetProvider(host);
   }
 
   check() {
-    console.log('providercheckStatus', this);
     let status, p, selector, selectorQuery;
 
     switch(this.host) {
@@ -91,6 +94,10 @@ export class ProviderCheckStatus {
       break;
 
       case "ted.com":
+        // this could replace the switch
+        status = this.provider.checkStatus();
+      break;
+
       case "facebook.com":
       case "kickstarter.com":
       case "music.youtube.com":
@@ -239,9 +246,9 @@ export class ProviderCheckStatus {
       break;
 
       case "di.fm":
-        button = document.querySelector('#webplayer-region .controls .icon-pause');
+        p = document.querySelector('#webplayer-region .controls .icon-pause');
         status = Status.PAUSED;
-        if (button) {
+        if (p) {
           status = Status.PLAYING;
         }
       break;
