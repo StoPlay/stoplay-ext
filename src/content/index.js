@@ -1,6 +1,7 @@
 /* StoPlay Content JS */
 import { CheckTimer } from './CheckTimer.js';
 import { ProviderCheckStatus } from './ProviderCheckStatus.js';
+import { getService } from './ServicesRegistry.js';
 import { Status } from './Status.Types.js';
 
 function safeGetElementTextContentByQuery(query) {
@@ -45,6 +46,7 @@ class Provider {
         this.customLastPauseSelector = null;
 
         this.checkStatus = new ProviderCheckStatus();
+        this.service = null;
 
         chrome.storage.sync.get({
             enabled: true,
@@ -54,7 +56,13 @@ class Provider {
         this.timer = new CheckTimer({
             delay: CHECK_TIMEOUT,
             callback: () => {
-                let status = this.checkStatus.check();
+                let status;
+                if (this.service) {
+                    status = this.service.getStatus();
+                    console.log('service getstatus', status);
+                } else {
+                    status = this.checkStatus.check();
+                }
                 this.__changeState(status);
             },
             recursive: true
@@ -161,6 +169,9 @@ class Provider {
             clearSubDomains = "bandcamp.com";
         }
         if (clearSubDomains) this.host = clearSubDomains;
+
+        this.service = getService(this.host);
+
         return this.host;
     }
 
@@ -277,6 +288,13 @@ class Provider {
         let p, selector, selectorQuery, playerPauseButton;
 
         if (this.status === Status.PLAYING) {
+            if (this.service) {
+                this.service.pause();
+                // #TODO: remove duplication for POC
+                this.__changeState(Status.PAUSED);
+                return;
+            }
+
             switch(this.host) {
                 case "radiolist.com.ua":
                     if (this.customLastPlayerSelector) {
@@ -549,6 +567,14 @@ class Provider {
         let p, selector, selectorQuery, playerPlayButton;
 
         if (this.status !== Status.PLAYING) {
+            if (this.service) {
+                this.service.play();
+                // #TODO: remove duplication for POC
+                this.__changeState(Status.PLAYING);
+                return;
+
+            }
+
             switch(this.host) {
                 case "radiolist.com.ua":
                     if (this.customLastPlayerSelector) {
