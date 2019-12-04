@@ -1,5 +1,7 @@
 /* StoPlay Content JS */
 import { CheckTimer } from './CheckTimer.js';
+import { getService } from './ServicesRegistry.js';
+import { Status } from './Status.Types.js';
 
 function safeGetElementTextContentByQuery(query) {
     try {
@@ -25,11 +27,6 @@ const StoPlay = {
 
 let button = null;
 
-const Status = {
-    PAUSED: "paused",
-    PLAYING: "playing"
-};
-
 const CHECK_TIMEOUT = 1000;
 const TITLE_TIMEOUT = 10000;
 
@@ -48,6 +45,8 @@ class Provider {
         this.customLastPlayerSelector = null;
         this.customLastPauseSelector = null;
 
+        this.service = null;
+
         chrome.storage.sync.get({
             enabled: true,
             providers: []
@@ -55,7 +54,16 @@ class Provider {
 
         this.timer = new CheckTimer({
             delay: CHECK_TIMEOUT,
-            callback: this.checkStatus.bind(this),
+            callback: () => {
+                let status;
+                if (this.service) {
+                    status = this.service.getStatus();
+                    console.log('service getstatus', status);
+                } else {
+                    status = checkStatus();
+                }
+                this.__changeState(status);
+            },
             recursive: true
         });
         this.checkTitleInterval = new CheckTimer({
@@ -165,7 +173,12 @@ class Provider {
             clearSubDomains = "bandcamp.com";
         }
         if (clearSubDomains) this.host = clearSubDomains;
+        this.service = getService(this.host);
 
+        return this.host;
+    }
+
+    providerAllowed() {
         return (this.allowed.indexOf(this.host) >= 0);
     }
 
@@ -553,13 +566,20 @@ class Provider {
                 break;
         }
 
-        status && this.__changeState(status);
+        return status;
     }
 
     pause() {
         let p, selector, selectorQuery, playerPauseButton;
 
         if (this.status === Status.PLAYING) {
+            if (this.service) {
+                this.service.pause();
+                // #TODO: remove duplication for POC
+                this.__changeState(Status.PAUSED);
+                return;
+            }
+
             switch(this.host) {
                 case "radiolist.com.ua":
                     if (this.customLastPlayerSelector) {
@@ -832,6 +852,14 @@ class Provider {
         let p, selector, selectorQuery, playerPlayButton;
 
         if (this.status !== Status.PLAYING) {
+            if (this.service) {
+                this.service.play();
+                // #TODO: remove duplication for POC
+                this.__changeState(Status.PLAYING);
+                return;
+
+            }
+
             switch(this.host) {
                 case "radiolist.com.ua":
                     if (this.customLastPlayerSelector) {
