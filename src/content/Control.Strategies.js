@@ -6,6 +6,19 @@ export class BaseControlStrategy {
   static pause() {}
 }
 
+
+export class clickSelector extends BaseControlStrategy {
+  static pause() {
+    let el = document.querySelector(arguments[0]);
+    return el ? el.click() : null;
+  }
+
+  static play() {
+    clickSelector.pause();
+  }
+}
+
+
 export class oneOfTheVideos extends BaseControlStrategy {
   static getVideosArray() {
     return Array.from(document.getElementsByTagName('video'));

@@ -4,7 +4,14 @@ export class BaseStatusStrategy {
   static getStatus() {}
 }
 
-/* A shared mixin for when there is a video tag on page */
+export class checkSelector extends BaseStatusStrategy {
+  static getStatus() {
+    let el = document.querySelector(arguments[0]);
+    return el ? Status.PLAYING : Status.PAUSED;
+  }
+}
+
+/* when there are video tags on page */
 export class oneOfTheVideosPlaying extends BaseStatusStrategy {
   static getStatus() {
     let status = Status.PAUSED;

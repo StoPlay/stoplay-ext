@@ -58,9 +58,8 @@ class Provider {
                 let status;
                 if (this.service) {
                     status = this.service.getStatus();
-                    console.log('service getstatus', status);
                 } else {
-                    status = checkStatus();
+                    status = this.checkStatus();
                 }
                 this.__changeState(status);
             },
@@ -120,7 +119,8 @@ class Provider {
     }
 
     _detectProviderAndStartCheckInterval() {
-        if (this.detectProvider()) {
+        this.detectProvider();
+        if (this.providerAllowed()) {
             this.timer.start();
             this.checkTitleInterval.start();
 
