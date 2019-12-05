@@ -8,7 +8,7 @@ export class BaseControlStrategy {
 
 
 export class clickSelector extends BaseControlStrategy {
-  static pause(className) {
+  static play(className) {
     let element = document.querySelector(className);
     if (!element) {
       return;
@@ -17,8 +17,8 @@ export class clickSelector extends BaseControlStrategy {
     element.click();
   }
 
-  static play() {
-    clickSelector.pause();
+  static pause(className) {
+    clickSelector.play(className);
   }
 }
 
