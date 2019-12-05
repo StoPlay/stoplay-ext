@@ -10,7 +10,11 @@ export class BaseControlStrategy {
 export class clickSelector extends BaseControlStrategy {
   static pause(className) {
     let element = document.querySelector(className);
-    return el ? el.click() : null;
+    if (!element) {
+      return;
+    }
+
+    element.click();
   }
 
   static play() {
