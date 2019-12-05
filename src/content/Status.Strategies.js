@@ -6,7 +6,7 @@ export class BaseStatusStrategy {
 
 export class checkSelector extends BaseStatusStrategy {
   static getStatus(className) {
-    let el = document.querySelector(arguments[0]);
+    let el = document.querySelector(className);
     return el ? Status.PLAYING : Status.PAUSED;
   }
 }
