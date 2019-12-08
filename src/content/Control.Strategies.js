@@ -22,6 +22,32 @@ export class clickSelector extends BaseControlStrategy {
   }
 }
 
+/* clicking the storedSelector, injected by the Service */
+export class clickStoredSelector extends BaseControlStrategy {
+  static play() {
+    if (this.selector) {
+      this.selector.click();
+    }
+  }
+
+  static pause() {
+    clickStoredSelector.play.call(this);
+  }
+}
+
+/* custom for jouele, based on its buttons position */
+export class joueleStoredSelector extends BaseControlStrategy {
+  static pause() {
+    clickStoredSelector.pause.call(this);
+  }
+
+  static play() {
+    if (this.selector) {
+      this.selector.previousSibling.click();
+    }
+  }
+}
+
 
 export class oneOfTheVideos extends BaseControlStrategy {
   static getVideosArray() {

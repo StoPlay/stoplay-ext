@@ -13,14 +13,14 @@ export class Service {
   }
 
   getStatus() {
-    return this.options.statusStrategy.getStatus.apply(null, this.options.statusArgs);
+    return this.options.statusStrategy.getStatus.apply(this, this.options.statusArgs);
   }
 
   play() {
-    this.options.controlStrategy.play.apply(null, this.options.playArgs);
+    this.options.controlStrategy.play.apply(this, this.options.playArgs);
   }
 
   pause() {
-    this.options.controlStrategy.pause.apply(null, this.options.pauseArgs);
+    this.options.controlStrategy.pause.apply(this, this.options.pauseArgs);
   }
 }

@@ -124,11 +124,9 @@ export const servicesRegistry = () => {
     {
       hosts: [ 'radiolist.com.ua' ],
       options: {
-        statusStrategy: StatusStrategies.checkSelector,
+        statusStrategy: StatusStrategies.checkSelectorAndStore,
         statusArgs: [ '.jouele-status-playing .jouele-info-control-button-icon_pause' ],
-        controlStrategy: ControlStrategies.clickSelector,
-        playArgs: [],
-        pauseArgs: []
+        controlStrategy: ControlStrategies.joueleStoredSelector
       }
     }, {
       hosts: [ 'hearthis.at' ],

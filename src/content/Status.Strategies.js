@@ -4,9 +4,22 @@ export class BaseStatusStrategy {
   static getStatus() {}
 }
 
+/* simple check for selector */
 export class checkSelector extends BaseStatusStrategy {
   static getStatus(className) {
     let el = document.querySelector(className);
+    return el ? Status.PLAYING : Status.PAUSED;
+  }
+}
+
+/* check for selector and store it */
+export class checkSelectorAndStore extends BaseStatusStrategy {
+  static getStatus(className, storeSelector) {
+    let el = document.querySelector(className);
+    if (el) {
+      // this is the Service context
+      this.selector = el;
+    }
     return el ? Status.PLAYING : Status.PAUSED;
   }
 }
