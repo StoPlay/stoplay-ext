@@ -156,6 +156,42 @@ export const servicesRegistry = () => {
         pauseArgs: [ '.VideoContainer video' ]
       }
     }, {
+      hosts: [ 'egghead.io' ],
+      options: {
+        statusStrategy: StatusStrategies.mediaSelector,
+        statusArgs: [ '.bitmovinplayer-container video' ],
+        controlStrategy: ControlStrategies.mediaToggle,
+        playArgs: [ '.bitmovinplayer-container video' ],
+        pauseArgs: [ '.bitmovinplayer-container video' ]
+      }
+    }, {
+      hosts: [ 'udemy.com' ],
+      options: {
+        statusStrategy: StatusStrategies.mediaSelector,
+        statusArgs: [ 'video' ],
+        controlStrategy: ControlStrategies.mediaToggle,
+        playArgs: [ 'video' ],
+        pauseArgs: [ 'video' ]
+      }
+    }, {
+      hosts: [ 'musicforprogramming.net' ],
+      options: {
+        statusStrategy: StatusStrategies.mediaSelector,
+        statusArgs: [ '#player' ],
+        controlStrategy: ControlStrategies.mediaToggle,
+        playArgs: [ '#player' ],
+        pauseArgs: [ '#player' ]
+      }
+    }, {
+      hosts: [ 'netflix.com' ],
+      options: {
+        statusStrategy: StatusStrategies.mediaSelector,
+        statusArgs: [ '.VideoContainer video' ],
+        controlStrategy: ControlStrategies.mediaToggle,
+        playArgs: [ '.VideoContainer video' ],
+        pauseArgs: [ '.VideoContainer video' ]
+      }
+    }, {
       hosts: [ 'hearthis.at' ],
       options: {
         statusStrategy: StatusStrategies.checkSelector,
