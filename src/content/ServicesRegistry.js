@@ -129,6 +129,33 @@ export const servicesRegistry = () => {
         controlStrategy: ControlStrategies.joueleStoredSelector
       }
     }, {
+      hosts: [ 'megogo.net' ],
+      options: {
+        statusStrategy: StatusStrategies.mediaSelector,
+        statusArgs: [ 'video[class*="player:video"]' ],
+        controlStrategy: ControlStrategies.mediaToggle,
+        playArgs: [ 'video[class*="player:video"]' ],
+        pauseArgs: [ 'video[class*="player:video"]' ]
+      }
+    }, {
+      hosts: [ 'dailymotion.com' ],
+      options: {
+        statusStrategy: StatusStrategies.mediaSelector,
+        statusArgs: [ '#dmp_Video' ],
+        controlStrategy: ControlStrategies.mediaToggle,
+        playArgs: [ '#dmp_Video' ],
+        pauseArgs: [ '#dmp_Video' ]
+      }
+    }, {
+      hosts: [ 'netflix.com' ],
+      options: {
+        statusStrategy: StatusStrategies.mediaSelector,
+        statusArgs: [ '.VideoContainer video' ],
+        controlStrategy: ControlStrategies.mediaToggle,
+        playArgs: [ '.VideoContainer video' ],
+        pauseArgs: [ '.VideoContainer video' ]
+      }
+    }, {
       hosts: [ 'hearthis.at' ],
       options: {
         statusStrategy: StatusStrategies.checkSelector,

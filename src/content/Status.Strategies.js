@@ -12,6 +12,17 @@ export class checkSelector extends BaseStatusStrategy {
   }
 }
 
+/* simple check for media state */
+export class mediaSelector extends BaseStatusStrategy {
+  static getStatus(className) {
+    let el = document.querySelector(className);
+    if (el && el.paused === false) {
+      return Status.PLAYING;
+    }
+    return Status.PAUSED;
+  }
+}
+
 /* check for selector and store it */
 export class checkSelectorAndStore extends BaseStatusStrategy {
   static getStatus(className, storeSelector) {

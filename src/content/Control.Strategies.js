@@ -22,6 +22,19 @@ export class clickSelector extends BaseControlStrategy {
   }
 }
 
+/* class for standard audio/video media elements */
+export class mediaToggle extends BaseControlStrategy {
+  static play(className) {
+    let element = document.querySelector(className);
+    element && element.paused && element.play();
+  }
+
+  static pause(className) {
+    let element = document.querySelector(className);
+    element && !element.paused && element.pause();
+  }
+}
+
 /* clicking the storedSelector, injected by the Service */
 export class clickStoredSelector extends BaseControlStrategy {
   static play() {
