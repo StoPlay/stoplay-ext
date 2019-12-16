@@ -25,8 +25,8 @@ function restoreOptions(callback) {
 	}, (items) => {
 		const providersCurrent = mergeProviders(items.providers);
 
-		if (callback) {
-			callback.call(null, providersCurrent);
+		if (typeof callback === 'function') {
+			callback(providersCurrent);
 		}
 	});
 }
@@ -62,6 +62,15 @@ function mergeProviders(oldItems) {
 	});
 }
 
+function resetProviders(callback) {
+	restoreOptions(function(providersMerged) {
+		saveToOptions({providers: providersMerged});
+		if (typeof callback === 'function') {
+			callback(providersMerged);
+		}
+	})
+}
+
 appState.setStatus("silent");
 
 if (!appState.getVersion()) {
@@ -70,9 +79,7 @@ if (!appState.getVersion()) {
 } else if (appState.getVersion() !== version) {
 	// extension updated
 	appState.setVersion(version);
-	restoreOptions((providersMerged) => {
-		saveToOptions({providers: providersMerged});
-	});
+	resetProviders();
 }
 
 chrome.storage.onChanged.addListener((changes, namespace) => {
@@ -121,13 +128,16 @@ chrome.browserAction.onClicked.addListener(() => {
 	}
 })
 
-chrome.runtime.onMessage.addListener((request, sender) => {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 	const lastPlayingTabId = appState.getLastPlayingTabId();
 	const lastPlayingFrameId = appState.getLastPlayingFrameId() || 0;
 	const lastPausedTabId = appState.getLastPausedTabId();
 	const status = appState.getStatus();
+	const isOptionsPage = sender.url.indexOf(chrome.runtime.id) > -1;
+	const hasNoAction = !request.action;
+	const hasNoTab = !sender.tab && !isOptionsPage;
 
-	if (!request.action || !sender.tab) {
+	if (hasNoAction || hasNoTab) {
 		return;
 	}
 
@@ -186,6 +196,14 @@ chrome.runtime.onMessage.addListener((request, sender) => {
 
 			chrome.tabs.sendMessage(lastPlayingTabId, {action: action});
 
+			break;
+
+		case 'resetProviders':
+			resetProviders((providers) => {
+				sendResponse({
+					providers
+				})
+			});
 			break;
 	}
 });

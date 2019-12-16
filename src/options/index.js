@@ -53,7 +53,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 
 	document.querySelector('.e_clear .btn').addEventListener('click', function(e) {
-		chrome.storage.sync.clear();
+		chrome.runtime.sendMessage({action: 'resetProviders'}, (providers) => {
+			restore_options();
+		});
 	});
 
 });

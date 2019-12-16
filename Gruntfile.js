@@ -115,4 +115,4 @@ module.exports = function(grunt) {
     grunt.registerTask('pack', [ 'rollup', 'zip' ]);
     // only should be run by CI, not manually
     grunt.registerTask('deploy', ['pack', 'webstore_upload']);
-}
+};
