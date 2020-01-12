@@ -100,6 +100,13 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-webstore-upload');
 
+    // watcher
+    grunt.registerTask('default', [ 'watch' ]);
+    // pack & run dev version locally
+    grunt.registerTask('pack', [ 'rollup', 'zip' ]);
+
+    // CI stuff below
+
     // Alias task for release
     grunt.registerTask('makeRelease', function (type) {
         type = type ? type : 'patch';     // Default release type
@@ -109,10 +116,8 @@ module.exports = function(grunt) {
         grunt.task.run('exec:push_release');
     });
 
-    grunt.registerTask('default', [ 'watch' ]);
     // to make release run this one
     grunt.registerTask('build', [ 'makeRelease' ]);
-    grunt.registerTask('pack', [ 'rollup', 'zip' ]);
     // only should be run by CI, not manually
     grunt.registerTask('deploy', ['pack', 'webstore_upload']);
 };
