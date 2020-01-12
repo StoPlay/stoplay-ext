@@ -14,7 +14,9 @@ const storageKeys = {
 };
 
 export class AppState {
-    storage = DataStorage;
+    constructor() {
+        this.storage = DataStorage;
+    }
 
     static getInstance() {
         if (!instance) {
