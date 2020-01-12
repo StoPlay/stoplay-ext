@@ -32,6 +32,7 @@ export const ProvidersList = [
     'play.google.com',
     'play.spotify.com',
     'player.vimeo.com',
+    'podcasts.apple.com',
     'promodj.com',
     'radio.garden',
     'radiolist.com.ua',

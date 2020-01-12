@@ -1,32 +1,19 @@
-import {AppIcons} from "./AppIcons.js";
-import {DataStorage} from "./DataStorage.js";
-import {ProvidersList} from "./ProvidersList.js";
+import {AppIcons} from "./models/AppIcons.js";
+import {ProvidersList} from "./models/ProvidersList.js";
+import {Actions} from "./models/Actions.js";
+import {Status} from "./models/Status.js";
+import {AppState} from "./services/AppState.js";
+import {Logger} from "./services/Logger.js";
 
+const appState = AppState.getInstance();
 const version = chrome.app.getDetails().version;
-
-let debug = false;
-const providersDefault = ProvidersList.map(function(item) {
+const providersDefault = ProvidersList.map((item) => {
 	return {uri: item, enabled: true};
 });
 
-if (DataStorage.get('debug_mode')) {
-	debug = true;
-}
-
-function logging() {
-	if (!debug) {
-		return;
-	}
-	console.log.apply(null, arguments);
-}
-
-
-function saveVersion() {
-	DataStorage.set('version', version);
-}
 function saveToOptions(dataObject) {
-	chrome.storage.sync.set(dataObject, function() {
-		logging('STOPLAY saveToOptions saved');
+	chrome.storage.sync.set(dataObject, () => {
+		Logger.log('STOPLAY saveToOptions saved');
 	});
 }
 
@@ -35,8 +22,9 @@ function restoreOptions(callback) {
 	chrome.storage.sync.get({
 		enabled: true,
 		providers: providersDefault
-	}, function(items) {
-		var providersCurrent = mergeProviders(items.providers);
+	}, (items) => {
+		const providersCurrent = mergeProviders(items.providers);
+
 		if (typeof callback === 'function') {
 			callback(providersCurrent);
 		}
@@ -44,27 +32,27 @@ function restoreOptions(callback) {
 }
 
 function onFirstRun() {
-	logging('STOPLAY first_run');
-	saveVersion();
+	Logger.log('STOPLAY first_run');
+	appState.setVersion(version);
 	saveToOptions({providers: providersDefault});
 }
 
 // find missing providers and add from defaults
 function mergeProviders(oldItems) {
 	if (!Array.isArray(oldItems)) {
-		logging('STOPLAY mergeProviders returning default values');
+		Logger.log('STOPLAY mergeProviders returning default values');
 		return providersDefault;
 	}
-	logging('STOPLAY mergeProviders', oldItems);
-	var providersFull = [],
-		found = {};
 
-	providersFull = providersDefault.map(function(itemDefault) {
+	Logger.log('STOPLAY mergeProviders', oldItems);
+
+	return providersDefault.map(function(itemDefault) {
 		// looking if any of the new items have appeared
 		// in older version of settings
-		var found = oldItems.find(function(itemOld) {
+		const found = oldItems.find((itemOld) => {
 			return itemOld.uri === itemDefault.uri;
 		});
+
 		// if not found, add it
 		if (!found) {
 			return itemDefault;
@@ -72,7 +60,6 @@ function mergeProviders(oldItems) {
 			return found;
 		}
 	});
-	return providersFull;
 }
 
 function resetProviders(callback) {
@@ -84,138 +71,179 @@ function resetProviders(callback) {
 	})
 }
 
-DataStorage.set('status', 'silent');
+appState.setStatus("silent");
 
-if (!DataStorage.get('version')) {
+if (!appState.getVersion()) {
 	// first run
 	onFirstRun();
-} else if (DataStorage.get('version') != version) {
+} else if (appState.getVersion() !== version) {
 	// extension updated
-	saveVersion();
+	appState.setVersion(version);
 	resetProviders();
 }
 
-chrome.storage.onChanged.addListener(function(changes, namespace) {
-	for (var key in changes) {
-		var storageChange = changes[key];
+chrome.storage.onChanged.addListener((changes, namespace) => {
+	for (const key in changes) {
+		const storageChange = changes[key];
 
 		if (namespace === "sync" && key === "enabled") {
-			var icon = AppIcons.PLAY_ICON;
+			let icon = AppIcons.PLAY_ICON;
+
 			if (storageChange.newValue !== true) {
 				icon = AppIcons.DISABLED_ICON;
 			}
+
 			chrome.browserAction.setIcon({path: icon});
 		}
 	}
 });
 
-chrome.browserAction.onClicked.addListener(function(e) {
-	var lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId')),
-		lastPlayingFrameId = parseInt(DataStorage.get('lastPlayingFrameId')) || 0,
-		lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId')),
-		lastPausedFrameId = parseInt(DataStorage.get('lastPausedFrameId')) || 0,
-		status = DataStorage.get('status');
+chrome.browserAction.onClicked.addListener(() => {
+	const lastPlayingTabId = appState.getLastPlayingTabId();
+	const lastPlayingFrameId = appState.getLastPlayingFrameId() || 0;
+	const lastPausedTabId = appState.getLastPausedTabId();
+	const lastPausedFrameId = appState.getLastPausedFrameId() || 0;
+	const status = appState.getStatus();
 
-	switch(status) {
-		case "playing":
-			if(lastPlayingTabId) {
-				chrome.tabs.sendMessage(lastPlayingTabId, {action: 'pause'}, {frameId: lastPlayingFrameId});
+	switch (status) {
+		case Status.PLAYING:
+			if (lastPlayingTabId) {
+				chrome.tabs.sendMessage(
+					lastPlayingTabId,
+					{action: Actions.PAUSE},
+					{frameId: lastPlayingFrameId}
+				);
 			}
 			break;
 
-		case "paused":
-			if(lastPlayingTabId) {
-				chrome.tabs.sendMessage(lastPausedTabId, {action: 'play'}, {frameId: lastPausedFrameId});
+		case Status.PAUSED:
+			if (lastPlayingTabId) {
+				chrome.tabs.sendMessage(
+					lastPausedTabId,
+					{action: Actions.PLAY},
+					{frameId: lastPausedFrameId}
+				);
 			}
 			break;
 	}
 })
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-	var lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId')),
-		lastPlayingFrameId = parseInt(DataStorage.get('lastPlayingFrameId')) || 0,
-		lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId')),
-		status = DataStorage.get('status'),
-		isOptionsPage = sender.url.indexOf(chrome.runtime.id) > -1
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+	const lastPlayingTabId = appState.getLastPlayingTabId();
+	const lastPlayingFrameId = appState.getLastPlayingFrameId() || 0;
+	const lastPausedTabId = appState.getLastPausedTabId();
+	const status = appState.getStatus();
+	const isOptionsPage = sender.url.indexOf(chrome.runtime.id) > -1;
+	const hasNoAction = !request.action;
+	const hasNoTab = !sender.tab && !isOptionsPage;
 
-	if(request.action && (sender.tab || isOptionsPage)) {
-		switch(request.action) {
-			case 'updateTitle':
-				if (request.title) {
-					chrome.browserAction.setTitle({title: "Playing: " + request.title});
-				}
+	if (hasNoAction || hasNoTab) {
+		return;
+	}
 
+	switch (request.action) {
+		case 'updateTitle':
+			if (!request.title) {
 				break;
+			}
 
-			case 'started':
-				var isFrameIdChanged = (lastPlayingTabId && sender.frameId != lastPlayingFrameId);
-				if(lastPlayingTabId && sender.tab.id != lastPlayingTabId || isFrameIdChanged) {
-					chrome.tabs.sendMessage(lastPlayingTabId, {action: 'pause'}, {frameId: lastPlayingFrameId});
-				}
-				DataStorage.set('lastPlayingTabId', sender.tab.id);
-				DataStorage.set('lastPlayingFrameId', sender.frameId);
-				DataStorage.set('status', 'playing');
-				chrome.browserAction.setIcon({path: AppIcons.STOP_ICON});
-				if (request.title) {
-					chrome.browserAction.setTitle({title: "Playing: " + request.title});
-				} else {
-					chrome.browserAction.setTitle({title: "Playing: " + sender.tab.title});
-				}
-				break;
+			chrome.browserAction.setTitle({title: "Playing: " + request.title});
+			break;
 
-			case 'paused':
-				DataStorage.set('lastPausedTabId', sender.tab.id);
-				DataStorage.set('lastPausedFrameId', sender.frameId);
-				DataStorage.set('status', 'paused');
-				chrome.browserAction.setIcon({path: AppIcons.PLAY_ICON});
-				chrome.browserAction.setTitle({title: "StoPlay" });
-				break;
+		case 'started':
+			const isFrameIdChanged = (lastPlayingTabId && sender.frameId != lastPlayingFrameId);
+			const hasLastPlayingTabId = Boolean(lastPausedTabId);
+			const senderIsNotLastPlaying = sender.tab.id !== lastPausedTabId;
 
-			case 'resetProviders':
-				resetProviders((providers) => {
-					sendResponse({
-						providers
-					})
-				});
-				break;
+			if (hasLastPlayingTabId && senderIsNotLastPlaying || isFrameIdChanged) {
+				chrome.tabs.sendMessage(
+					lastPlayingTabId,
+					{action: Actions.PAUSE},
+					{frameId: lastPlayingFrameId}
+				);
+			}
 
-			case 'toggle':
-				if(lastPlayingTabId) {
-					var action = (status == 'playing') ? 'pause' : 'play';
-					chrome.tabs.sendMessage(lastPlayingTabId, {action: action});
-				}
+			appState.setLastPlayingTabId(sender.tab.id);
+			appState.setLastPlayingFrameId(sender.frameId);
+			appState.setStatus(Status.PLAYING);
+
+			chrome.browserAction.setIcon({path: AppIcons.STOP_ICON});
+
+			if (request.title) {
+				chrome.browserAction.setTitle({title: "Playing: " + request.title});
+			} else {
+				chrome.browserAction.setTitle({title: "Playing: " + sender.tab.title});
+			}
+			break;
+
+		case 'paused':
+			appState.setLastPausedTabId(sender.tab.id);
+			appState.setLastPausedFrameId(sender.frameId);
+			appState.setStatus(Status.PAUSED);
+
+			chrome.browserAction.setIcon({path: AppIcons.PLAY_ICON});
+			chrome.browserAction.setTitle({title: "StoPlay"});
+			break;
+
+		case 'toggle':
+			if (!lastPlayingTabId) {
 				break;
-		}
+			}
+
+			const action = status === Status.PLAYING
+				? Actions.PAUSE
+				: Actions.PLAY;
+
+			chrome.tabs.sendMessage(lastPlayingTabId, {action: action});
+
+			break;
+
+		case 'resetProviders':
+			resetProviders((providers) => {
+				sendResponse({
+					providers
+				})
+			});
+			break;
 	}
 });
 
-chrome.commands.onCommand.addListener(function(command) {
-		var lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId')),
-			lastPlayingFrameId = parseInt(DataStorage.get('lastPlayingFrameId')) || 0,
-			lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId')),
-			lastPausedFrameId = parseInt(DataStorage.get('lastPausedFrameId')) || 0,
-			status = DataStorage.get('status');
+chrome.commands.onCommand.addListener(() => {
+	const lastPlayingTabId = appState.getLastPlayingTabId();
+	const lastPlayingFrameId = appState.getLastPlayingFrameId() || 0;
+	const lastPausedTabId = appState.getLastPausedTabId();
+	const lastPausedFrameId = appState.getLastPausedFrameId() || 0;
+	const status = appState.getStatus();
 
-		var action = 'pause';
-		var frameId = lastPlayingFrameId;
-		var tab = lastPlayingTabId;
-		if (status != 'playing') {
-			tab = lastPausedTabId;
-			action = 'play';
-			frameId = lastPausedFrameId;
-		}
-		if(tab) {
-			chrome.tabs.sendMessage(tab, {action}, {frameId});
-		}
+	let action = Actions.PAUSE;
+	let frameId = lastPlayingFrameId;
+	let tabId = lastPlayingTabId;
+
+	if (status !== Status.PLAYING) {
+		tabId = lastPausedTabId;
+		action = Actions.PLAY;
+		frameId = lastPausedFrameId;
+	}
+
+	if (tabId) {
+		chrome.tabs.sendMessage(tabId, {action}, {frameId});
+	}
 });
-chrome.tabs.onRemoved.addListener(function(tabId){
-	var lastPlayingTabId = parseInt(DataStorage.get('lastPlayingTabId')),
-		lastPausedTabId = parseInt(DataStorage.get('lastPausedTabId')),
-		lastPausedFrameId = parseInt(DataStorage.get('lastPausedFrameId')) || 0;
-	if(tabId == lastPlayingTabId) {
-		DataStorage.set('lastPlayingTabId', null);
-		if(lastPausedTabId != tabId) {
-			chrome.tabs.sendMessage(lastPausedTabId, {action: 'play'}, {frameId: lastPausedFrameId});
+
+chrome.tabs.onRemoved.addListener((tabId) => {
+	const lastPlayingTabId = appState.getLastPlayingTabId();
+	const lastPausedTabId = appState.getLastPausedTabId();
+	const lastPausedFrameId = appState.getLastPausedFrameId() || 0;
+
+	if (tabId === lastPlayingTabId) {
+		appState.setLastPlayingTabId(null);
+
+		if (lastPausedTabId !== tabId) {
+			chrome.tabs.sendMessage(
+				lastPausedTabId,
+				{action: Actions.PLAY},
+				{frameId: lastPausedFrameId}
+			);
 		}
 	}
 });

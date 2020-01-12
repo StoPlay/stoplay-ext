@@ -564,6 +564,13 @@ class Provider {
 
                 status = playerPauseButton ? Status.PLAYING : Status.PAUSED;
                 break;
+
+            case "podcasts.apple.com":
+                selectorQuery = ".we-audio-controls__playback .we-audio-controls__button--playback.icon-pause";
+                playerPauseButton = document.querySelector(selectorQuery);
+
+                status = playerPauseButton ? Status.PLAYING : Status.PAUSED;
+                break;
         }
 
         return status;
@@ -842,6 +849,17 @@ class Provider {
                     }
 
                     playerPauseButton.parentElement.click();
+                    break;
+
+                case "podcasts.apple.com":
+                    selectorQuery = ".we-audio-controls__playback .we-audio-controls__button--playback.icon-pause";
+                    playerPauseButton = document.querySelector(selectorQuery);
+
+                    if (!playerPauseButton) {
+                        return;
+                    }
+
+                    playerPauseButton.click();
                     break;
             }
             this.__changeState(Status.PAUSED);
@@ -1122,6 +1140,18 @@ class Provider {
                     }
 
                     playerPlayButton.parentElement.click();
+                    break;
+
+                case "podcasts.apple.com":
+                    selectorQuery = ".we-audio-controls__playback .we-audio-controls__button--playback.icon-play";
+                    playerPlayButton = document.querySelector(selectorQuery);
+
+                    if (!playerPlayButton) {
+                        return;
+                    }
+
+                    playerPlayButton.click();
+                    break;
             }
             this.__changeState(Status.PLAYING);
         }
