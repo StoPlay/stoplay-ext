@@ -504,7 +504,7 @@ class Provider {
                 break;
 
             case "udemy.com":
-                p = document.querySelector("video-viewer video");
+                p = document.querySelector(".video-js video");
 
                 status = Status.PAUSED;
                 if (p && p.paused === false) {
@@ -790,7 +790,7 @@ class Provider {
                     break;
 
                 case "udemy.com":
-                    p = document.querySelector("video-viewer video");
+                    p = document.querySelector(".video-js video");
 
                     p && !p.paused && p.pause();
                     break;
@@ -1057,7 +1057,7 @@ class Provider {
                     break;
 
                 case "udemy.com":
-                    p = document.querySelector("video-viewer video");
+                    p = document.querySelector(".video-js video");
 
                     p && p.paused && p.play();
                     break;
