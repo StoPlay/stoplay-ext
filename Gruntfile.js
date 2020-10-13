@@ -57,7 +57,8 @@ module.exports = function(grunt) {
 
         exec: {
             fork_release: 'git checkout -b release/<%= pkg.version %>',
-            push_release: 'git push origin release/<%= pkg.version %>'
+            push_release: 'git push origin release/<%= pkg.version %>',
+            help_text: 'echo "For development (will compile js and start watcher):\n$ grunt pack && grunt\n\nTo start release flow:\n$ grunt build"'
         },
 
         webstore_upload: {
@@ -113,6 +114,7 @@ module.exports = function(grunt) {
     // to make release run this one
     grunt.registerTask('build', [ 'makeRelease' ]);
     grunt.registerTask('pack', [ 'rollup', 'zip' ]);
+    grunt.registerTask('help', [ 'exec:help_text' ]);
     // only should be run by CI, not manually
     grunt.registerTask('deploy', ['pack', 'webstore_upload']);
 };
