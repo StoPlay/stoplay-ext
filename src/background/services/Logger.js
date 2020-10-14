@@ -1,7 +1,6 @@
-import {AppState} from "./AppState.js";
+import DebugMode from './DebugMode.js';
 
-const appState = AppState.getInstance();
-const DEBUG = appState.getDebugMode();
+const DEBUG = DebugMode;
 
 export class Logger {
     static log() {
