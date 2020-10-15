@@ -3,7 +3,7 @@ import {DataStorage} from "./DataStorage.js";
 let instance = null;
 
 const storageKeys = {
-    debug_mode: "debug_mode",
+    // debug_mode: "debug_mode", reserved by DebugMode module
     version: "version",
     status: "status",
 
@@ -24,10 +24,6 @@ export class AppState {
         }
 
         return instance;
-    }
-
-    getDebugMode() {
-        return this.storage.get(storageKeys.debug_mode);
     }
 
     getVersion() {
