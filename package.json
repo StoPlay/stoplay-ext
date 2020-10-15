@@ -1,6 +1,6 @@
 {
   "name": "stoplayExt-build",
-  "version": "1.1.63",
+  "version": "1.1.67",
   "author": "Alex Buznik",
   "scripts": {
     "build": "grunt rollup",
