@@ -348,6 +348,7 @@ class Provider {
             case "facebook.com":
             case "kickstarter.com":
             case "music.youtube.com":
+            case "app.pluralsight.com":
                 const videos = document.getElementsByTagName("video");
 
                 if (videos.length > 0) {
@@ -566,6 +567,8 @@ class Provider {
     pause() {
         let p, selector, selectorQuery, playerPauseButton;
 
+        console.log('pause', this.host);
+        debugger
         if (this.status === Status.PLAYING) {
             switch(this.host) {
                 case "radiolist.com.ua":
@@ -629,6 +632,11 @@ class Provider {
 
                 case "muzebra.com":
                     document.querySelector('#player button.play.icon-pause') && document.querySelector('#player button.play.icon-pause').click();
+                    break;
+
+                case "app.pluralsight.com":
+                    console.log('pause', document.querySelector('[data-text="Pause (k)"] button'));
+                    document.querySelector('[data-text="Pause (k)"] button') && document.querySelector('[data-text="Pause (k)"] button').click();
                     break;
 
                 case "ted.com":
@@ -911,6 +919,11 @@ class Provider {
 
                 case "muzebra.com":
                     document.querySelector('#player button.play.icon-play') && document.querySelector('#player button.play.icon-play').click();
+                    break;
+
+                case "app.pluralsight.com":
+                    console.log('pause', document.querySelector('[data-text="Play (k)"] button'));
+                    document.querySelector('[data-text="Play (k)"] button') && document.querySelector('[data-text="Play (k)"] button').click();
                     break;
 
                 case "ted.com":

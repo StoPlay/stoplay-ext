@@ -35,6 +35,7 @@ export const ProvidersList = [
     'play.spotify.com',
     'player.vimeo.com',
     'pleer.net',
+    'app.pluralsight.com',
     'podcasts.apple.com',
     'promodj.com',
     'radio.garden',
