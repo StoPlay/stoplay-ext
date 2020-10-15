@@ -33,6 +33,7 @@ module.exports = function(grunt) {
             dist: {
                 files: {
                     "./dist/content.js": "./src/content/index.js",
+                    "./dist/common.js": "./src/common/index.js",
                     "./dist/background.js": "./src/background/index.js",
                 }
             }
@@ -50,12 +51,13 @@ module.exports = function(grunt) {
 
         zip: {
             'long-format': {
-                src: ['img/**', 'dist/*.js', 'src/options/**', 'vendors/**', 'manifest.json', 'LICENSE', '!Gruntfile.js', '!package.json'],
+                src: ['img/**', 'dist/**', 'vendors/**', 'manifest.json', 'LICENSE', '!Gruntfile.js', '!package.json'],
                 dest: 'builds/<%= pkg.name + "-" + pkg.version %>.zip'
             }
         },
 
         exec: {
+            copy_options: 'cp -r src/options dist/',
             fork_release: 'git checkout -b release/<%= pkg.version %>',
             push_release: 'git push origin release/<%= pkg.version %>',
             help_text: 'echo "For development (will compile js and start watcher):\n$ grunt pack && grunt\n\nTo start release flow:\n$ grunt build"'
@@ -111,10 +113,10 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('default', [ 'watch' ]);
-    // to make release run this one
-    grunt.registerTask('build', [ 'makeRelease' ]);
-    grunt.registerTask('pack', [ 'rollup', 'zip' ]);
+    grunt.registerTask('pack', [ 'rollup', 'exec:copy_options', 'zip' ]);
     grunt.registerTask('help', [ 'exec:help_text' ]);
+    // to start release run this one
+    grunt.registerTask('build', [ 'makeRelease' ]);
     // only should be run by CI, not manually
     grunt.registerTask('deploy', ['pack', 'webstore_upload']);
 };

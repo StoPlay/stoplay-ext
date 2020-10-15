@@ -59,7 +59,7 @@
         }
     },
     "options_ui": {
-        "page": "src/options/index.html",
+        "page": "dist/options/index.html",
         "chrome_style": true
     }
 }
