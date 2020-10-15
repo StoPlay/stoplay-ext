@@ -567,8 +567,6 @@ class Provider {
     pause() {
         let p, selector, selectorQuery, playerPauseButton;
 
-        console.log('pause', this.host);
-        debugger
         if (this.status === Status.PLAYING) {
             switch(this.host) {
                 case "radiolist.com.ua":
@@ -635,7 +633,6 @@ class Provider {
                     break;
 
                 case "app.pluralsight.com":
-                    console.log('pause', document.querySelector('[data-text="Pause (k)"] button'));
                     document.querySelector('[data-text="Pause (k)"] button') && document.querySelector('[data-text="Pause (k)"] button').click();
                     break;
 
@@ -922,7 +919,6 @@ class Provider {
                     break;
 
                 case "app.pluralsight.com":
-                    console.log('pause', document.querySelector('[data-text="Play (k)"] button'));
                     document.querySelector('[data-text="Play (k)"] button') && document.querySelector('[data-text="Play (k)"] button').click();
                     break;
 
