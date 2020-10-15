@@ -1,5 +1,6 @@
 /* StoPlay Content JS */
 import { CheckTimer } from './CheckTimer.js';
+import { Actions } from '../common/Actions.js';
 
 function safeGetElementTextContentByQuery(query) {
     try {
@@ -410,7 +411,7 @@ class Provider {
             case "radiotunes.com":
             case "classicalradio.com":
             case "zenradio.com":
-                status = document.querySelector('#play-button .icon-pause') ? Status.PLAYING : Status.PAUSED;
+                status = document.querySelector('#play-button [data-state="playing"]') ? Status.PLAYING : Status.PAUSED;
                 break;
             case "v5player.slipstreamradio.com":
                 status = document.getElementById('statusLabel') &&
@@ -687,7 +688,8 @@ class Provider {
                 case "radiotunes.com":
                 case "classicalradio.com":
                 case "zenradio.com":
-                    document.querySelector('#play-button .ctl') && document.querySelector('#play-button .ctl').click();
+                    p = document.querySelector('#play-button .play-button-component');
+                    p && p.click();
                     break;
                 case "v5player.slipstreamradio.com":
                     document.getElementById('pause_button') && document.getElementById('pause_button').click();
@@ -971,7 +973,8 @@ class Provider {
                 case "radiotunes.com":
                 case "classicalradio.com":
                 case "zenradio.com":
-                    document.querySelector('#play-button .ctl') && document.querySelector('#play-button .ctl').click();
+                    p = document.querySelector('#play-button .play-button-component');
+                    p && p.click();
                     break;
                 case "v5player.slipstreamradio.com":
                     document.getElementById('play_button') && document.getElementById('play_button').click();
@@ -1134,11 +1137,11 @@ const ProviderInstance = new Provider();
 
 if (ProviderInstance) {
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-        if (request.action === 'pause') {
+        if (request.action === Actions.PAUSE) {
             ProviderInstance.pause();
         }
 
-        if (request.action === 'play') {
+        if (request.action === Actions.PLAY) {
             ProviderInstance.play();
         }
     });

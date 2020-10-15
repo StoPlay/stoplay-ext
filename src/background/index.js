@@ -1,6 +1,6 @@
 import {AppIcons} from "./models/AppIcons.js";
 import {ProvidersList} from "./models/ProvidersList.js";
-import {Actions} from "./models/Actions.js";
+import {Actions} from "../common/Actions.js";
 import {Status} from "./models/Status.js";
 import {AppState} from "./services/AppState.js";
 import {Logger} from "./services/Logger.js";
@@ -161,7 +161,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 					lastPlayingTabId,
 					{action: Actions.PAUSE},
 					{frameId: lastPlayingFrameId}
-				);
+					);
 			}
 
 			appState.setLastPlayingTabId(sender.tab.id);
