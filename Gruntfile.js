@@ -58,7 +58,8 @@ module.exports = function(grunt) {
         exec: {
             fork_release: 'git checkout -b release/<%= pkg.version %>',
             push_release: 'git push origin release/<%= pkg.version %>',
-            help_text: 'echo "For development (will compile js and start watcher):\n$ grunt pack && grunt\n\nTo start release flow:\n$ grunt build"'
+            merge_release_back: 'git checkout develop && git merge release/<%= pkg.version %> && git push',
+            help_text: 'echo "For development (will compile js and start watcher):\n$ grunt pack && grunt\n\nTo start release flow:\n$ grunt makeRelease"'
         },
 
         webstore_upload: {
@@ -101,7 +102,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-webstore-upload');
 
-    // Alias task for release
+    // Prepare release branch
     grunt.registerTask('makeRelease', function (type) {
         type = type ? type : 'patch';     // Default release type
         grunt.task.run('bumpup:' + type);
@@ -111,10 +112,8 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('default', [ 'watch' ]);
-    // to make release run this one
-    grunt.registerTask('build', [ 'makeRelease' ]);
     grunt.registerTask('pack', [ 'rollup', 'zip' ]);
     grunt.registerTask('help', [ 'exec:help_text' ]);
     // only should be run by CI, not manually
-    grunt.registerTask('deploy', ['pack', 'webstore_upload']);
+    grunt.registerTask('deploy', ['pack', 'webstore_upload', 'exec:merge_release_back']);
 };
