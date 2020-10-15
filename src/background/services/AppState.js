@@ -31,46 +31,46 @@ export class AppState {
     }
 
     setVersion(value) {
-        this.storage.set(storageKeys.version, value);
+        return this.storage.set(storageKeys.version, value);
     }
 
     getStatus() {
-        this.storage.get(storageKeys.status);
+        return this.storage.get(storageKeys.status);
     }
 
     setStatus(value) {
-        this.storage.set(storageKeys.status, value);
+        return this.storage.set(storageKeys.status, value);
     }
 
     getLastPlayingTabId() {
-        this.storage.get(storageKeys.lastPlayingTabId);
+        return this.storage.get(storageKeys.lastPlayingTabId);
     }
 
     setLastPlayingTabId(value) {
-        this.storage.set(storageKeys.lastPlayingTabId, value);
+        return this.storage.set(storageKeys.lastPlayingTabId, value);
     }
 
     getLastPlayingFrameId() {
-        this.storage.get(storageKeys.lastPlayingFrameId);
+        return this.storage.get(storageKeys.lastPlayingFrameId);
     }
 
     setLastPlayingFrameId(value) {
-        this.storage.set(storageKeys.lastPlayingFrameId, value);
+        return this.storage.set(storageKeys.lastPlayingFrameId, value);
     }
 
     getLastPausedTabId() {
-        this.storage.get(storageKeys.lastPausedTabId);
+        return this.storage.get(storageKeys.lastPausedTabId);
     }
 
     setLastPausedTabId(value) {
-        this.storage.set(storageKeys.lastPausedTabId, value);
+        return this.storage.set(storageKeys.lastPausedTabId, value);
     }
 
     getLastPausedFrameId() {
-        this.storage.get(storageKeys.lastPausedFrameId);
+        return this.storage.get(storageKeys.lastPausedFrameId);
     }
 
     setLastPausedFrameId(value) {
-        this.storage.set(storageKeys.lastPausedFrameId, value);
+        return this.storage.set(storageKeys.lastPausedFrameId, value);
     }
 }
