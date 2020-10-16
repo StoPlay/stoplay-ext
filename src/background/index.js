@@ -152,9 +152,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 		case 'started':
 			const isFrameIdChanged = (lastPlayingTabId && sender.frameId != lastPlayingFrameId);
-			const hasLastPlayingTabId = Boolean(lastPausedTabId);
+			const hasLastPlayingTabId = Boolean(lastPlayingTabId);
 			const senderIsNotLastPlaying = sender.tab.id !== lastPausedTabId;
 
+			// pause previously playing tab
 			if (hasLastPlayingTabId && senderIsNotLastPlaying || isFrameIdChanged) {
 				chrome.tabs.sendMessage(
 					lastPlayingTabId,
