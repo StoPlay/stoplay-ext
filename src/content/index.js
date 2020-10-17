@@ -790,9 +790,8 @@ class Provider {
                     break;
 
                 case "udemy.com":
-                    p = document.querySelector(".video-js video");
-
-                    p && !p.paused && p.pause();
+                    p = document.querySelector('[data-purpose="pause-button"]');
+                    p && p.click();
                     break;
 
                 case "musicforprogramming.net":
@@ -1057,9 +1056,8 @@ class Provider {
                     break;
 
                 case "udemy.com":
-                    p = document.querySelector(".video-js video");
-
-                    p && p.paused && p.play();
+                    p = document.querySelector('[data-purpose="play-button"]');
+                    p && p.click();
                     break;
 
                 case "coub.com":
