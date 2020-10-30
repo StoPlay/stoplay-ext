@@ -677,8 +677,14 @@ class Provider {
                     document.querySelector('.player-controls__btn_pause') && document.querySelector('.player-controls__btn_pause').click();
                     break;
                 case "mixcloud.com":
-                    document.querySelector('.player-control').click();
-                    break;
+                    p = document.querySelector('.player-open [aria-label="Pause"]');
+
+                    if (!p) {
+                        p = document.querySelector('.player-control');
+                    }
+
+                    p && p.click();
+                break;
                 case "soundcloud.com":
                     document.querySelector('.playControl.playing') && document.querySelector('.playControl').click();
                     break;
