@@ -398,9 +398,9 @@ class Provider {
                 status = document.querySelector('.player-controls__btn_play').classList.contains('player-controls__btn_pause') ? Status.PLAYING : Status.PAUSED;
                 break;
             case "mixcloud.com":
-                status = document.querySelector('.player-control') &&
-                    document.querySelector('.player-control')
-                    .classList.contains('pause-state') ? Status.PLAYING : Status.PAUSED;
+                status = document.querySelector('.player-open [aria-label="Pause"]')
+                         ? Status.PLAYING
+                         : Status.PAUSED;
                 break;
             case "soundcloud.com":
                 status = document.querySelector('.playControl').classList.contains('playing') ? Status.PLAYING : Status.PAUSED;
