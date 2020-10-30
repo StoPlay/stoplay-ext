@@ -348,6 +348,7 @@ class Provider {
             case "facebook.com":
             case "kickstarter.com":
             case "music.youtube.com":
+            case "app.pluralsight.com":
                 const videos = document.getElementsByTagName("video");
 
                 if (videos.length > 0) {
@@ -631,6 +632,10 @@ class Provider {
                     document.querySelector('#player button.play.icon-pause') && document.querySelector('#player button.play.icon-pause').click();
                     break;
 
+                case "app.pluralsight.com":
+                    document.querySelector('[data-text="Pause (k)"] button') && document.querySelector('[data-text="Pause (k)"] button').click();
+                    break;
+
                 case "ted.com":
                 case 'facebook.com':
                 case "kickstarter.com":
@@ -910,6 +915,10 @@ class Provider {
 
                 case "muzebra.com":
                     document.querySelector('#player button.play.icon-play') && document.querySelector('#player button.play.icon-play').click();
+                    break;
+
+                case "app.pluralsight.com":
+                    document.querySelector('[data-text="Play (k)"] button') && document.querySelector('[data-text="Play (k)"] button').click();
                     break;
 
                 case "ted.com":
