@@ -966,7 +966,13 @@ class Provider {
                     break;
 
                 case "mixcloud.com":
-                    document.querySelector('.player-control').click();
+                    p = document.querySelector('.player-open [aria-label="Play"]');
+
+                    if (!p) {
+                        p = document.querySelector('.player-control');
+                    }
+
+                    p && p.click();
                     break;
                 case "soundcloud.com":
                     document.querySelector('.playControl') && document.querySelector('.playControl').click();
