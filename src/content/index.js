@@ -1031,6 +1031,17 @@ class Provider {
                         button.click();
                     }
                     break;
+
+                case "edx.org":
+                case "courses.edx.org":
+                case "learning.edx.org":
+                    button = document.querySelector(".video.is-paused .control.play");
+
+                    if (button) {
+                        button.click();
+                    }
+                    break;
+
                 case "dailymotion.com":
                     p = document.getElementById("dmp_Video");
 
