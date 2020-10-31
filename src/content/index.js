@@ -573,6 +573,11 @@ class Provider {
 
         if (this.status === Status.PLAYING) {
             switch(this.host) {
+                case "adultswim.com":
+                    p = document.querySelector("video,audio");
+                    p && !p.paused && p.pause();
+                    break;
+
                 case "radiolist.com.ua":
                     if (this.customLastPlayerSelector) {
                         this.customLastPlayerSelector.click();
