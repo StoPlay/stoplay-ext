@@ -16,7 +16,7 @@
     "grunt-bumpup": "^0.6.3",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-exec": "^3.0.0",
-    "grunt-release": "^0.14.0",
+    "grunt-release": "github:StoPlay/grunt-release",
     "grunt-rollup": "^10.0.0",
     "grunt-webstore-upload": "^0.9.21",
     "grunt-zip": "^0.18.2"
