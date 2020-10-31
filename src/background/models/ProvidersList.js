@@ -1,4 +1,5 @@
 export const ProvidersList = [
+    'adultswim.com',
     'armyfm.com.ua',
     'audible.ca',
     'audible.com',
