@@ -444,6 +444,11 @@ class Provider {
             case "courses.prometheus.org.ua":
                 status = document.querySelector('.video-controls .video_control').classList.contains('pause') ? Status.PLAYING : Status.PAUSED;
                 break;
+            case "edx.org":
+            case "courses.edx.org":
+            case "learning.edx.org":
+                status = document.querySelector(".video.is-playing") ? Status.PLAYING : Status.PAUSED;
+                break;
             case "dailymotion.com":
                 p = document.getElementById("dmp_Video");
                 status = Status.PAUSED;
@@ -728,6 +733,17 @@ class Provider {
                         button.click();
                     }
                     break;
+
+                case "edx.org":
+                case "courses.edx.org":
+                case "learning.edx.org":
+                    button = document.querySelector(".video.is-playing .control.pause");
+
+                    if (button) {
+                        button.click();
+                    }
+                    break;
+
                 case "dailymotion.com":
                     p = document.getElementById("dmp_Video");
 
@@ -1015,6 +1031,17 @@ class Provider {
                         button.click();
                     }
                     break;
+
+                case "edx.org":
+                case "courses.edx.org":
+                case "learning.edx.org":
+                    button = document.querySelector(".video.is-paused .control.play");
+
+                    if (button) {
+                        button.click();
+                    }
+                    break;
+
                 case "dailymotion.com":
                     p = document.getElementById("dmp_Video");
 
