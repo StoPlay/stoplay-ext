@@ -1,6 +1,6 @@
 import {AppIcons} from "./models/AppIcons.js";
 import {ProvidersList} from "./models/ProvidersList.js";
-import {Actions} from "./models/Actions.js";
+import {Actions} from "../common/Actions.js";
 import {Status} from "./models/Status.js";
 import {AppState} from "./services/AppState.js";
 import {Logger} from "./services/Logger.js";
@@ -152,15 +152,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 		case 'started':
 			const isFrameIdChanged = (lastPlayingTabId && sender.frameId != lastPlayingFrameId);
-			const hasLastPlayingTabId = Boolean(lastPausedTabId);
-			const senderIsNotLastPlaying = sender.tab.id !== lastPausedTabId;
+			const hasLastPlayingTabId = Boolean(lastPlayingTabId);
+			const senderIsNotLastPlaying = sender.tab.id !== lastPlayingTabId;
 
+			// pause previously playing tab
 			if (hasLastPlayingTabId && senderIsNotLastPlaying || isFrameIdChanged) {
 				chrome.tabs.sendMessage(
 					lastPlayingTabId,
 					{action: Actions.PAUSE},
 					{frameId: lastPlayingFrameId}
-				);
+					);
 			}
 
 			appState.setLastPlayingTabId(sender.tab.id);

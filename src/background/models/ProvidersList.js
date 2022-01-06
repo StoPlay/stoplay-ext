@@ -1,4 +1,5 @@
 export const ProvidersList = [
+    'adultswim.com',
     'armyfm.com.ua',
     'audible.ca',
     'audible.com',
@@ -12,6 +13,9 @@ export const ProvidersList = [
     'dailymotion.com',
     'deezer.com',
     'di.fm',
+    'edx.org',
+    'courses.edx.org',
+    'learning.edx.org',
     'egghead.io',
     'facebook.com',
     'gaming.youtube.com',
@@ -35,6 +39,7 @@ export const ProvidersList = [
     'play.spotify.com',
     'player.vimeo.com',
     'pleer.net',
+    'app.pluralsight.com',
     'podcasts.apple.com',
     'promodj.com',
     'radio.garden',
