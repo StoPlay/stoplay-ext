@@ -1,6 +1,6 @@
 {
   "name": "stoplayExt-build",
-  "version": "1.1.71",
+  "version": "1.1.72",
   "author": "Alex Buznik",
   "scripts": {
     "start": "grunt pack && grunt",
