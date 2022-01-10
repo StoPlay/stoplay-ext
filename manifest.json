@@ -28,25 +28,15 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "*://*/*"
-      ],
-      "js": [
-        "dist/content.js"
-      ],
+      "matches": ["*://*/*"],
+      "js": ["dist/content.js"],
       "all_frames": true
     }
   ],
   "background": {
-    "scripts": [
-      "dist/background.js"
-    ]
+    "scripts": ["dist/background.js"]
   },
-  "permissions": [
-    "tabs",
-    "storage",
-    "http://vk.com/*"
-  ],
+  "permissions": ["tabs", "storage"],
   "browser_action": {
     "default_title": "StoPlay",
     "default_icon": "img/icon128.png"
