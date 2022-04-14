@@ -51,6 +51,7 @@ At the moment we fully support (stop and play)
 * vimeo
 * vkontakte
 * zenradio.com
+* beatport.com
 
 ## How it works
 It just works!
