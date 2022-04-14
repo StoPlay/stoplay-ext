@@ -1,4 +1,4 @@
-import {Status} from "./Status";
+import {Status} from "../background/models/Status";
 
 export class NativeMediaPlayer {
     selector;

@@ -1,6 +1,7 @@
 /* StoPlay Content JS */
 import { CheckTimer } from "./CheckTimer.js";
 import { Actions } from "../common/Actions.js";
+import { NativeMediaPlayer } from "../common/NativeMediaPlayer";
 
 function safeGetElementTextContentByQuery(query) {
   try {
@@ -303,6 +304,11 @@ class Provider {
         p = document.querySelector("video,audio");
         status = p && !p.paused ? Status.PLAYING : Status.PAUSED;
         break;
+
+      case "anchor.fm":
+        status = new NativeMediaPlayer('[data-testid="audio-element"]').status();
+        break;
+
       case "radiolist.com.ua":
         button = document.querySelector(
           ".jouele-status-playing .jouele-info-control-button-icon_pause"
@@ -702,6 +708,10 @@ class Provider {
           p && !p.paused && p.pause();
           break;
 
+        case "anchor.fm":
+          new NativeMediaPlayer('[data-testid="audio-element"]').pause();
+          break;
+
         case "radiolist.com.ua":
           if (this.customLastPlayerSelector) {
             this.customLastPlayerSelector.click();
@@ -1043,6 +1053,10 @@ class Provider {
         case "adultswim.com":
           p = document.querySelector("video,audio");
           p && p.play();
+          break;
+
+        case "anchor.fm":
+          new NativeMediaPlayer('[data-testid="audio-element"]').play();
           break;
 
         case "radiolist.com.ua":
