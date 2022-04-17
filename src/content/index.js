@@ -377,6 +377,7 @@ class Provider {
         break;
 
       case "armyfm.com.ua":
+      case "podcasts.google.com":
       case "tunein.com":
         const audios = document.getElementsByTagName("audio");
 
@@ -755,6 +756,7 @@ class Provider {
             document.querySelector(".play.state-playing").click();
           break;
 
+        case "podcasts.google.com":
         case "tunein.com":
           const audios = document.getElementsByTagName("audio");
 
@@ -1099,6 +1101,7 @@ class Provider {
             document.querySelector(".play.state-paused").click();
           break;
 
+        case "podcasts.google.com":
         case "tunein.com":
           const audios = document.getElementsByTagName("audio");
 
