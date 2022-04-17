@@ -1,49 +1,49 @@
-import {Status} from "../background/models/Status";
+import { Status } from "../background/models/Status";
 
 export class NativeMediaPlayer {
-    selector;
+  selector;
 
-    constructor(selector) {
-        this.selector = selector;
+  constructor(selector) {
+    this.selector = selector;
+  }
+
+  status() {
+    const player = this.#getElement();
+
+    if (player && player.paused === false) {
+      return Status.PLAYING;
     }
 
-    status() {
-        const player = this.#getElement();
+    return Status.PAUSED;
+  }
 
-        if (player && player.paused === false) {
-          return Status.PLAYING;
-        }
-
-        return Status.PAUSED;
+  play() {
+    if (this.status() === Status.PLAYING) {
+      return;
     }
 
-    play() {
-        if (this.status() === Status.PLAYING) {
-            return;
-        }
-
-        const player = this.#getElement();
-        if (!player || !player.paused) {
-            return;
-        }
-
-        player.play();
+    const player = this.#getElement();
+    if (!player || !player.paused) {
+      return;
     }
 
-    pause() {
-        if (this.status() !== Status.PLAYING) {
-            return;
-        }
+    player.play();
+  }
 
-        const player = this.#getElement();
-        if (!player || player.paused) {
-            return;
-        }
-
-        player.pause();
+  pause() {
+    if (this.status() !== Status.PLAYING) {
+      return;
     }
 
-    #getElement() {
-        return document.querySelector(this.selector);
+    const player = this.#getElement();
+    if (!player || player.paused) {
+      return;
     }
+
+    player.pause();
+  }
+
+  #getElement() {
+    return document.querySelector(this.selector);
+  }
 }

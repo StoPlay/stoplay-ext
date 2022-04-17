@@ -306,7 +306,9 @@ class Provider {
         break;
 
       case "anchor.fm":
-        status = new NativeMediaPlayer('[data-testid="audio-element"]').status();
+        status = new NativeMediaPlayer(
+          '[data-testid="audio-element"]'
+        ).status();
         break;
 
       case "radiolist.com.ua":
