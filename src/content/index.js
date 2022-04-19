@@ -300,48 +300,32 @@ class Provider {
     let status, p, selector, selectorQuery, playerPauseButton;
 
     switch (this.host) {
-      case "adultswim.com":
-        p = document.querySelector("video,audio");
-        status = p && !p.paused ? Status.PLAYING : Status.PAUSED;
-        break;
-
       case "anchor.fm":
-        status = new NativeMediaPlayer(
-          '[data-testid="audio-element"]'
-        ).status();
+      case "armyfm.com.ua":
+      case "bandcamp.com":
+      case "podcasts.google.com":
+      case "tunein.com":
+      case "mixcloud.com":
+      case "podcasts.google.com":
+      case "tunein.com":
+        status = new NativeMediaPlayer("audio").status();
         break;
 
-      case "radiolist.com.ua":
-        button = document.querySelector(
-          ".jouele-status-playing .jouele-info-control-button-icon_pause"
-        );
-        if (button) {
-          status = Status.PLAYING;
-          this.customLastPlayerSelector = button;
-        } else {
-          status = Status.PAUSED;
-        }
-        break;
-
-      case "vk.com":
-        const player_obj = document.querySelector(".top_audio_player");
-        if (player_obj) {
-          status =
-            player_obj &&
-            player_obj.classList.contains("top_audio_player_playing")
-              ? Status.PLAYING
-              : Status.PAUSED;
-        }
-        break;
-
-      case "new.vk.com":
-        status =
-          document.querySelector(".top_audio_player") &&
-          document
-            .querySelector(".top_audio_player")
-            .classList.contains("top_audio_player_playing")
-            ? Status.PLAYING
-            : Status.PAUSED;
+      case "adultswim.com":
+      case "ted.com":
+      case "megogo.net":
+      case "ted.com":
+      case "facebook.com":
+      case "kickstarter.com":
+      case "music.youtube.com":
+      case "app.pluralsight.com":
+      case "netflix.com":
+      case "udemy.com":
+      case "vimeo.com":
+      case "gaming.youtube.com":
+      case "youtube.com":
+      case "takflix.com":
+        status = new NativeMediaPlayer("video").status();
         break;
 
       case "last.fm":
@@ -352,151 +336,6 @@ class Provider {
           : Status.PAUSED;
         break;
 
-      case "rutube.ru":
-        p =
-          document.querySelector("#video-object-container iframe") &&
-          document
-            .querySelector("#video-object-container iframe")
-            .contentDocument.getElementById("rutubePlayerHolder_flash_api");
-        if (p) {
-          status = p.getPlayerState && p.getPlayerState();
-        }
-        break;
-
-      case "pleer.net":
-        status = document
-          .querySelector("#player #play")
-          .classList.contains("pause")
-          ? Status.PLAYING
-          : Status.PAUSED;
-        break;
-
-      case "vimeo.com":
-      case "player.vimeo.com":
-        status = document.querySelector(".play.state-playing")
-          ? Status.PLAYING
-          : Status.PAUSED;
-        break;
-
-      case "armyfm.com.ua":
-      case "podcasts.google.com":
-      case "tunein.com":
-        const audios = document.getElementsByTagName("audio");
-
-        if (audios.length > 0) {
-          const hasPlayingAudio = Array.from(audios).some(
-            (player) => !player.paused
-          );
-
-          status = hasPlayingAudio ? Status.PLAYING : Status.PAUSED;
-        } else {
-          status =
-            document.getElementById("tuner") &&
-            document.getElementById("tuner").classList.contains("playing")
-              ? Status.PLAYING
-              : Status.PAUSED;
-        }
-        break;
-
-      case "megogo.net":
-        p = document.querySelector("video[class*='player:video']");
-        status = Status.PAUSED;
-
-        if (p && p.paused === false) {
-          status = Status.PLAYING;
-        }
-        break;
-
-      case "muzebra.com":
-        status = document
-          .querySelector("#player button.play")
-          .classList.contains("icon-pause")
-          ? Status.PLAYING
-          : Status.PAUSED;
-        break;
-
-      case "ted.com":
-      case "facebook.com":
-      case "kickstarter.com":
-      case "music.youtube.com":
-      case "app.pluralsight.com":
-      case "netflix.com":
-      case "takflix.com":
-        const videos = document.getElementsByTagName("video");
-
-        if (videos.length > 0) {
-          const hasPlayingVideo = Array.from(videos).some(
-            (player) => !player.paused
-          );
-
-          status = hasPlayingVideo ? Status.PLAYING : Status.PAUSED;
-        }
-        break;
-
-      case "gaming.youtube.com":
-      case "youtube.com":
-        p =
-          document.getElementById("movie_player") ||
-          document.querySelector(".html5-video-player");
-        if (p && p.getPlayerState) {
-          status = p.getPlayerState() == 1 ? Status.PLAYING : Status.PAUSED;
-        } else if (document.querySelector(".html5-main-video")) {
-          const video = document.querySelector(".html5-main-video");
-          status =
-            video.paused || (!video.paused && video.currentTime == 0)
-              ? Status.PAUSED
-              : Status.PLAYING;
-        } else if (document.getElementById("movie_player")) {
-          status =
-            document.getElementById("movie_player") &&
-            document
-              .getElementById("movie_player")
-              .classList.contains("playing-mode")
-              ? Status.PLAYING
-              : Status.PAUSED;
-        }
-        break;
-
-      case "seasonvar.ru":
-        status =
-          document.querySelector("#vpcenter object").getUppod &&
-          document.querySelector("#vpcenter object").getUppod("getstatus");
-        status = status == 1 ? Status.PLAYING : Status.PAUSED;
-        break;
-
-      case "play.google.com":
-        p = document.querySelector('[data-id="play-pause"]');
-        const p2 = document.querySelector(".lava-player video");
-        const p3 = document.querySelector(".playback-button.playing");
-
-        if (p) {
-          status = p.classList.contains("playing")
-            ? Status.PLAYING
-            : Status.PAUSED;
-        } else if (p2) {
-          status = Status.PAUSED;
-
-          if (p2.paused === false) {
-            status = Status.PLAYING;
-          }
-        } else if (p3) {
-          status = Status.PLAYING;
-        }
-        break;
-
-      case "music.yandex.ru":
-      case "music.yandex.ua":
-        status = document
-          .querySelector(".player-controls__btn_play")
-          .classList.contains("player-controls__btn_pause")
-          ? Status.PLAYING
-          : Status.PAUSED;
-        break;
-      case "mixcloud.com":
-        status = document.querySelector('.player-open [aria-label="Pause"]')
-          ? Status.PLAYING
-          : Status.PAUSED;
-        break;
       case "soundcloud.com":
         status = document
           .querySelector(".playControl")
@@ -530,7 +369,7 @@ class Provider {
             ? Status.PLAYING
             : Status.PAUSED;
         break;
-      case "open.spotify.com": // new UI
+      case "open.spotify.com": // new UI // outdated as of April 2022
         p = document.querySelector(".control-button[class*='pause']");
         status = Status.PAUSED;
 
@@ -538,15 +377,7 @@ class Provider {
           status = Status.PLAYING;
         }
         break;
-      case "bandcamp.com":
-        status =
-          document.querySelector(".inline_player .playbutton") &&
-          document
-            .querySelector(".inline_player .playbutton")
-            .classList.contains("playing")
-            ? Status.PLAYING
-            : Status.PAUSED;
-        break;
+
       case "promodj.com":
         status = document.querySelector(
           ".playerr_bigplaybutton .playerr_bigpausebutton"
@@ -629,34 +460,6 @@ class Provider {
             : Status.PAUSED;
         break;
 
-      case "play.mubert.com":
-        selector = document.querySelector("#genres .playing");
-
-        status = selector ? Status.PLAYING : Status.PAUSED;
-        if (selector) {
-          this.customLastPlayerSelector = selector;
-        }
-        break;
-
-      case "udemy.com":
-        p = document.querySelector(".video-js video");
-
-        status = Status.PAUSED;
-        if (p && p.paused === false) {
-          status = Status.PLAYING;
-        }
-        break;
-
-      case "coub.com":
-        selector = document.querySelector(".coub.active");
-
-        if (selector) {
-          status = selector.getAttribute("play-state");
-        } else {
-          status = Status.PAUSED;
-        }
-        break;
-
       case "livestream.com":
         selector = document.querySelector(".playback-control .play-holder");
 
@@ -707,32 +510,32 @@ class Provider {
 
     if (this.status === Status.PLAYING) {
       switch (this.host) {
-        case "adultswim.com":
-          p = document.querySelector("video,audio");
-          p && !p.paused && p.pause();
-          break;
-
         case "anchor.fm":
-          new NativeMediaPlayer('[data-testid="audio-element"]').pause();
+        case "armyfm.com.ua":
+        case "bandcamp.com":
+        case "podcasts.google.com":
+        case "tunein.com":
+        case "mixcloud.com":
+        case "podcasts.google.com":
+        case "tunein.com":
+          new NativeMediaPlayer("audio").pause();
           break;
 
-        case "radiolist.com.ua":
-          if (this.customLastPlayerSelector) {
-            this.customLastPlayerSelector.click();
-          }
-
-          break;
-
-        case "vk.com":
-          document.querySelector(".top_audio_player_play").click();
-          break;
-
-        case "new.vk.com":
-          document
-            .querySelector(
-              ".top_audio_player.top_audio_player_playing .top_audio_player_play"
-            )
-            .click();
+        case "adultswim.com":
+        case "ted.com":
+        case "megogo.net":
+        case "ted.com":
+        case "facebook.com":
+        case "kickstarter.com":
+        case "music.youtube.com":
+        case "app.pluralsight.com":
+        case "netflix.com":
+        case "udemy.com":
+        case "vimeo.com":
+        case "takflix.com":
+        case "gaming.youtube.com":
+        case "youtube.com":
+          new NativeMediaPlayer("video").pause();
           break;
 
         case "last.fm":
@@ -740,125 +543,11 @@ class Provider {
             document.querySelector("#radioControlPause a").click();
           break;
 
-        case "rutube.ru":
-          p =
-            document.querySelector("#video-object-container iframe") &&
-            document
-              .querySelector("#video-object-container iframe")
-              .contentDocument.getElementById("rutubePlayerHolder_flash_api");
-          p && p.pauseVideo && p.pauseVideo();
-          break;
-
-        case "pleer.net":
-          document.querySelector("#player #play.pause") &&
-            document.querySelector("#player #play.pause").click();
-          break;
-
-        case "vimeo.com":
-          document.querySelector(".play.state-playing") &&
-            document.querySelector(".play.state-playing").click();
-          break;
-
-        case "podcasts.google.com":
-        case "tunein.com":
-          const audios = document.getElementsByTagName("audio");
-
-          if (audios.length > 0) {
-            const audiosArray = Array.from(audios);
-
-            audiosArray
-              .filter((player) => !player.paused)
-              .forEach((player) => {
-                player.pause();
-              });
-          } else {
-            document.querySelector("#tuner.playing .playbutton-cont") &&
-              document.querySelector("#tuner.playing .playbutton-cont").click();
-          }
-          break;
-
-        case "armyfm.com.ua":
-          p = document.querySelector(".cl_play");
-          p && p.click();
-          break;
-
-        case "megogo.net":
-          p = document.querySelector("video[class*='player:video']");
-
-          p && !p.paused && p.pause();
-          break;
-
-        case "muzebra.com":
-          document.querySelector("#player button.play.icon-pause") &&
-            document.querySelector("#player button.play.icon-pause").click();
-          break;
-
         case "app.pluralsight.com":
           document.querySelector('[data-text="Pause (k)"] button') &&
             document.querySelector('[data-text="Pause (k)"] button').click();
           break;
 
-        case "ted.com":
-        case "facebook.com":
-        case "kickstarter.com":
-        case "music.youtube.com":
-        case "netflix.com":
-        case "takflix.com":
-          const videos = document.getElementsByTagName("video");
-
-          Array.from(videos)
-            .filter((player) => !player.paused)
-            .forEach((player) => {
-              player.pause();
-            });
-          break;
-
-        case "gaming.youtube.com":
-        case "youtube.com":
-          p =
-            document.getElementById("movie_player") ||
-            document.querySelector(".html5-video-player");
-          if (p && p.pauseVideo) {
-            p.pauseVideo();
-          } else {
-            document.querySelector(".ytp-play-button") &&
-              document.querySelector(".ytp-play-button").click();
-          }
-          break;
-
-        case "seasonvar.ru":
-          document.querySelector("#vpcenter object").sendToUppod &&
-            document.querySelector("#vpcenter object").sendToUppod("pause");
-          break;
-
-        case "play.google.com":
-          p = document.querySelector('[data-id="play-pause"]');
-          const p2 = document.querySelector(".lava-player video");
-          const p3 = document.querySelector(".playback-button.playing");
-
-          if (p) {
-            p.click();
-          } else if (p2) {
-            p2.pause();
-          } else if (p3) {
-            p3.click();
-          }
-          break;
-
-        case "music.yandex.ru":
-        case "music.yandex.ua":
-          document.querySelector(".player-controls__btn_pause") &&
-            document.querySelector(".player-controls__btn_pause").click();
-          break;
-        case "mixcloud.com":
-          p = document.querySelector('.player-open [aria-label="Pause"]');
-
-          if (!p) {
-            p = document.querySelector(".player-control");
-          }
-
-          p && p.click();
-          break;
         case "soundcloud.com":
           document.querySelector(".playControl.playing") &&
             document.querySelector(".playControl").click();
@@ -879,17 +568,14 @@ class Provider {
           document.getElementById("play-pause") &&
             document.getElementById("play-pause").click();
           break;
-        case "open.spotify.com": // new UI
+        case "open.spotify.com": // new UI // outdatd
           p = document.querySelector(".control-button[class*='pause']");
 
           if (p) {
             p.click();
           }
           break;
-        case "bandcamp.com":
-          document.querySelector(".inline_player .playbutton") &&
-            document.querySelector(".inline_player .playbutton").click();
-          break;
+
         case "promodj.com":
           document
             .querySelector(".playerr_bigplaybutton .playerr_bigpausebutton")
@@ -971,32 +657,12 @@ class Provider {
           }
           break;
 
-        case "play.mubert.com":
-          selector = this.customLastPlayerSelector;
-          if (selector && selector.classList.contains("playing")) {
-            selector.click();
-          }
-          break;
-
-        case "coub.com":
-          selector = document.querySelector(".coub.active .viewer__click");
-
-          if (selector) {
-            selector.click();
-          }
-          break;
-
         case "livestream.com":
           selector = document.querySelector(".playback-control .play-holder");
 
           if (selector && selector.classList.contains("lsp-hidden")) {
             document.querySelector(".playback-control .pause-holder").click();
           }
-          break;
-
-        case "udemy.com":
-          p = document.querySelector('[data-purpose="pause-button"]');
-          p && p.click();
           break;
 
         case "musicforprogramming.net":
@@ -1056,29 +722,32 @@ class Provider {
 
     if (this.status !== Status.PLAYING) {
       switch (this.host) {
-        case "adultswim.com":
-          p = document.querySelector("video,audio");
-          p && p.play();
-          break;
-
+        case "podcasts.google.com":
+        case "tunein.com":
         case "anchor.fm":
-          new NativeMediaPlayer('[data-testid="audio-element"]').play();
+        case "armyfm.com.ua":
+        case "bandcamp.com":
+        case "podcasts.google.com":
+        case "tunein.com":
+        case "mixcloud.com":
+          new NativeMediaPlayer("audio").play();
           break;
 
-        case "radiolist.com.ua":
-          if (this.customLastPlayerSelector) {
-            this.customLastPlayerSelector.previousSibling.click();
-          }
-          break;
-
-        case "vk.com":
-          document.querySelector(".top_audio_player_play").click();
-          break;
-
-        case "new.vk.com":
-          document
-            .querySelector(".top_audio_player .top_audio_player_play")
-            .click();
+        case "adultswim.com":
+        case "ted.com":
+        case "megogo.net":
+        case "ted.com":
+        case "facebook.com":
+        case "kickstarter.com":
+        case "music.youtube.com":
+        case "app.pluralsight.com":
+        case "netflix.com":
+        case "udemy.com":
+        case "vimeo.com":
+        case "takflix.com":
+        case "gaming.youtube.com":
+        case "youtube.com":
+          new NativeMediaPlayer("video").play();
           break;
 
         case "last.fm":
@@ -1086,127 +755,11 @@ class Provider {
             document.querySelector("#radioControlPlay a").click();
           break;
 
-        case "rutube.ru":
-          p =
-            document.querySelector("#video-object-container iframe") &&
-            document
-              .querySelector("#video-object-container iframe")
-              .contentDocument.getElementById("rutubePlayerHolder_flash_api");
-          p && p.playVideo && p.playVideo();
-          break;
-
-        case "pleer.net":
-          document.querySelector("#player #play.play") &&
-            document.querySelector("#player #play.play").click();
-          break;
-
-        case "vimeo.com":
-          document.querySelector(".play.state-paused") &&
-            document.querySelector(".play.state-paused").click();
-          break;
-
-        case "podcasts.google.com":
-        case "tunein.com":
-          const audios = document.getElementsByTagName("audio");
-
-          if (audios.length > 0) {
-            const audiosArray = Array.from(audios);
-
-            audiosArray
-              .filter((player) => player.paused && player.played.length > 0)
-              .forEach((player) => {
-                player.play();
-              });
-          } else {
-            document.querySelector("#tuner.stopped .playbutton-cont") &&
-              document.querySelector("#tuner.stopped .playbutton-cont").click();
-          }
-          break;
-
-        case "armyfm.com.ua":
-          p = document.querySelector(".cl_play");
-          p && p.click();
-          break;
-
-        case "megogo.net":
-          p = document.querySelector("video[class*='player:video']");
-
-          p && p.paused && p.play();
-          break;
-
-        case "muzebra.com":
-          document.querySelector("#player button.play.icon-play") &&
-            document.querySelector("#player button.play.icon-play").click();
-          break;
-
         case "app.pluralsight.com":
           document.querySelector('[data-text="Play (k)"] button') &&
             document.querySelector('[data-text="Play (k)"] button').click();
           break;
 
-        case "ted.com":
-        case "facebook.com":
-        case "kickstarter.com":
-        case "music.youtube.com":
-        case "netflix.com":
-        case "takflix.com":
-          const videos = document.getElementsByTagName("video");
-
-          Array.from(videos)
-            .filter((player) => player.paused && player.played.length > 0)
-            .forEach((player) => {
-              player.play();
-            });
-          break;
-
-        case "gaming.youtube.com":
-        case "youtube.com":
-          p =
-            document.getElementById("movie_player") ||
-            document.querySelector(".html5-video-player");
-          if (p && p.playVideo) {
-            p.playVideo();
-          } else {
-            document.querySelector(".ytp-play-button") &&
-              document.querySelector(".ytp-play-button").click();
-          }
-          break;
-
-        case "seasonvar.ru":
-          document.querySelector("#vpcenter object").sendToUppod &&
-            document.querySelector("#vpcenter object").sendToUppod("play");
-          break;
-
-        case "play.google.com":
-          p = document.querySelector('[data-id="play-pause"]');
-          const p2 = document.querySelector(".lava-player video");
-          const p3 = document.querySelector(".playback-button");
-
-          if (p) {
-            p.click();
-          } else if (p2) {
-            p2.play();
-          } else if (p3) {
-            p3.click();
-          }
-
-          break;
-
-        case "music.yandex.ru":
-        case "music.yandex.ua":
-          document.querySelector(".player-controls__btn_play") &&
-            document.querySelector(".player-controls__btn_play").click();
-          break;
-
-        case "mixcloud.com":
-          p = document.querySelector('.player-open [aria-label="Play"]');
-
-          if (!p) {
-            p = document.querySelector(".player-control");
-          }
-
-          p && p.click();
-          break;
         case "soundcloud.com":
           document.querySelector(".playControl") &&
             document.querySelector(".playControl").click();
@@ -1233,10 +786,6 @@ class Provider {
           if (p) {
             p.click();
           }
-          break;
-        case "bandcamp.com":
-          document.querySelector(".inline_player .playbutton") &&
-            document.querySelector(".inline_player .playbutton").click();
           break;
         case "promodj.com":
           document
@@ -1314,25 +863,6 @@ class Provider {
           );
 
           if (selector && !selector.classList.contains("bc-hidden")) {
-            selector.click();
-          }
-          break;
-        case "play.mubert.com":
-          selector = this.customLastPlayerSelector;
-          if (selector && !selector.classList.contains("playing")) {
-            selector.click();
-          }
-          break;
-
-        case "udemy.com":
-          p = document.querySelector('[data-purpose="play-button"]');
-          p && p.click();
-          break;
-
-        case "coub.com":
-          selector = document.querySelector(".coub.active .viewer__replay");
-
-          if (selector) {
             selector.click();
           }
           break;
