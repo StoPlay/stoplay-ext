@@ -53,6 +53,7 @@ export const ProvidersList = [
   "somafm.com",
   "soundcloud.com",
   "spotify.com",
+  "takflix.com",
   "ted.com",
   "tunein.com",
   "udemy.com",

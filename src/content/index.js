@@ -421,6 +421,7 @@ class Provider {
       case "music.youtube.com":
       case "app.pluralsight.com":
       case "netflix.com":
+      case "takflix.com":
         const videos = document.getElementsByTagName("video");
 
         if (videos.length > 0) {
@@ -802,6 +803,7 @@ class Provider {
         case "kickstarter.com":
         case "music.youtube.com":
         case "netflix.com":
+        case "takflix.com":
           const videos = document.getElementsByTagName("video");
 
           Array.from(videos)
@@ -1147,6 +1149,7 @@ class Provider {
         case "kickstarter.com":
         case "music.youtube.com":
         case "netflix.com":
+        case "takflix.com":
           const videos = document.getElementsByTagName("video");
 
           Array.from(videos)
