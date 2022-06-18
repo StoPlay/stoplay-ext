@@ -52,6 +52,7 @@ At the moment we fully support (stop and play)
 * vkontakte
 * zenradio.com
 * beatport.com
+* anchor.fm
 
 ## How it works
 It just works!
