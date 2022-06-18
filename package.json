@@ -13,7 +13,7 @@
     "url": "https://github.com/StoPlay/stoplay-ext.git"
   },
   "devDependencies": {
-    "grunt": "^1.5.2",
+    "grunt": "^1.5.3",
     "grunt-bumpup": "^0.6.3",
     "grunt-cli": "^1.4.3",
     "grunt-contrib-watch": "^1.1.0",
