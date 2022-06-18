@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "StoPlay",
   "short_name": "StoPlay",
   "homepage_url": "http://stoplay.github.io/",
@@ -34,10 +34,10 @@
     }
   ],
   "background": {
-    "scripts": ["dist/background.js"]
+    "service_worker": "bg-loader.js"
   },
   "permissions": ["tabs", "storage"],
-  "browser_action": {
+  "action": {
     "default_title": "StoPlay",
     "default_icon": "img/icon128.png"
   },
@@ -48,7 +48,6 @@
     }
   },
   "options_ui": {
-    "page": "dist/options/index.html",
-    "chrome_style": true
+    "page": "dist/options/index.html"
   }
 }

@@ -288,7 +288,11 @@ class Provider {
 
                         if (stoplayLastStatus !== currentStatus) {
                             stoplayLastStatus = currentStatus;
-                            window.localStorage.setItem('stoplaystate', currentStatus);
+                            let title;
+                            if (navigator.mediaSession) {
+                              title = navigator.mediaSession.metadata.title + ' - ' + navigator.mediaSession.metadata.artist;
+                            }
+                            chrome.runtime.sendMessage({ action: "started", title });
                         }
                     }, 400);
                 `);
