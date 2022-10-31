@@ -7,7 +7,7 @@ function safeGetElementTextContentByQuery(query) {
   try {
     const element = document.querySelector(query);
 
-    return element.textContent;
+    return element.textContent.trim();
   } catch (e) {
     return "";
   }
