@@ -308,6 +308,7 @@ class Provider {
       case "mixcloud.com":
       case "podcasts.google.com":
       case "tunein.com":
+      case "fex.net":
         status = new NativeMediaPlayer("audio").status();
         break;
 
@@ -518,6 +519,7 @@ class Provider {
         case "mixcloud.com":
         case "podcasts.google.com":
         case "tunein.com":
+        case "fex.net":
           new NativeMediaPlayer("audio").pause();
           break;
 
@@ -730,6 +732,7 @@ class Provider {
         case "podcasts.google.com":
         case "tunein.com":
         case "mixcloud.com":
+        case "fex.net":
           new NativeMediaPlayer("audio").play();
           break;
 

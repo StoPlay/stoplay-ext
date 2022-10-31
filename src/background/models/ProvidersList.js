@@ -18,6 +18,7 @@ export const ProvidersList = [
   "learning.edx.org",
   "egghead.io",
   "facebook.com",
+  "fex.net",
   "gaming.youtube.com",
   "hearthis.at",
   "jazzradio.com",
