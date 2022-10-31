@@ -250,6 +250,12 @@ class Provider {
           ".channel-list-item-name-container"
         );
         break;
+
+      case "open.spotify.com":
+        artistName = safeGetElementTextContentByQuery(
+          "[data-testid='context-item-info-title'] [data-testid='context-item-link']"
+        );
+        break;
     }
 
     if (artistName && songName) {
