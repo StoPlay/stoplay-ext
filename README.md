@@ -45,6 +45,8 @@ At the moment we fully support (stop and play)
 - beatport.com
 - anchor.fm
 - qub.ca
+- cikava-ideya.top
+- freemusicarchive.org
 
 ## How it works
 
