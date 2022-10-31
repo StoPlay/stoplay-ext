@@ -3,6 +3,7 @@ import { CheckTimer } from "./CheckTimer.js";
 import { Actions } from "../common/Actions.js";
 import { NativeMediaPlayer } from "../common/NativeMediaPlayer";
 import { ElementExistsStatus } from "../common/ElementExistsStatus.js";
+import { ElementClickControl } from "../common/ElementClickControl.js";
 
 function safeGetElementTextContentByQuery(query) {
   try {
@@ -568,6 +569,10 @@ class Provider {
           new NativeMediaPlayer("video").pause();
           break;
 
+        case "freemusicarchive.org":
+          new ElementClickControl(".c-player__control-button--pause:not([style*='display: none'])").evaluate();
+          break;
+
         case "last.fm":
           document.querySelector("#radioControlPause a") &&
             document.querySelector("#radioControlPause a").click();
@@ -783,6 +788,10 @@ class Provider {
         case "tortuga.wtf":
         case "ashdi.vip":
           new NativeMediaPlayer("video").play();
+          break;
+
+        case "freemusicarchive.org":
+          new ElementClickControl(".c-player__control-button--play:not([style*='display: none'])").evaluate();
           break;
 
         case "last.fm":
