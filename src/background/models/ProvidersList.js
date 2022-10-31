@@ -51,4 +51,5 @@ export const ProvidersList = [
   "vimeo.com",
   "youtube.com",
   "zenradio.com",
+  "qub.ca",
 ];

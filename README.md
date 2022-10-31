@@ -44,6 +44,7 @@ At the moment we fully support (stop and play)
 - zenradio.com
 - beatport.com
 - anchor.fm
+- qub.ca
 
 ## How it works
 
