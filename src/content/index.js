@@ -260,6 +260,11 @@ class Provider {
           "[data-testid='context-item-info-title'] [data-testid='context-item-link']"
         );
         break;
+
+      case "freemusicarchive.org":
+        songName = safeGetElementTextContentByQuery(".c-player__song .c-song__artist");
+        artistName = safeGetElementTextContentByQuery(".c-player__song .c-song__title");
+        break;
     }
 
     if (artistName && songName) {
