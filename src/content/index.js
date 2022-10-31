@@ -251,6 +251,10 @@ class Provider {
         );
         break;
 
+      case "cikava-ideya.top":
+        artistName = document.title;
+        break;
+
       case "open.spotify.com":
         artistName = safeGetElementTextContentByQuery(
           "[data-testid='context-item-info-title'] [data-testid='context-item-link']"
@@ -333,6 +337,9 @@ class Provider {
       case "gaming.youtube.com":
       case "youtube.com":
       case "takflix.com":
+      case "cikava-ideya.top":
+      case "tortuga.wtf":
+      case "ashdi.vip":
         status = new NativeMediaPlayer("video").status();
         break;
 
@@ -545,6 +552,9 @@ class Provider {
         case "takflix.com":
         case "gaming.youtube.com":
         case "youtube.com":
+        case "cikava-ideya.top":
+        case "tortuga.wtf":
+        case "ashdi.vip":
           new NativeMediaPlayer("video").pause();
           break;
 
@@ -759,6 +769,9 @@ class Provider {
         case "takflix.com":
         case "gaming.youtube.com":
         case "youtube.com":
+        case "cikava-ideya.top":
+        case "tortuga.wtf":
+        case "ashdi.vip":
           new NativeMediaPlayer("video").play();
           break;
 

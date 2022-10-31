@@ -52,4 +52,7 @@ export const ProvidersList = [
   "youtube.com",
   "zenradio.com",
   "qub.ca",
+  "cikava-ideya.top",
+  "tortuga.wtf",
+  "ashdi.vip",
 ];
