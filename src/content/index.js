@@ -371,8 +371,8 @@ class Provider {
             ? Status.PLAYING
             : Status.PAUSED;
         break;
-      case "open.spotify.com": // new UI // outdated as of April 2022
-        p = document.querySelector(".control-button[class*='pause']");
+      case "open.spotify.com": // new UI // outdated as of Oct 2022
+        p = document.querySelector("[data-testid='control-button-playpause'] path[d*='1a.7.7']");
         status = Status.PAUSED;
 
         if (p) {
@@ -573,7 +573,7 @@ class Provider {
             document.getElementById("play-pause").click();
           break;
         case "open.spotify.com": // new UI // outdatd
-          p = document.querySelector(".control-button[class*='pause']");
+          p = document.querySelector("[data-testid='control-button-playpause']");
 
           if (p) {
             p.click();
@@ -787,7 +787,7 @@ class Provider {
             document.getElementById("play-pause").click();
           break;
         case "open.spotify.com": // new UI
-          p = document.querySelector(".control-button[class*='play']");
+          p = document.querySelector("[data-testid='control-button-playpause']");
 
           if (p) {
             p.click();
