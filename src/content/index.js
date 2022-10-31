@@ -2,6 +2,7 @@
 import { CheckTimer } from "./CheckTimer.js";
 import { Actions } from "../common/Actions.js";
 import { NativeMediaPlayer } from "../common/NativeMediaPlayer";
+import { ElementExistsStatus } from "../common/ElementExistsStatus.js";
 
 function safeGetElementTextContentByQuery(query) {
   try {
@@ -346,6 +347,10 @@ class Provider {
       case "tortuga.wtf":
       case "ashdi.vip":
         status = new NativeMediaPlayer("video").status();
+        break;
+
+      case "freemusicarchive.org":
+        status = new ElementExistsStatus(".c-player__control-button--pause:not([style*='display: none'])").getStatus();
         break;
 
       case "last.fm":
