@@ -249,7 +249,7 @@ class Provider {
 
       case "radio.garden":
         artistName = safeGetElementTextContentByQuery(
-          ".channel-list-item-name-container"
+          "[class*='channel'] [class*='titleContainer'] [class*='title']:not([class*='subtitle'])"
         );
         break;
 
@@ -506,10 +506,7 @@ class Provider {
         break;
 
       case "radio.garden":
-        selectorQuery = ".icon-toggle.mod-mute .icon-button.mod-sound";
-        playerPauseButton = document.querySelector(selectorQuery);
-
-        status = playerPauseButton ? Status.PLAYING : Status.PAUSED;
+        status = new ElementExistsStatus("[class*='controlsContainer'] [aria-label='stop']").getStatus();
         break;
 
       case "somafm.com":
@@ -715,14 +712,7 @@ class Provider {
           break;
 
         case "radio.garden":
-          selectorQuery = ".icon-toggle.mod-mute .icon-button.mod-sound";
-          playerPauseButton = document.querySelector(selectorQuery);
-
-          if (!playerPauseButton) {
-            return;
-          }
-
-          playerPauseButton.click();
+          new ElementClickControl("[class*='controlsContainer'] [aria-label='stop']").evaluate();
           break;
 
         case "somafm.com":
@@ -934,14 +924,7 @@ class Provider {
           break;
 
         case "radio.garden":
-          selectorQuery = ".icon-toggle.mod-mute .icon-button.mod-muted";
-          playerPlayButton = document.querySelector(selectorQuery);
-
-          if (!playerPlayButton) {
-            return;
-          }
-
-          playerPlayButton.click();
+          new ElementClickControl("[class*='controlsContainer'] [aria-label='play']").evaluate();
           break;
 
         case "somafm.com":
