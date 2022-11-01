@@ -2,12 +2,14 @@
 import { CheckTimer } from "./CheckTimer.js";
 import { Actions } from "../common/Actions.js";
 import { NativeMediaPlayer } from "../common/NativeMediaPlayer";
+import { ElementExistsStatus } from "../common/ElementExistsStatus.js";
+import { ElementClickControl } from "../common/ElementClickControl.js";
 
 function safeGetElementTextContentByQuery(query) {
   try {
     const element = document.querySelector(query);
 
-    return element.textContent;
+    return element.textContent.trim();
   } catch (e) {
     return "";
   }
@@ -247,7 +249,7 @@ class Provider {
 
       case "radio.garden":
         artistName = safeGetElementTextContentByQuery(
-          ".channel-list-item-name-container"
+          "[class*='channel'] [class*='titleContainer'] [class*='title']:not([class*='subtitle'])"
         );
         break;
 
@@ -259,6 +261,11 @@ class Provider {
         artistName = safeGetElementTextContentByQuery(
           "[data-testid='context-item-info-title'] [data-testid='context-item-link']"
         );
+        break;
+
+      case "freemusicarchive.org":
+        songName = safeGetElementTextContentByQuery(".c-player__song .c-song__artist");
+        artistName = safeGetElementTextContentByQuery(".c-player__song .c-song__title");
         break;
     }
 
@@ -341,6 +348,10 @@ class Provider {
       case "tortuga.wtf":
       case "ashdi.vip":
         status = new NativeMediaPlayer("video").status();
+        break;
+
+      case "freemusicarchive.org":
+        status = new ElementExistsStatus(".c-player__control-button--pause:not([style*='display: none'])").getStatus();
         break;
 
       case "last.fm":
@@ -495,10 +506,7 @@ class Provider {
         break;
 
       case "radio.garden":
-        selectorQuery = ".icon-toggle.mod-mute .icon-button.mod-sound";
-        playerPauseButton = document.querySelector(selectorQuery);
-
-        status = playerPauseButton ? Status.PLAYING : Status.PAUSED;
+        status = new ElementExistsStatus("[class*='controlsContainer'] [aria-label='stop']").getStatus();
         break;
 
       case "somafm.com":
@@ -556,6 +564,10 @@ class Provider {
         case "tortuga.wtf":
         case "ashdi.vip":
           new NativeMediaPlayer("video").pause();
+          break;
+
+        case "freemusicarchive.org":
+          new ElementClickControl(".c-player__control-button--pause:not([style*='display: none'])").evaluate();
           break;
 
         case "last.fm":
@@ -700,14 +712,7 @@ class Provider {
           break;
 
         case "radio.garden":
-          selectorQuery = ".icon-toggle.mod-mute .icon-button.mod-sound";
-          playerPauseButton = document.querySelector(selectorQuery);
-
-          if (!playerPauseButton) {
-            return;
-          }
-
-          playerPauseButton.click();
+          new ElementClickControl("[class*='controlsContainer'] [aria-label='stop']").evaluate();
           break;
 
         case "somafm.com":
@@ -773,6 +778,10 @@ class Provider {
         case "tortuga.wtf":
         case "ashdi.vip":
           new NativeMediaPlayer("video").play();
+          break;
+
+        case "freemusicarchive.org":
+          new ElementClickControl(".c-player__control-button--play:not([style*='display: none'])").evaluate();
           break;
 
         case "last.fm":
@@ -915,14 +924,7 @@ class Provider {
           break;
 
         case "radio.garden":
-          selectorQuery = ".icon-toggle.mod-mute .icon-button.mod-muted";
-          playerPlayButton = document.querySelector(selectorQuery);
-
-          if (!playerPlayButton) {
-            return;
-          }
-
-          playerPlayButton.click();
+          new ElementClickControl("[class*='controlsContainer'] [aria-label='play']").evaluate();
           break;
 
         case "somafm.com":

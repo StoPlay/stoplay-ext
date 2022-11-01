@@ -55,4 +55,5 @@ export const ProvidersList = [
   "cikava-ideya.top",
   "tortuga.wtf",
   "ashdi.vip",
+  "freemusicarchive.org",
 ];
