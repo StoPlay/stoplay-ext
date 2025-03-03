@@ -1,18 +1,31 @@
-import {Logger} from "./Logger";
+import { isServiceWorker } from "../../utils/isServiceWorker";
+import { Logger } from "./Logger";
 
-let instance;
-
-export class DataStorageEngine {
-    constructor(storageEngine) {
-        this.storage = storageEngine;
+class DataStorageEngineSW {
+    constructor() {
+        this.storage = chrome.storage.local;
     }
 
-    static getInstance() {
-        if (!instance) {
-            instance = new DataStorageEngine(window.localStorage);
-        }
+    get(name) {
+        let resultValue;
+        this.storage.get(name, function (result) {
+            console.log("DataStorageEngineSW get", name, result);
+            resultValue = result[name];
+        });
 
-        return instance;
+        return resultValue;
+    }
+
+    set(name, value) {
+        this.storage.set({ [name]: value }, function () {
+            console.log("DataStorageEngineSW set", name, value);
+        });
+    }
+}
+
+class DataStorageEngineWindow {
+    constructor() {
+        this.storage = window.localStorage;
     }
 
     get(name) {
@@ -38,4 +51,15 @@ export class DataStorageEngine {
     }
 }
 
-export const DataStorage = DataStorageEngine.getInstance();
+let instance;
+
+if (!instance) {
+    console.log("DataStorageEngine", isServiceWorker());
+    if (isServiceWorker()) {
+        instance = new DataStorageEngineSW();
+    } else {
+        instance = new DataStorageEngineWindow();
+    }
+}
+
+export const DataStorage = instance;

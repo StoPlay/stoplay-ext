@@ -1,7 +1,7 @@
 const KEY = 'debug_mode';
 
-function DebugMode() {
-  const debug_mode = window.localStorage.getItem(KEY);
+async function DebugMode() {
+  const debug_mode = await chrome.storage.local.get(KEY);
 
   return debug_mode;
 }

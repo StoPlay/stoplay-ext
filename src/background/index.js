@@ -1,14 +1,14 @@
-import {AppIcons} from "./models/AppIcons.js";
-import {ProvidersList} from "./models/ProvidersList.js";
-import {Actions} from "../common/Actions.js";
-import {Status} from "./models/Status.js";
-import {AppState} from "./services/AppState.js";
-import {Logger} from "./services/Logger.js";
+import { AppIcons } from "./models/AppIcons.js";
+import { ProvidersList } from "./models/ProvidersList.js";
+import { Actions } from "../common/Actions.js";
+import { Status } from "./models/Status.js";
+import { AppState } from "./services/AppState.js";
+import { Logger } from "./services/Logger.js";
 
 const appState = AppState.getInstance();
-const version = chrome.app.getDetails().version;
+const version = chrome.runtime.getManifest().version;
 const providersDefault = ProvidersList.map((item) => {
-	return {uri: item, enabled: true};
+	return { uri: item, enabled: true };
 });
 
 function saveToOptions(dataObject) {
@@ -34,7 +34,7 @@ function restoreOptions(callback) {
 function onFirstRun() {
 	Logger.log('STOPLAY first_run');
 	appState.setVersion(version);
-	saveToOptions({providers: providersDefault});
+	saveToOptions({ providers: providersDefault });
 }
 
 // find missing providers and add from defaults
@@ -46,7 +46,7 @@ function mergeProviders(oldItems) {
 
 	Logger.log('STOPLAY mergeProviders', oldItems);
 
-	return providersDefault.map(function(itemDefault) {
+	return providersDefault.map(function (itemDefault) {
 		// looking if any of the new items have appeared
 		// in older version of settings
 		const found = oldItems.find((itemOld) => {
@@ -63,8 +63,8 @@ function mergeProviders(oldItems) {
 }
 
 function resetProviders(callback) {
-	restoreOptions(function(providersMerged) {
-		saveToOptions({providers: providersMerged});
+	restoreOptions(function (providersMerged) {
+		saveToOptions({ providers: providersMerged });
 		if (typeof callback === 'function') {
 			callback(providersMerged);
 		}
@@ -93,12 +93,12 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 				icon = AppIcons.DISABLED_ICON;
 			}
 
-			chrome.browserAction.setIcon({path: icon});
+			chrome.action.setIcon({ path: icon });
 		}
 	}
 });
 
-chrome.browserAction.onClicked.addListener(() => {
+chrome.action.onClicked.addListener(() => {
 	const lastPlayingTabId = appState.getLastPlayingTabId();
 	const lastPlayingFrameId = appState.getLastPlayingFrameId() || 0;
 	const lastPausedTabId = appState.getLastPausedTabId();
@@ -110,8 +110,8 @@ chrome.browserAction.onClicked.addListener(() => {
 			if (lastPlayingTabId) {
 				chrome.tabs.sendMessage(
 					lastPlayingTabId,
-					{action: Actions.PAUSE},
-					{frameId: lastPlayingFrameId}
+					{ action: Actions.PAUSE },
+					{ frameId: lastPlayingFrameId }
 				);
 			}
 			break;
@@ -120,8 +120,8 @@ chrome.browserAction.onClicked.addListener(() => {
 			if (lastPlayingTabId) {
 				chrome.tabs.sendMessage(
 					lastPausedTabId,
-					{action: Actions.PLAY},
-					{frameId: lastPausedFrameId}
+					{ action: Actions.PLAY },
+					{ frameId: lastPausedFrameId }
 				);
 			}
 			break;
@@ -147,7 +147,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 				break;
 			}
 
-			chrome.browserAction.setTitle({title: "Playing: " + request.title});
+			chrome.action.setTitle({ title: "Playing: " + request.title });
 			break;
 
 		case 'started':
@@ -159,21 +159,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 			if (hasLastPlayingTabId && senderIsNotLastPlaying || isFrameIdChanged) {
 				chrome.tabs.sendMessage(
 					lastPlayingTabId,
-					{action: Actions.PAUSE},
-					{frameId: lastPlayingFrameId}
-					);
+					{ action: Actions.PAUSE },
+					{ frameId: lastPlayingFrameId }
+				);
 			}
 
 			appState.setLastPlayingTabId(sender.tab.id);
 			appState.setLastPlayingFrameId(sender.frameId);
 			appState.setStatus(Status.PLAYING);
 
-			chrome.browserAction.setIcon({path: AppIcons.STOP_ICON});
+			chrome.action.setIcon({ path: AppIcons.STOP_ICON });
 
 			if (request.title) {
-				chrome.browserAction.setTitle({title: "Playing: " + request.title});
+				chrome.action.setTitle({ title: "Playing: " + request.title });
 			} else {
-				chrome.browserAction.setTitle({title: "Playing: " + sender.tab.title});
+				chrome.action.setTitle({ title: "Playing: " + sender.tab.title });
 			}
 			break;
 
@@ -182,8 +182,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 			appState.setLastPausedFrameId(sender.frameId);
 			appState.setStatus(Status.PAUSED);
 
-			chrome.browserAction.setIcon({path: AppIcons.PLAY_ICON});
-			chrome.browserAction.setTitle({title: "StoPlay"});
+			chrome.action.setIcon({ path: AppIcons.PLAY_ICON });
+			chrome.action.setTitle({ title: "StoPlay" });
 			break;
 
 		case 'toggle':
@@ -195,7 +195,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 				? Actions.PAUSE
 				: Actions.PLAY;
 
-			chrome.tabs.sendMessage(lastPlayingTabId, {action: action});
+			chrome.tabs.sendMessage(lastPlayingTabId, { action: action });
 
 			break;
 
@@ -227,7 +227,7 @@ chrome.commands.onCommand.addListener(() => {
 	}
 
 	if (tabId) {
-		chrome.tabs.sendMessage(tabId, {action}, {frameId});
+		chrome.tabs.sendMessage(tabId, { action }, { frameId });
 	}
 });
 
@@ -242,8 +242,8 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 		if (lastPausedTabId !== tabId) {
 			chrome.tabs.sendMessage(
 				lastPausedTabId,
-				{action: Actions.PLAY},
-				{frameId: lastPausedFrameId}
+				{ action: Actions.PLAY },
+				{ frameId: lastPausedFrameId }
 			);
 		}
 	}

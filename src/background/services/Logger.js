@@ -1,6 +1,10 @@
 import DebugMode from './DebugMode.js';
 
-const DEBUG = DebugMode;
+let DEBUG = false;
+
+DebugMode.then((debugMode) => {
+    DEBUG = debugMode;
+});
 
 export class Logger {
     static log() {
