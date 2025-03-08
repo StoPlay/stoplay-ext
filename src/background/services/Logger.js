@@ -1,14 +1,8 @@
 import DebugMode from './DebugMode.js';
 
-let DEBUG = false;
-
-DebugMode.then((debugMode) => {
-    DEBUG = debugMode;
-});
-
 export class Logger {
     static log() {
-        if (!DEBUG) {
+        if (!DebugMode()) {
             return;
         }
 
@@ -16,7 +10,7 @@ export class Logger {
     }
 
     static error() {
-        if (!DEBUG) {
+        if (!DebugMode()) {
             return;
         }
 
