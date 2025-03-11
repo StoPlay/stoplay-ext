@@ -1,9 +1,5 @@
-const KEY = 'debug_mode';
+let devMode = false;
 
-function DebugMode() {
-  const debug_mode = window.localStorage.getItem(KEY);
-
-  return debug_mode;
+export default function DebugMode() {
+  return devMode;
 }
-
-export default DebugMode();

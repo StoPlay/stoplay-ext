@@ -1,41 +1,25 @@
-import {Logger} from "./Logger";
+import { Logger } from "./Logger";
 
-let instance;
-
-export class DataStorageEngine {
-    constructor(storageEngine) {
-        this.storage = storageEngine;
-    }
-
-    static getInstance() {
-        if (!instance) {
-            instance = new DataStorageEngine(window.localStorage);
-        }
-
-        return instance;
+class MemoryStorage {
+    constructor() {
+        this.storage = {};
     }
 
     get(name) {
-        const value = this.storage.getItem(name);
-
-        if (!value) {
-            return false;
-        }
-
-        let parsedValue;
-
-        try {
-            parsedValue = JSON.parse(value);
-        } catch (exception) {
-            Logger.error(exception)
-        }
-
-        return parsedValue;
+        Logger.log('STOPLAY DataStorage get', name, this.storage[name]);
+        return this.storage[name];
     }
 
     set(name, value) {
-        this.storage.setItem(name, JSON.stringify(value));
+        Logger.log('STOPLAY DataStorage set', name, value);
+        this.storage[name] = value;
     }
 }
 
-export const DataStorage = DataStorageEngine.getInstance();
+let instance;
+
+if (!instance) {
+    instance = new MemoryStorage();
+}
+
+export const DataStorage = instance;

@@ -1,10 +1,8 @@
 import DebugMode from './DebugMode.js';
 
-const DEBUG = DebugMode;
-
 export class Logger {
     static log() {
-        if (!DEBUG) {
+        if (!DebugMode()) {
             return;
         }
 
@@ -12,7 +10,7 @@ export class Logger {
     }
 
     static error() {
-        if (!DEBUG) {
+        if (!DebugMode()) {
             return;
         }
 
