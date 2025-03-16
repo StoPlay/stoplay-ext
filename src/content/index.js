@@ -381,9 +381,9 @@ class Provider {
       case "v5player.slipstreamradio.com":
         status =
           document.getElementById("statusLabel") &&
-          document
-            .getElementById("statusLabel")
-            .textContent.toLocaleLowerCase() == "playing"
+            document
+              .getElementById("statusLabel")
+              .textContent.toLocaleLowerCase() == "playing"
             ? Status.PLAYING
             : Status.PAUSED;
         break;
@@ -391,7 +391,7 @@ class Provider {
       case "play.spotify.com": // old UI, may be available somewhere
         status =
           document.getElementById("play-pause") &&
-          document.getElementById("play-pause").classList.contains("playing")
+            document.getElementById("play-pause").classList.contains("playing")
             ? Status.PLAYING
             : Status.PAUSED;
         break;
@@ -446,9 +446,13 @@ class Provider {
         break;
 
       case "deezer.com":
-        const localStorageState = window.localStorage.getItem("stoplaystate");
-        status = localStorageState ? localStorageState : null;
+        selector = document.querySelector("[data-testid='play_button_pause']");
+        status = Status.PAUSED;
+        if (selector) {
+          status = Status.PLAYING;
+        }
         break;
+
       case "coursera.org":
         selector = document.querySelector(".c-video-control.vjs-control");
         status =
@@ -647,10 +651,12 @@ class Provider {
           break;
 
         case "deezer.com":
-          StoPlay.injectScript(
-            "dzPlayer.playing ? dzPlayer.control.pause() : void(0);"
-          );
+          button = document.querySelector("[data-testid='play_button_pause']");
+          if (button) {
+            button.click();
+          }
           break;
+
         case "coursera.org":
           button = document.querySelector(
             ".c-video-control.vjs-control.vjs-playing"
@@ -858,11 +864,14 @@ class Provider {
 
           p && p.paused && p.play();
           break;
+
         case "deezer.com":
-          StoPlay.injectScript(
-            "dzPlayer.paused ? dzPlayer.control.play() : void(0);"
-          );
+          button = document.querySelector("[data-testid='play_button_play']");
+          if (button) {
+            button.click();
+          }
           break;
+
         case "coursera.org":
           button = document.querySelector(
             ".c-video-control.vjs-control.vjs-paused"
